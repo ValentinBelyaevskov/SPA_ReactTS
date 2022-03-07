@@ -1,0 +1,16 @@
+.rightPanel {
+   height: 100%;
+   padding-right: 20px;
+   
+   background-color: var(--main-color);
+   border-left: 1px solid var(--border-color);
+
+   grid-column: 3 / 4;
+}
+
+// media queries
+@media (max-width: 950px) {
+   .rightPanel {
+      grid-column: 2 / 3;
+   }
+}

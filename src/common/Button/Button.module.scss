@@ -1,0 +1,45 @@
+.buttonContainer {
+   margin: 0;
+   width: fit-content;
+
+   .blueButton {
+      border: 2px solid rgba(0, 81, 255, 0.692);
+      color: rgb(0, 81, 255);
+
+      &:hover {
+         color: rgba(0, 81, 255, 0.6);
+         border-color: rgba(0, 81, 255, 0.55);
+      }
+   }
+
+   .redButton {
+      border: 2px solid rgba(255, 0, 0, 0.692);
+      color: rgb(255, 0, 0);
+
+      &:hover {
+         color: rgba(255, 0, 0, 0.6);
+         border-color: rgba(255, 0, 0, 0.55);
+      }
+   }
+
+   button {
+      background-color: #fff;
+      border-radius: 5px;
+      padding: 5px 10px;
+
+      font-family: inherit;
+      font-weight: 500;
+      font-size: 15px;
+
+      transition-duration: 0.1s;
+      transition-property: color, border-color;
+
+      &:hover {
+         cursor: pointer;
+      }
+
+      &:disabled {
+         opacity: 0.6
+      }
+   }
+}

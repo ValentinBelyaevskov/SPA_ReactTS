@@ -1,0 +1,38 @@
+.header {
+   grid-column: 2/3;
+   align-self: center;
+
+   height: fit-content;
+   padding: var(--content-padding);
+
+   .headerOptions {
+   }
+
+   .controls {
+      display: none;
+   }
+}
+
+
+// media queries
+@media (max-width: 950px) {
+   .header {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      height: 100%;
+
+      .controls {
+         display: block;
+
+         margin-right: 40px;
+      }
+   }
+}
+
+@media (max-width: 550px) {
+   .header {
+      justify-content: space-between;
+   }
+}

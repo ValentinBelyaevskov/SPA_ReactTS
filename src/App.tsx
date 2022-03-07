@@ -1,26 +1,28 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { Header, LeftPanel, RightPanel } from './alwaysPresent'
+import styles from './App.module.scss'
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+
+type Props = {
 }
 
-export default App;
+
+const App = (props: Props) => {
+   return (
+      <div className={styles.app}>
+         <div className={styles.headerContainer}>
+            <Header />
+         </div>
+         <div className={styles.sidebarsContainer}>
+            <LeftPanel />
+            <RightPanel />
+         </div>
+         <div className={styles.pagesContainer}>
+            <div className={styles.page}>
+               Page
+            </div>
+         </div>
+      </div>
+   )
+}
+
+export default App

@@ -1,0 +1,12 @@
+.recommendations {
+   width: 300px;
+   margin: 35px 0 0 30px;
+}
+
+
+// media queries
+@media (max-width: 1252px) {
+   .recommendations {
+      width: 150px;
+   }
+}

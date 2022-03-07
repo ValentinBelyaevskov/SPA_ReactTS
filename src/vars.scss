@@ -1,0 +1,38 @@
+:root {
+   /* * Colors */
+   --global-bcg-color: #f9f9f9;
+   --main-color: #fff;
+
+   --border-color: rgba(219, 219, 219, 0.4);
+
+   --theme-color: #8a2fff;
+   --theme-active: #6f23d1;
+   --theme-hover: #7121da;
+   --theme-hover-shadow: #7c2ae688;
+
+   --input-plch-fontColor: rgba(149, 149, 149);
+   --input-plch-focus-fontColor: rgba(149, 149, 149, 0.6);
+   --input-fontColor: rgba(55, 55, 55, 0.8);
+
+   --controls-color: rgb(202, 202, 202);
+
+   --message-color: rgb(255, 255, 255);
+   --message-color-hover: rgb(230, 230, 230);
+
+   --base-fontColor: #000000;
+
+   /* * Fonts */
+   --html-fz: 10px;
+   --main-fz: 1.3rem;
+   --secondary-fz: 1.2rem;
+   --interface-fz: 1.6rem;
+
+   --controls-fz: 1.6rem;
+   --controls-fw: 300;
+   --controls-lh: 2rem;
+
+   --ff: "Roboto", sans-serif;
+
+   // sizes
+   --content-padding: 0 20px;
+}
