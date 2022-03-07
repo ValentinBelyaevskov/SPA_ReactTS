@@ -1,0 +1,20 @@
+a {
+   display: block;
+   padding: 8px 10px;
+   border-radius: 5px;
+
+   &:hover {
+      cursor: pointer;
+      background-color: rgba(0, 0, 0, 0.062);
+   }
+
+   .active {
+      font-weight: 700;
+   }
+
+   .routeButton {
+      font-size: 18px;
+      color: black;
+      text-decoration: none;
+   }
+}
