@@ -1,0 +1,687 @@
+/*
+object-assign
+(c) Sindre Sorhus
+@license MIT
+*/
+
+/*! ../../rt */
+
+/*! ../../utils */
+
+/*! ../data/data-query-builder */
+
+/*! ../persmission */
+
+/*! ../rt */
+
+/*! ../user */
+
+/*! ../users/user */
+
+/*! ../utils */
+
+/*! ./../node_modules/webpack/buildin/global.js */
+
+/*! ./arrayLikeToArray.js */
+
+/*! ./arrayWithHoles.js */
+
+/*! ./arrayWithoutHoles.js */
+
+/*! ./assertThisInitialized.js */
+
+/*! ./bl */
+
+/*! ./body-parts */
+
+/*! ./cache */
+
+/*! ./channel */
+
+/*! ./commerce */
+
+/*! ./connection */
+
+/*! ./constants */
+
+/*! ./construct.js */
+
+/*! ./container */
+
+/*! ./counter */
+
+/*! ./counters */
+
+/*! ./custom-services */
+
+/*! ./data */
+
+/*! ./data-query-builder */
+
+/*! ./delivery-options */
+
+/*! ./device */
+
+/*! ./email-envelope */
+
+/*! ./events */
+
+/*! ./files */
+
+/*! ./geo-constructor */
+
+/*! ./geo-json-parser */
+
+/*! ./geo/geo-constructor */
+
+/*! ./geo/geo-json-parser */
+
+/*! ./geo/geometry */
+
+/*! ./geo/linestring */
+
+/*! ./geo/point */
+
+/*! ./geo/polygon */
+
+/*! ./geo/spatial-reference-system */
+
+/*! ./geo/wkt-parser */
+
+/*! ./geometry */
+
+/*! ./getPrototypeOf.js */
+
+/*! ./group-query-builder */
+
+/*! ./helpers */
+
+/*! ./isNativeFunction.js */
+
+/*! ./isNativeReflectConstruct.js */
+
+/*! ./iterableToArray.js */
+
+/*! ./iterableToArrayLimit.js */
+
+/*! ./json-adapter */
+
+/*! ./json-update-builder */
+
+/*! ./linestring */
+
+/*! ./load-relations-query-builder */
+
+/*! ./local-cache */
+
+/*! ./local-storage */
+
+/*! ./logger */
+
+/*! ./logging */
+
+/*! ./messaging */
+
+/*! ./nonIterableRest.js */
+
+/*! ./nonIterableSpread.js */
+
+/*! ./objectWithoutPropertiesLoose.js */
+
+/*! ./op-result */
+
+/*! ./op-result-value-reference */
+
+/*! ./persmission */
+
+/*! ./point */
+
+/*! ./polygon */
+
+/*! ./publish-options */
+
+/*! ./publish-options-header */
+
+/*! ./request */
+
+/*! ./roles */
+
+/*! ./rso */
+
+/*! ./rt */
+
+/*! ./rt-handlers */
+
+/*! ./setPrototypeOf.js */
+
+/*! ./social */
+
+/*! ./spatial-reference-system */
+
+/*! ./store */
+
+/*! ./superPropBase.js */
+
+/*! ./unit-of-work */
+
+/*! ./unsupportedIterableToArray.js */
+
+/*! ./urls */
+
+/*! ./user */
+
+/*! ./user-agent */
+
+/*! ./users */
+
+/*! ./users/user */
+
+/*! ./utils */
+
+/*! ./virtual-storage */
+
+/*! ./wkt-parser */
+
+/*! ./wkt-to-geojson */
+
+/*! @babel/runtime/helpers/applyDecoratedDescriptor */
+
+/*! @babel/runtime/helpers/assertThisInitialized */
+
+/*! @babel/runtime/helpers/asyncToGenerator */
+
+/*! @babel/runtime/helpers/classCallCheck */
+
+/*! @babel/runtime/helpers/createClass */
+
+/*! @babel/runtime/helpers/defineProperty */
+
+/*! @babel/runtime/helpers/extends */
+
+/*! @babel/runtime/helpers/get */
+
+/*! @babel/runtime/helpers/getPrototypeOf */
+
+/*! @babel/runtime/helpers/inherits */
+
+/*! @babel/runtime/helpers/interopRequireDefault */
+
+/*! @babel/runtime/helpers/objectWithoutProperties */
+
+/*! @babel/runtime/helpers/possibleConstructorReturn */
+
+/*! @babel/runtime/helpers/slicedToArray */
+
+/*! @babel/runtime/helpers/toArray */
+
+/*! @babel/runtime/helpers/toConsumableArray */
+
+/*! @babel/runtime/helpers/typeof */
+
+/*! @babel/runtime/helpers/wrapNativeSuper */
+
+/*! @babel/runtime/regenerator */
+
+/*! backendless-request */
+
+/*! backendless-rt-client */
+
+/*! https://mths.be/utf8js v2.1.2 by @mathias */
+
+/*! no static exports found */
+
+/*! regenerator-runtime */
+
+/*!*******************!*\
+        !*** ./src/rt.js ***!
+        \*******************/
+
+/*!*********************!*\
+        !*** ./src/urls.js ***!
+        \*********************/
+
+/*!**********************!*\
+        !*** ./src/index.js ***!
+        \**********************/
+
+/*!**********************!*\
+        !*** ./src/utils.js ***!
+        \**********************/
+
+/*!*************************!*\
+        !*** ./src/bl/index.js ***!
+        \*************************/
+
+/*!**************************!*\
+        !*** ./src/bl/events.js ***!
+        \**************************/
+
+/*!**************************!*\
+        !*** ./src/rso/index.js ***!
+        \**************************/
+
+/*!***************************!*\
+        !*** ./src/data/index.js ***!
+        \***************************/
+
+/*!***************************!*\
+        !*** ./src/data/store.js ***!
+        \***************************/
+
+/*!***************************!*\
+        !*** ./src/user-agent.js ***!
+        \***************************/
+
+/*!***************************!*\
+        !*** ./src/users/user.js ***!
+        \***************************/
+
+/*!****************************!*\
+        !*** ./src/cache/index.js ***!
+        \****************************/
+
+/*!****************************!*\
+        !*** ./src/files/index.js ***!
+        \****************************/
+
+/*!****************************!*\
+        !*** ./src/files/utils.js ***!
+        \****************************/
+
+/*!****************************!*\
+        !*** ./src/persmission.js ***!
+        \****************************/
+
+/*!****************************!*\
+        !*** ./src/users/index.js ***!
+        \****************************/
+
+/*!****************************!*\
+        !*** ./src/users/roles.js ***!
+        \****************************/
+
+/*!****************************!*\
+        !*** ./src/users/utils.js ***!
+        \****************************/
+
+/*!*****************************!*\
+        !*** ./src/bl/constants.js ***!
+        \*****************************/
+
+/*!*****************************!*\
+        !*** ./src/device/index.js ***!
+        \*****************************/
+
+/*!******************************!*\
+        !*** ./src/logging/index.js ***!
+        \******************************/
+
+/*!******************************!*\
+        !*** ./src/request/index.js ***!
+        \******************************/
+
+/*!*******************************!*\
+        !*** ./src/commerce/index.js ***!
+        \*******************************/
+
+/*!*******************************!*\
+        !*** ./src/counters/index.js ***!
+        \*******************************/
+
+/*!*******************************!*\
+        !*** ./src/data/geo/point.js ***!
+        \*******************************/
+
+/*!*******************************!*\
+        !*** ./src/logging/logger.js ***!
+        \*******************************/
+
+/*!*******************************!*\
+        !*** ./src/rso/connection.js ***!
+        \*******************************/
+
+/*!********************************!*\
+        !*** ./src/messaging/index.js ***!
+        \********************************/
+
+/*!*********************************!*\
+        !*** ./src/counters/counter.js ***!
+        \*********************************/
+
+/*!*********************************!*\
+        !*** ./src/data/geo/polygon.js ***!
+        \*********************************/
+
+/*!*********************************!*\
+        !*** ./src/data/persmission.js ***!
+        \*********************************/
+
+/*!*********************************!*\
+        !*** ./src/data/rt-handlers.js ***!
+        \*********************************/
+
+/*!**********************************!*\
+        !*** ./src/data/geo/geometry.js ***!
+        \**********************************/
+
+/*!**********************************!*\
+        !*** ./src/files/persmission.js ***!
+        \**********************************/
+
+/*!**********************************!*\
+        !*** ./src/local-cache/index.js ***!
+        \**********************************/
+
+/*!***********************************!*\
+        !*** (webpack)/buildin/global.js ***!
+        \***********************************/
+
+/*!***********************************!*\
+        !*** ./src/bl/custom-services.js ***!
+        \***********************************/
+
+/*!***********************************!*\
+        !*** ./src/data/geo/constants.js ***!
+        \***********************************/
+
+/*!***********************************!*\
+        !*** ./src/unit-of-work/index.js ***!
+        \***********************************/
+
+/*!***********************************!*\
+        !*** ./src/users/social/index.js ***!
+        \***********************************/
+
+/*!************************************!*\
+        !*** ./src/data/geo/linestring.js ***!
+        \************************************/
+
+/*!************************************!*\
+        !*** ./src/data/geo/wkt-parser.js ***!
+        \************************************/
+
+/*!***************************************!*\
+        !*** ./src/unit-of-work/constants.js ***!
+        \***************************************/
+
+/*!***************************************!*\
+        !*** ./src/unit-of-work/op-result.js ***!
+        \***************************************/
+
+/*!***************************************!*\
+        !*** ./src/users/social/container.js ***!
+        \***************************************/
+
+/*!****************************************!*\
+        !*** ./src/data/data-query-builder.js ***!
+        \****************************************/
+
+/*!****************************************!*\
+        !*** ./src/data/geo/wkt-to-geojson.js ***!
+        \****************************************/
+
+/*!****************************************!*\
+        !*** ./src/messaging/channel/index.js ***!
+        \****************************************/
+
+/*!****************************************!*\
+        !*** ./src/messaging/helpers/index.js ***!
+        \****************************************/
+
+/*!*****************************************!*\
+        !*** ./src/data/geo/geo-constructor.js ***!
+        \*****************************************/
+
+/*!*****************************************!*\
+        !*** ./src/data/geo/geo-json-parser.js ***!
+        \*****************************************/
+
+/*!*****************************************!*\
+        !*** ./src/data/group-query-builder.js ***!
+        \*****************************************/
+
+/*!*****************************************!*\
+        !*** ./src/data/json-update-builder.js ***!
+        \*****************************************/
+
+/*!******************************************!*\
+        !*** ./src/local-cache/local-storage.js ***!
+        \******************************************/
+
+/*!******************************************!*\
+        !*** ./src/unit-of-work/json-adapter.js ***!
+        \******************************************/
+
+/*!********************************************!*\
+        !*** ./src/local-cache/virtual-storage.js ***!
+        \********************************************/
+
+/*!*********************************************!*\
+        !*** ./src/messaging/helpers/body-parts.js ***!
+        \*********************************************/
+
+/*!*************************************************!*\
+        !*** ./src/messaging/helpers/email-envelope.js ***!
+        \*************************************************/
+
+/*!**************************************************!*\
+        !*** ./src/data/geo/spatial-reference-system.js ***!
+        \**************************************************/
+
+/*!**************************************************!*\
+        !*** ./src/data/load-relations-query-builder.js ***!
+        \**************************************************/
+
+/*!**************************************************!*\
+        !*** ./src/messaging/helpers/publish-options.js ***!
+        \**************************************************/
+
+/*!***************************************************!*\
+        !*** ./src/messaging/helpers/delivery-options.js ***!
+        \***************************************************/
+
+/*!****************************************************!*\
+        !*** ./node_modules/@babel/runtime/helpers/get.js ***!
+        \****************************************************/
+
+/*!*****************************************************!*\
+        !*** ./node_modules/regenerator-runtime/runtime.js ***!
+        \*****************************************************/
+
+/*!*******************************************************!*\
+        !*** ./node_modules/@babel/runtime/helpers/typeof.js ***!
+        \*******************************************************/
+
+/*!*******************************************************!*\
+        !*** ./src/unit-of-work/op-result-value-reference.js ***!
+        \*******************************************************/
+
+/*!********************************************************!*\
+        !*** ./node_modules/@babel/runtime/helpers/extends.js ***!
+        \********************************************************/
+
+/*!********************************************************!*\
+        !*** ./node_modules/@babel/runtime/helpers/toArray.js ***!
+        \********************************************************/
+
+/*!*********************************************************!*\
+        !*** ./node_modules/@babel/runtime/helpers/inherits.js ***!
+        \*********************************************************/
+
+/*!*********************************************************!*\
+        !*** ./src/messaging/helpers/publish-options-header.js ***!
+        \*********************************************************/
+
+/*!**********************************************************!*\
+        !*** ./node_modules/@babel/runtime/helpers/construct.js ***!
+        \**********************************************************/
+
+/*!**********************************************************!*\
+        !*** ./node_modules/@babel/runtime/regenerator/index.js ***!
+        \**********************************************************/
+
+/*!************************************************************!*\
+        !*** ./node_modules/@babel/runtime/helpers/createClass.js ***!
+        \************************************************************/
+
+/*!**************************************************************!*\
+        !*** ./node_modules/@babel/runtime/helpers/slicedToArray.js ***!
+        \**************************************************************/
+
+/*!**************************************************************!*\
+        !*** ./node_modules/@babel/runtime/helpers/superPropBase.js ***!
+        \**************************************************************/
+
+/*!***************************************************************!*\
+        !*** ./node_modules/@babel/runtime/helpers/arrayWithHoles.js ***!
+        \***************************************************************/
+
+/*!***************************************************************!*\
+        !*** ./node_modules/@babel/runtime/helpers/classCallCheck.js ***!
+        \***************************************************************/
+
+/*!***************************************************************!*\
+        !*** ./node_modules/@babel/runtime/helpers/defineProperty.js ***!
+        \***************************************************************/
+
+/*!***************************************************************!*\
+        !*** ./node_modules/@babel/runtime/helpers/getPrototypeOf.js ***!
+        \***************************************************************/
+
+/*!***************************************************************!*\
+        !*** ./node_modules/@babel/runtime/helpers/setPrototypeOf.js ***!
+        \***************************************************************/
+
+/*!****************************************************************!*\
+        !*** ./node_modules/@babel/runtime/helpers/iterableToArray.js ***!
+        \****************************************************************/
+
+/*!****************************************************************!*\
+        !*** ./node_modules/@babel/runtime/helpers/nonIterableRest.js ***!
+        \****************************************************************/
+
+/*!****************************************************************!*\
+        !*** ./node_modules/@babel/runtime/helpers/wrapNativeSuper.js ***!
+        \****************************************************************/
+
+/*!*****************************************************************!*\
+        !*** ./node_modules/@babel/runtime/helpers/arrayLikeToArray.js ***!
+        \*****************************************************************/
+
+/*!*****************************************************************!*\
+        !*** ./node_modules/@babel/runtime/helpers/asyncToGenerator.js ***!
+        \*****************************************************************/
+
+/*!*****************************************************************!*\
+        !*** ./node_modules/@babel/runtime/helpers/isNativeFunction.js ***!
+        \*****************************************************************/
+
+/*!******************************************************************!*\
+        !*** ./node_modules/@babel/runtime/helpers/arrayWithoutHoles.js ***!
+        \******************************************************************/
+
+/*!******************************************************************!*\
+        !*** ./node_modules/@babel/runtime/helpers/nonIterableSpread.js ***!
+        \******************************************************************/
+
+/*!******************************************************************!*\
+        !*** ./node_modules/@babel/runtime/helpers/toConsumableArray.js ***!
+        \******************************************************************/
+
+/*!*********************************************************************!*\
+        !*** ./node_modules/@babel/runtime/helpers/iterableToArrayLimit.js ***!
+        \*********************************************************************/
+
+/*!**********************************************************************!*\
+        !*** ./node_modules/@babel/runtime/helpers/assertThisInitialized.js ***!
+        \**********************************************************************/
+
+/*!**********************************************************************!*\
+        !*** ./node_modules/@babel/runtime/helpers/interopRequireDefault.js ***!
+        \**********************************************************************/
+
+/*!**********************************************************************!*\
+        !*** ./node_modules/backendless-request/dist/backendless-request.js ***!
+        \**********************************************************************/
+
+/*!************************************************************************!*\
+        !*** ./node_modules/@babel/runtime/helpers/objectWithoutProperties.js ***!
+        \************************************************************************/
+
+/*!*************************************************************************!*\
+        !*** ./node_modules/@babel/runtime/helpers/applyDecoratedDescriptor.js ***!
+        \*************************************************************************/
+
+/*!*************************************************************************!*\
+        !*** ./node_modules/@babel/runtime/helpers/isNativeReflectConstruct.js ***!
+        \*************************************************************************/
+
+/*!**************************************************************************!*\
+        !*** ./node_modules/@babel/runtime/helpers/possibleConstructorReturn.js ***!
+        \**************************************************************************/
+
+/*!**************************************************************************!*\
+        !*** ./node_modules/backendless-rt-client/dist/backendless-rt-client.js ***!
+        \**************************************************************************/
+
+/*!***************************************************************************!*\
+        !*** ./node_modules/@babel/runtime/helpers/unsupportedIterableToArray.js ***!
+        \***************************************************************************/
+
+/*!*****************************************************************************!*\
+        !*** ./node_modules/@babel/runtime/helpers/objectWithoutPropertiesLoose.js ***!
+        \*****************************************************************************/
+
+/** @license React v0.20.2
+ * scheduler.production.min.js
+ *
+ * Copyright (c) Facebook, Inc. and its affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+/** @license React v16.13.1
+ * react-is.production.min.js
+ *
+ * Copyright (c) Facebook, Inc. and its affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+/** @license React v17.0.2
+ * react-dom.production.min.js
+ *
+ * Copyright (c) Facebook, Inc. and its affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+/** @license React v17.0.2
+ * react-is.production.min.js
+ *
+ * Copyright (c) Facebook, Inc. and its affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+/** @license React v17.0.2
+ * react-jsx-runtime.production.min.js
+ *
+ * Copyright (c) Facebook, Inc. and its affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+/** @license React v17.0.2
+ * react.production.min.js
+ *
+ * Copyright (c) Facebook, Inc. and its affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
