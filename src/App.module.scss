@@ -4,15 +4,20 @@ $pages-color-bcg: rgba(99, 59, 59, 0.8);
 $sidebar-color: rgb(67, 67, 255);
 $pages-color: rgb(99, 59, 59);
 
+// sizes
+$header-height: 45px;
+$gtc_min-width_915: 1fr 550px 1fr;
+$gtc_max-width_915: 550px 1fr;
+
 .app {
    position: relative;
-   padding-top: 40px;
+   padding-top: $header-height;
 
    .headerContainer,
    .sidebarsContainer,
    .pagesContainer {
       display: grid;
-      grid-template-columns: 1fr 550px 1fr;
+      grid-template-columns: $gtc_min-width_915;
 
       width: 100%;
    }
@@ -23,26 +28,29 @@ $pages-color: rgb(99, 59, 59);
       top: 0;
       z-index: 3;
 
-      height: 40px;
+      height: $header-height;
 
-      background-color: $header-color;
+      background-color: var(--main-color);
+      box-shadow: 0 1px 2px 1px rgb(0 0 0 / 14%);
    }
 
    .sidebarsContainer {
       position: fixed;
       left: 0;
-      top: 40px;
+      top: $header-height;
       z-index: 1;
 
-      background-color: $sidebar-color-bcg;
+      min-height: calc(100vh - $header-height);
+
+      background-color: var(--global-bcg-color);
    }
 
    .pagesContainer {
       position: relative;
 
-      height: 1000px;
+      min-height: calc(100vh - $header-height);
 
-      background-color: $pages-color-bcg;
+      background-color: var(--global-bcg-color);
    }
 
    .page {
@@ -51,25 +59,34 @@ $pages-color: rgb(99, 59, 59);
 
       grid-column: 2/3;
 
-      height: 100%;
       width: 100%;
+      height: 500px;
+      padding: var(--content-padding);
 
-      background-color: $pages-color;
+      background-color: var(--main-color);
+      border-bottom: 1px solid var(--border-color);
    }
 }
 
 // media queries
-@media (max-width: 850px) {
+@media (max-width: 950px) {
    .app {
-      .headerContainer,
       .sidebarsContainer,
       .pagesContainer {
-         grid-template-columns: 180px 1fr;
+         grid-template-columns: $gtc_max-width_915;
+      }
+
+      .headerContainer {
+         display: block;
+      }
+
+      .page {
+         grid-column: 1 / 2;
       }
    }
 }
 
-@media (max-width: 767px) {
+@media (max-width: 750px) {
    .app {
       .sidebarsContainer {
          display: none;

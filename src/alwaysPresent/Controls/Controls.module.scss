@@ -1,0 +1,51 @@
+.controls {
+   width: 150px;
+   margin: 35px 0 0 auto;
+
+   .controlsList {
+      .controlsListItem {
+         font-size: var(--controls-fz);
+         font-weight: var(--controls-fw);
+         line-height: var(--controls-lh);
+
+         &:not(:first-of-type) {
+            margin-top: 15px;
+         }
+      }
+   }
+
+   .burger {
+      display: none;
+   }
+}
+
+// media queries
+@media (max-width: 950px) {
+   .controls {
+      width: auto;
+      margin: 0;
+
+      .controlsList {
+         .controlsListItem {
+            display: inline-block;
+
+            &:not(:first-of-type) {
+               margin-top: 0;
+               margin-left: 10px;
+            }
+         }
+      }
+   }
+}
+
+@media (max-width: 550px) {
+   .controls {
+      .controlsList {
+         display: none;
+      }
+
+      .burger {
+         display: block;
+      }
+   }
+}

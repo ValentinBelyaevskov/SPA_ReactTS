@@ -5,7 +5,7 @@
 
    --border-color: rgba(219, 219, 219, 0.4);
 
-   --theme-color: #8A2FFF;
+   --theme-color: #8a2fff;
    --theme-active: #6f23d1;
    --theme-hover: #7121da;
    --theme-hover-shadow: #7c2ae688;
@@ -26,5 +26,13 @@
    --main-fz: 1.3rem;
    --secondary-fz: 1.2rem;
    --interface-fz: 1.6rem;
+
+   --controls-fz: 1.6rem;
+   --controls-fw: 300;
+   --controls-lh: 2rem;
+
    --ff: "Roboto", sans-serif;
+
+   // sizes
+   --content-padding: 0 20px;
 }

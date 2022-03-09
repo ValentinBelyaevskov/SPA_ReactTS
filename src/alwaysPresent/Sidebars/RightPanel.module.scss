@@ -1,15 +1,16 @@
 .rightPanel {
-   height: 100px;
-
-   background-color: rgb(67, 67, 255);
+   height: 100%;
+   padding-right: 20px;
+   
+   background-color: var(--main-color);
+   border-left: 1px solid var(--border-color);
 
    grid-column: 3 / 4;
 }
 
-
 // media queries
-@media (max-width: 850px) {
+@media (max-width: 950px) {
    .rightPanel {
-      display: none;
+      grid-column: 2 / 3;
    }
 }
