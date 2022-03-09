@@ -4,9 +4,9 @@
 
    .controlsList {
       .controlsListItem {
-         font-size: var(--controls-fz);
-         font-weight: var(--controls-fw);
-         line-height: var(--controls-lh);
+         font-size: 1.6rem;
+         font-weight: 300;
+         line-height: 2rem;
 
          &:not(:first-of-type) {
             margin-top: 15px;

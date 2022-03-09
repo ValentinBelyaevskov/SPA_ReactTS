@@ -1,5 +1,6 @@
 import { Header, LeftPanel, RightPanel } from './alwaysPresent'
 import styles from './App.module.scss'
+import { Profile } from './pages'
 
 
 type Props = {
@@ -17,9 +18,9 @@ const App = (props: Props) => {
             <RightPanel />
          </div>
          <div className={styles.pagesContainer}>
-            <div className={styles.page}>
-               Page
-            </div>
+            {/* <div className={styles.page}>
+            </div> */}
+            <Profile />
          </div>
       </div>
    )

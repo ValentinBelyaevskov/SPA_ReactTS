@@ -24,3 +24,23 @@ form {
   user-select: none; /* Non-prefixed version, currently
                                   not supported by any browser */
 }
+
+.page {
+  position: absolute;
+  z-index: 2;
+
+  grid-column: 2/3;
+
+  width: 100%;
+
+  background-color: var(--global-bcg-color);
+  border-bottom: 1px solid var(--border-color);
+}
+
+
+// media queries
+@media (max-width: 950px) {
+  .page {
+    grid-column: 1 / 2;
+  }
+}

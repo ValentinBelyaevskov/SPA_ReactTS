@@ -15,5 +15,5 @@ export const removeExtraSpaces = (string: string): string => {
       }
    })
 
-   return wordArr.join(" ")
+   return wordArr.join(" ").trim()
 }

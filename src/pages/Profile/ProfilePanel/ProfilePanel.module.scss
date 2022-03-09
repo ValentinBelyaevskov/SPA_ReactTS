@@ -1,0 +1,25 @@
+.profilePanel {
+   display: flex;
+   justify-content: start;
+   align-items: center;
+
+   padding: var(--content-padding);
+   padding-top: 30px;
+   padding-bottom: 20px;
+
+   background-color: var(--main-color);
+
+   .avatar {
+      margin-right: 30px;
+   }
+
+   .profileInfo {
+      .username {
+         margin-bottom: 15px;
+
+         line-height: 2.1rem;
+         font-size: 1.6rem;
+         font-weight: 500;
+      }
+   }
+}
