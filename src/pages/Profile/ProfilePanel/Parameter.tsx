@@ -3,21 +3,22 @@ import { splitStringIntoWords } from '../../../functions/splitStringIntoWords';
 import { useRef, useEffect, useState } from 'react';
 import getValueWithoutMeasurer from '../../../functions/getValueWithoutMeasurer';
 import { shortenTheString } from '../../../functions/shortenTheString';
+import { Popup, usePopupElement } from '../../../hooks';
 
 
 type Props = {
    parameterName: string
    parameterValue: string
+   setShowPropmpt: (showPropmpt: boolean) => void
+   popup: Popup
 }
 
 
 const Parameter = (props: Props) => {
    // consts
-   const notVisibleValue: React.RefObject<HTMLDivElement> = useRef<HTMLDivElement>(null)
-   const prompt: React.RefObject<HTMLDivElement> = useRef<HTMLDivElement>(null)
    const [parameterValue, setParameterValue] = useState<string>(props.parameterValue)
+   const notVisibleValue: React.RefObject<HTMLDivElement> = useRef<HTMLDivElement>(null)
    const [isTheStringLong, setIsTheStringLong] = useState<boolean>(false)
-   const [needToShowPrompt, setNeedToShowPrompt] = useState<boolean>(false)
 
 
    // effects
@@ -30,58 +31,61 @@ const Parameter = (props: Props) => {
          }
          notVisibleValue.current.style.display = "none"
       }
-
    }, [notVisibleValue])
 
    useEffect(() => {
-      if (needToShowPrompt) {
-         setTimeout(() => {
-            prompt.current!.style.opacity = "1"
-         }, 0)
+      if (props.popup.needToShowElement && isTheStringLong) {
+         props.setShowPropmpt(true)
+      } else {
+         props.setShowPropmpt(false)
       }
-   }, [needToShowPrompt])
+   }, [props.popup.needToShowElement, isTheStringLong])
 
 
    // functions
-   const copyValue = async () => {
+   const copyValue = async (): Promise<void> => {
       navigator.clipboard.writeText(props.parameterValue)
    }
 
-   const showPrompt = () => {
-      setNeedToShowPrompt(true)
+   const showPrompt = (): void => {
+      props.popup.showElementWithTimeout(500)
    }
 
-   const hidePrompt = () => {
-      setNeedToShowPrompt(false)
+   const hidePrompt = (): void => {
+      props.popup.hideElementWithTimeout(0)
    }
 
 
    return (
       <div className={styles.parameter}>
          <div className={styles.parameterName}>
-            {splitStringIntoWords(props.parameterName, true) + ":"}
+            {splitStringIntoWords(props.parameterName, true) + " :"}
          </div>
          {
             isTheStringLong
-               ? (<div
-                  className={`${styles.parameterValue} unselectable ${styles.selectedValue}`}
-                  onMouseOver={showPrompt}
-                  onMouseOut={hidePrompt}
-                  onDoubleClick={copyValue}
-               >
-                  {parameterValue}
-               </div>)
-               : (<div className={styles.parameterValue}>
-                  {parameterValue}
-               </div>)
+               ? (
+                  <div
+                     className={`${styles.parameterValue} unselectable ${styles.selectedValue}`}
+                     onMouseEnter={showPrompt}
+                     onMouseLeave={hidePrompt}
+                     onDoubleClick={copyValue}
+                  >
+                     {parameterValue}
+                  </div>
+               )
+               : (
+                  <div className={styles.parameterValue}>
+                     {parameterValue}
+                  </div>
+               )
          }
-         {
-            needToShowPrompt && isTheStringLong
+         {/* {
+            popup.needToShowElement && isTheStringLong
                ? (<div ref={prompt} className={styles.prompt}>
-                  double click to copy the parameter value
+                  Double click to copy the parameter value
                </div>)
                : undefined
-         }
+         } */}
          <div className={styles.notVisibleValue} ref={notVisibleValue}>
             {props.parameterValue}
          </div>
