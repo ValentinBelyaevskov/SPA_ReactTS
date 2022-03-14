@@ -20,7 +20,12 @@ const Controls = (props: Props) => {
    return (
       <div className={styles.controls}>
          <ul className={styles.controlsList}>
-            {pagesList.map((item: string) => <li key={item} className={styles.controlsListItem}>{item}</li>)}
+            {
+               pagesList.map((item: string) => <li key={item} className={styles.controlsListItem}>
+                  <img className={styles.buttonIcon} src={`./icons/${item.toLocaleLowerCase()}.svg`} alt={`${item} page icon`} />
+                  {item}
+               </li>)
+            }
          </ul>
          <div className={styles.burger}>
             burger

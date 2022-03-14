@@ -1,5 +1,5 @@
 .controls {
-   width: 150px;
+   width: 170px;
    margin: 35px 0 0 auto;
 
    .controlsList {
@@ -10,6 +10,11 @@
 
          &:not(:first-of-type) {
             margin-top: 15px;
+         }
+
+         .buttonIcon {
+            margin-right: 12px;
+            margin-top: 1px;
          }
       }
    }
