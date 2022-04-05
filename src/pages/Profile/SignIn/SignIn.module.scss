@@ -1,0 +1,128 @@
+.signIn {
+   position: relative;
+
+   .form {
+      width: 350px;
+      position: absolute;
+      margin-left: 50%;
+      transform: translateX(-50%);
+      padding-bottom: 30px;
+   }
+
+   .title {
+      margin: 0px 25px 25px 25px;
+
+      text-align: center;
+      font-size: 20px;
+   }
+
+   .inputFields {
+      .inputContainer:not(:first-of-type) {
+         margin-top: 17px;
+      }
+
+      .rememberMeAndLoginFlex {
+         width: 100%;
+         margin-top: 17px;
+         display: flex;
+         align-items: center;
+         justify-content: space-between;
+      }
+
+      .input {
+         display: block;
+         padding: 8px 15px;
+
+         border: solid 1px rgb(211, 211, 211);
+         border-radius: 5px;
+
+         color: rgb(58, 58, 58);
+         font-weight: 500;
+
+         width: calc(100% - (15px * 2));
+
+         &::placeholder {
+            color: rgb(156, 156, 156);
+         }
+
+         &:focus {
+            outline: solid 2px rgba(0, 102, 255, 0.61);
+         }
+      }
+
+      .validationError {
+         margin-top: 8px;
+         margin-left: 15px;
+
+         font-size: 13px;
+         color: rgb(255, 0, 0);
+      }
+
+      .checkbox {
+         display: none;
+
+         &:checked + .checkboxLabel {
+            &:before {
+               background-image: url("../../../../public/image/checked.svg");
+               background-size: 14px 15px;
+               background-position-x: center;
+               background-position-y: center;
+               background-repeat: no-repeat;
+            }
+         }
+      }
+
+      .checkboxLabel {
+         line-height: 20px;
+
+         &:before {
+            content: "";
+
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: solid 2px rgba(0, 60, 255, 0.6);
+            border-radius: 5px;
+            margin-right: 10px;
+            vertical-align: middle;
+            transition-property: border;
+            transition-duration: 0.1s;
+         }
+
+         transition-property: color;
+         transition-duration: 0.1s;
+
+         &:hover {
+            cursor: pointer;
+            color: rgba(0, 0, 0, 0.65);
+
+            &:before {
+               border: solid 2px rgba(0, 60, 255, 0.9);
+            }
+         }
+      }
+   }
+
+   .createAccount {
+      .createAccountSubtitle {
+         font-size: 14px;
+         line-height: 22px;
+         margin: 0;
+         margin-top: 20px;
+      }
+
+      .createAccountButtons {
+         margin-top: 15px;
+
+         display: flex;
+         width: 100%;
+         justify-content: space-between;
+
+         .buttonContainer {
+            &:not(:last-of-type) {
+               margin-right: 15px;
+            }
+         }
+      }
+   }
+}

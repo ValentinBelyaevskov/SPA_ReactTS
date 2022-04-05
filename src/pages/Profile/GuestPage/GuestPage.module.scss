@@ -1,0 +1,18 @@
+.guestModePage {
+   .subscription {
+      width: 350px;
+      margin: 0 auto;
+
+      line-height: 1.6;
+      font-size: 16px;
+   }
+
+   .signInButtons {
+      display: flex;
+      justify-content: space-between;
+
+      margin: 20px auto 0 auto;
+
+      width: 350px;
+   }
+}

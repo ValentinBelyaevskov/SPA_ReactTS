@@ -1,0 +1,54 @@
+.controlsListItem {
+   padding: 7px 10px;
+
+   font-size: 1.5rem;
+   font-weight: 300;
+   line-height: 2rem;
+
+   .buttonIcon {
+      margin-right: 9px;
+      margin-top: 2px;
+   }
+
+   .buttonName {
+   }
+
+   &:hover {
+      cursor: pointer;
+
+      border-radius: 5px;
+
+      background-color: rgb(238, 238, 238);
+   }
+}
+
+// media queries
+@media (max-width: 950px) {
+   .controlsListItem {
+      display: inline-block;
+
+      padding: 5px 13px;
+
+      .buttonIcon {
+         margin: 2px 8px 0 8px;
+
+         width: 18px;
+      }
+
+      .buttonName {
+         display: none;
+      }
+   }
+}
+
+@media (max-width: 600px) {
+   .controlsListItem {
+      display: block;
+
+      padding: 7px 14px 7px 6px;
+
+      .buttonName {
+         display: inline;
+      }
+   }
+}

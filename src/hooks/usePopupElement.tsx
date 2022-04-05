@@ -70,7 +70,6 @@ export const usePopupElement = (elementRef: React.RefObject<HTMLDivElement>, exp
       setIsThereTransitionendListener(true)
 
       if (ref.current) {
-         console.log("setCurrentOpacity")
          const currentOpacity = getComputedStyle(ref.current!).opacity
          ref.current!.style.opacity = currentOpacity
       }

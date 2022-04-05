@@ -1,46 +1,50 @@
+// * styles
 html {
-  font-size: 10px;
+   font-size: 10px;
 }
 
 body {
-  background-color: var(--global-bcg-color);
+   background-color: var(--global-bcg-color);
 }
 
 body,
 form {
-  margin: 0;
+   margin: 0;
 
-  box-sizing: border-box;
+   box-sizing: border-box;
 
-  font-family: var(--ff);
+   font-family: var(--ff);
 }
 
 .unselectable {
-  -webkit-touch-callout: none; /* iOS Safari */
-  -webkit-user-select: none; /* Chrome/Safari/Opera */
-  -khtml-user-select: none; /* Konqueror */
-  -moz-user-select: none; /* Firefox */
-  -ms-user-select: none; /* Internet Explorer/Edge */
-  user-select: none; /* Non-prefixed version, currently
+   -webkit-touch-callout: none; /* iOS Safari */
+   -webkit-user-select: none; /* Chrome/Safari/Opera */
+   -khtml-user-select: none; /* Konqueror */
+   -moz-user-select: none; /* Firefox */
+   -ms-user-select: none; /* Internet Explorer/Edge */
+   user-select: none; /* Non-prefixed version, currently
                                   not supported by any browser */
 }
 
+// general
 .page {
-  position: absolute;
-  z-index: 2;
+   position: absolute;
+   z-index: 1;
 
-  grid-column: 2/3;
+   grid-column: 2/3;
+   width: 100%;
 
-  width: 100%;
-
-  background-color: var(--global-bcg-color);
-  // border-bottom: 1px solid var(--border-color);
+   background-color: var(--global-bcg-color);
 }
 
+.pagePart {
+   background-color: var(--main-color);
+   padding: var(--content-padding);
+}
 
 // media queries
 @media (max-width: 950px) {
-  .page {
-    grid-column: 1 / 2;
-  }
+   .page {
+      grid-column: 1 / 2;
+   }
 }

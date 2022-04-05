@@ -17,7 +17,7 @@
    .parameterValue {
       flex: 1 1 60%;
 
-      padding: 7px 0;
+      padding: 5px 0;
 
       color: var(--gray-fontColor);
    }
@@ -38,5 +38,28 @@
       font-size: 13px;
       font-weight: normal;
       opacity: 0;
+   }
+
+   .prompt {
+      position: absolute;
+      z-index: 2;
+      bottom: 22px;
+      right: 0;
+
+      word-wrap: break-word;
+
+      max-width: 350px;
+      padding: 5px 12px;
+      border-radius: 5px;
+
+      font-weight: 300;
+      font-size: 13px;
+      color: white;
+
+      background-color: var(--theme-prompt-color);
+
+      opacity: 0;
+      transition-property: opacity;
+      transition-duration: 0.3s;
    }
 }

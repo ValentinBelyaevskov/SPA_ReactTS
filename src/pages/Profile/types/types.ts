@@ -16,6 +16,8 @@ export type Profile = {
    avatar: string
    objectId: string
    password?: string
+   education?: string
+   dateOfBirth?: number | null
 }
 
 export type ProfileMode = "signIn"
@@ -47,18 +49,22 @@ export type UpdateParams = {
    profilePasswords?: {
       currentPassword: string
       newPassword: string
-      [prop: string]: string
+      education?: string
+      dateOfBirth?: number | null
+      [prop: string]: string | number | null | undefined
    },
    callback?: () => void
 }
 
 export type UpdatedProfile = {
-   username ?: string
-   email ?: string
-   location ?: string
-   objectId ?: string
+   username?: string
+   email?: string
+   location?: string
+   objectId?: string
    profileAvatar?: string
-   [prop: string]: string | undefined
+   education?: string
+   dateOfBirth?: number | null
+   [prop: string]: string | number | null | undefined
 }
 
 export type CreateAccountArg = {

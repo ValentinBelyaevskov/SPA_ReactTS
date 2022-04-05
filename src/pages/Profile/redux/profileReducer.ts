@@ -16,6 +16,8 @@ const initialState: ProfileState = {
       location: "",
       avatar: "./image/defaultAvatar.jpg",
       objectId: "",
+      education: "",
+      dateOfBirth: null,
    },
    profileMode: "signIn",
    profileInfoMode: "view",
@@ -67,7 +69,17 @@ const profileSlice = createSlice({
 
       resetProfileInfo: (state, action: PayloadAction<ProfileMode>) => {
          for (let key in state.profileInfo) {
-            state.profileInfo[key as keyof Profile] = ""
+            if (typeof state.profileInfo[key as keyof Profile] === 'string') {
+               state.profileInfo = {
+                  ...state.profileInfo,
+                  [key as keyof Profile]: ""
+               }
+            } else if (typeof state.profileInfo[key as keyof Profile] === 'number') {
+               state.profileInfo = {
+                  ...state.profileInfo,
+                  [key as keyof Profile]: null
+               }
+            }
             if (key === "avatar") state.profileInfo.avatar = state.profileInfo.avatar
          }
          state.profileMode = action.payload
@@ -172,6 +184,7 @@ const profileSlice = createSlice({
                state.loadInfo.loading = false
                state.loadInfo.loaded = false
                state.loadInfo.error = action.payload
+               console.log("action.payload: ", action.payload)
                if (action.payload === "Unable to login. User account is locked out due to too many failed logins.") {
                   state.loadInfo.errorType = "manyFailedLoginAttempts"
                } else if (action.payload === "User cannot login - email address must be confirmed first") {
@@ -250,7 +263,8 @@ export const getProfileProps = createAsyncThunk(
          } else if (objectId) {
             const profile: Profile = await Backendless.Data.of('Users').findById(`${objectId}`)
             const avatar = await fetch(`${profile.avatar}`)
-            if (!avatar.ok) {
+            // console.log("profile.avatar: ", profile.avatar)
+            if (!avatar.ok || !profile.avatar) {
                profile.avatar = "";
             }
 
@@ -333,22 +347,22 @@ export const uploadFile = createAsyncThunk(
    "profile/uploadFile",
    async (uploadFileParams: UploadFileParams, { rejectWithValue }) => {
       try {
-         let path: string;
-
-         if (uploadFileParams.typeOfFile === "avatar") {
-            path = "image/user-avatar"
-         } else {
-            throw Error("Wrong file type specified")
+         if (uploadFileParams.typeOfFile !== "avatar") {
+            throw Error("Wrong file type specified");
          }
 
-         const avatar = separatePatnAndName(uploadFileParams.avatar)[1]
-         cloudinary.deleteImage(avatar)
 
          const response = await cloudinary.uploadImage(uploadFileParams.file, uploadFileParams.objectId)
 
+         console.log("upload response: ", response)
          if (response && uploadFileParams.callback) {
-            uploadFileParams.callback()
-            return response
+            const avatar = separatePatnAndName(uploadFileParams.avatar)[1];
+            cloudinary.deleteImage(avatar);
+
+            uploadFileParams.callback();
+            return response;
+         } else {
+            throw Error("Upload error")
          }
 
       } catch (err: any) {
