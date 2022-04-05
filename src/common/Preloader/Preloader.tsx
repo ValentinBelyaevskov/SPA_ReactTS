@@ -3,7 +3,7 @@ import styles from './Preloader.module.scss'
 
 // types
 type Props = {
-   containerStyle: {
+   containerStyle?: {
       [prop: string]: string
    }
 }
@@ -12,7 +12,7 @@ type Props = {
 const Preloader = (props: Props) => {
    return (
       <div className={styles.preloaderContainer} style={props.containerStyle}>
-         <img src="./svg/preloader.svg"/>
+         <img src="./animatedIcons/preloader1.svg"/>
       </div>
    )
 }

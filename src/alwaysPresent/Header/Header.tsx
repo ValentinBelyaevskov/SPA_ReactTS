@@ -1,5 +1,7 @@
 import styles from './Header.module.scss'
 import Controls from '../Controls/Controls';
+import SearchForm from './SearchForm';
+import { useState } from 'react';
 
 
 type Props = {
@@ -7,13 +9,18 @@ type Props = {
 
 
 const Header = (props: Props) => {
+   const [showBurgerMenu, setShowBurgerMenu] = useState<boolean>(false);
+
+   // const []
+
+
    return (
       <div className={styles.header}>
          <div className={styles.controls}>
             <Controls />
          </div>
          <div className={styles.headerOptions}>
-            Header search
+            <SearchForm />
          </div>
       </div>
    )

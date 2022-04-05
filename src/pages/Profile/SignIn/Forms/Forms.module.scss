@@ -1,0 +1,153 @@
+.form {
+   margin: 0 auto;
+
+   width: 350px;
+
+   padding-top: 30px;
+   padding-bottom: 30px;
+
+   .error,
+   .prompt {
+      font-size: 14px;
+      line-height: 2rem;
+      margin: 0 0 15px 0;
+   }
+
+   .error,
+   .redPrompt {
+      color: red;
+   }
+
+   .prompt {
+      line-height: 22px;
+      margin: 0 0 15px 0;
+      color: var(--theme-color);
+      font-weight: 500;
+      margin: 0;
+   }
+
+   .title {
+      margin: 0px 25px 20px 25px;
+
+      text-align: center;
+      font-size: 20px;
+   }
+
+   .resetPasswordInfo {
+      margin-top: 20px;
+   }
+
+   .inputFields {
+      .inputContainer:not(:first-of-type) {
+         margin-top: 17px;
+      }
+
+      .rememberMeAndLoginFlex {
+         width: 100%;
+         margin-top: 17px;
+         display: flex;
+         align-items: center;
+         justify-content: space-between;
+      }
+
+      .input {
+         display: block;
+         padding: 7px 15px;
+
+         border: solid 1px rgb(211, 211, 211);
+         border-radius: 4px;
+
+         color: rgb(58, 58, 58);
+         font-weight: 400;
+         font-size: 12px;
+
+         width: 100%;
+
+         &::placeholder {
+            color: rgb(156, 156, 156);
+         }
+
+         &:focus {
+            border: solid 1px var(--theme-prompt-color);
+            outline: solid 1px var(--theme-prompt-color);
+         }
+      }
+
+      .validationError {
+         margin-top: 8px;
+         margin-left: 15px;
+
+         font-size: 1.3rem;
+         color: rgb(255, 0, 0);
+      }
+
+      .checkbox {
+         display: none;
+
+         &:checked + .checkboxLabel {
+            &:before {
+               background-image: url("../../../../../public/image/checked.svg");
+               background-size: 12px 15px;
+               background-position-x: center;
+               background-position-y: center;
+               background-repeat: no-repeat;
+            }
+         }
+      }
+
+      .checkboxLabel {
+         line-height: 20px;
+         font-size: 14px;
+
+         &:before {
+            content: "";
+            display: inline-block;
+            vertical-align: middle;
+            margin-right: 10px;
+
+            width: 18px;
+            height: 18px;
+            border: solid 2px var(--theme-color);
+            border-radius: 5px;
+
+            transition-property: border;
+            transition-duration: 0.1s;
+         }
+
+         transition-property: color;
+         transition-duration: 0.1s;
+
+         &:hover {
+            cursor: pointer;
+            color: rgba(0, 0, 0, 0.65);
+
+            &:before {
+               border: solid 2px var(--theme-transperent-color);
+            }
+         }
+      }
+   }
+
+   .createAccount {
+      .createAccountSubtitle {
+         font-size: 14px;
+         line-height: 22px;
+         margin: 0;
+         margin-top: 20px;
+      }
+
+      .createAccountButtons {
+         margin-top: 15px;
+
+         display: flex;
+         width: 100%;
+         justify-content: space-between;
+
+         .buttonContainer {
+            &:not(:last-of-type) {
+               margin-right: 15px;
+            }
+         }
+      }
+   }
+}

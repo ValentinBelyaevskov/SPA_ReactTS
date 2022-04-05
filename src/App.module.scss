@@ -26,7 +26,7 @@ $gtc_max-width_915: 550px 1fr;
       position: fixed;
       left: 0;
       top: 0;
-      z-index: 3;
+      z-index: 2;
 
       height: $header-height;
 
@@ -43,6 +43,16 @@ $gtc_max-width_915: 550px 1fr;
       min-height: calc(100vh - $header-height);
 
       background-color: var(--global-bcg-color);
+
+      .pageBackground {
+         position: absolute;
+         height: 4px;
+         width: 100%;
+         
+         grid-column: 2 / 3;
+
+         background-color: var(--main-color);
+      }
    }
 
    .pagesContainer {
@@ -53,19 +63,19 @@ $gtc_max-width_915: 550px 1fr;
       background-color: var(--global-bcg-color);
    }
 
-   .page {
-      position: absolute;
-      z-index: 2;
+   // .page {
+   //    position: absolute;
+   //    z-index: 2;
 
-      grid-column: 2/3;
+   //    grid-column: 2/3;
 
-      width: 100%;
-      height: 500px;
-      padding: var(--content-padding);
+   //    width: 100%;
+   //    height: 500px;
+   //    padding: var(--content-padding);
 
-      background-color: var(--main-color);
-      border-bottom: 1px solid var(--border-color);
-   }
+   //    background-color: var(--main-color);
+   //    border-bottom: 1px solid var(--border-color);
+   // }
 }
 
 
@@ -75,6 +85,12 @@ $gtc_max-width_915: 550px 1fr;
       .sidebarsContainer,
       .pagesContainer {
          grid-template-columns: $gtc_max-width_915;
+      }
+
+      .sidebarsContainer {
+         .pageBackground {
+            grid-column: 1 / 2;
+         }
       }
 
       .headerContainer {

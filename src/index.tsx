@@ -12,7 +12,7 @@ import Backendless from 'backendless'
 
 // init backendless
 Backendless.serverURL = "https://eu-api.backendless.com"
-Backendless.initApp("E2470674-1C5E-D549-FFFA-A5346A974000", "78A034E0-01B7-4D9C-9F1D-D141F5EF2335")
+Backendless.initApp("A61B4FCE-2976-8AE0-FFAA-F678297C5B00", "9A38A26E-D1EF-4883-B778-35017ED7C0C6")
 
 ReactDOM.render(
    <React.StrictMode>
