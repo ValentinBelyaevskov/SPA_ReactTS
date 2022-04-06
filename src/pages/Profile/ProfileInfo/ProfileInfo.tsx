@@ -9,7 +9,9 @@ type Props = {
 
 const ProfileInfo = (props: Props) => {
    return (
-      <div className={styles.profileInfo}>
+      <div
+         className={styles.profileInfo}
+      >
          <ProfilePanel />
          <Wall />
       </div>

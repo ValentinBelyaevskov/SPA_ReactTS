@@ -6,11 +6,11 @@ import { Popup, usePopupElement } from '../../../../hooks';
 import { getProfileInfo, getProfileInfoMode, profileActions } from '../../redux/profileReducer';
 import { Profile } from '../../types/types';
 import { useAppDispatch, useAppSelector } from '../../../../hooks/redux';
-import { splitStringIntoWords } from '../../../../functions';
 import ChangeProfileInfoForm from '../Editors/ChangeProfileInfoForm';
 import ChangePasswordForm from '../Editors/ChangePasswordForm';
 import SignOut from '../Editors/SignOut';
 import ChangeAvatarForm from '../Editors/ChangeAvatarForm';
+import Menu from './Menu';
 
 
 type AvatarWrapperStyle = {
@@ -21,20 +21,20 @@ type AvatarWrapperStyle = {
 type EditMode = "edit" | "changePassword" | "signOut" | "changeAvatar" | false
 
 type PagePartStyle = {
-   paddingTop: "27px",
-} | {}
+   paddingTop?: "27px",
+}
 
 
 const ProfilePanel = () => {
    // consts
-   const dispatch = useAppDispatch();
 
-   const menuButtons: ("edit" | "changePassword" | "signOut")[] = ["edit", "changePassword", "signOut"]
    const avatarWrapperStyle: AvatarWrapperStyle = {
       overflow: 'hidden',
       borderRadius: "0.6rem",
    }
-   
+
+   const dispatch = useAppDispatch();
+   const [showMenuOnClick, setShowMenuOnClick] = useState<boolean>(true)
    const [editMode, setEditMode] = useState<EditMode>(false)
    const [pagePartStyle, setPagePartStyle] = useState<PagePartStyle>({});
    const profileInfo: Profile = useAppSelector(getProfileInfo)
@@ -44,13 +44,13 @@ const ProfilePanel = () => {
       ["location", profileInfo.location],
       ["education", profileInfo.education],
       ["dateOfBirth", profileInfo.dateOfBirth],
-   ]
+   ];
 
-   const menu: React.RefObject<HTMLDivElement> = useRef<HTMLDivElement>(null)
-   const parametersIcon: React.RefObject<HTMLDivElement> = useRef<HTMLDivElement>(null)
+   const menu: React.RefObject<HTMLDivElement> = useRef<HTMLDivElement>(null);
+   const parametersIcon: React.RefObject<HTMLDivElement> = useRef<HTMLDivElement>(null);
 
    // popup elements
-   const popupMenu: Popup = usePopupElement(menu, true)
+   const popupMenu: Popup = usePopupElement(menu, true);
 
 
    // effects
@@ -76,89 +76,78 @@ const ProfilePanel = () => {
 
 
    // funcs
-   const finishEditing: () => void = () => setEditMode(false)
+   const finishEditing: () => void = () => setEditMode(false);
 
    const showMenu = (): void => {
-      popupMenu.showElementWithTimeout(200)
+      popupMenu.showElementWithTimeout(200);
    }
 
    const hideMenu = (): void => {
-      popupMenu.hideElementWithTimeout(200)
+      popupMenu.hideElementWithTimeout(200);
+   }
+
+   const menuIconClickListener = (): void => {
+      if (showMenuOnClick) {
+         popupMenu.hideElementWithTimeout(0);
+         popupMenu.showElementWithTimeout(0);
+         setShowMenuOnClick(false)
+      } else {
+         popupMenu.hideElementWithTimeout(0);
+         setShowMenuOnClick(true);
+      }
    }
 
 
    return (
       <div className={`${styles.profilePanel} pagePart`} style={pagePartStyle}>
-         <CustomImage
-            width='135px'
-            height='135px'
-            additionalClass={styles.avatar}
-            src={profileInfo.avatar ? profileInfo.avatar : "./image/defaultAvatar.jpg"}
-            wrapperStyle={avatarWrapperStyle}
-            onClick={() => setEditMode("changeAvatar")}
-         />
-         <div className={styles.profileInfo}>
-            <div className={styles.header}>
-               <h3 className={styles.username}>
-                  {profileInfo.username}
-               </h3>
-               <div
-                  className={styles.setParametersIcon}
-                  ref={parametersIcon}
-                  onMouseEnter={showMenu}
-                  onMouseLeave={hideMenu}
-               >
-                  <img src="./icons/other.svg" alt="Set parameters icon" />
+         <div className={styles.panelFlexContainer}>
+            <CustomImage
+               width='135px'
+               height='135px'
+               additionalClass={styles.bigAvatar}
+               src={profileInfo.avatar ? profileInfo.avatar : "./image/defaultAvatar.jpg"}
+               wrapperStyle={avatarWrapperStyle}
+               onClick={() => setEditMode("changeAvatar")}
+            />
+            <div className={styles.profileInfo}>
+               <div className={styles.header}>
+                  <h3 className={styles.username}>
+                     {profileInfo.username}
+                  </h3>
+                  <div
+                     className={`${styles.setParametersIcon} unselectable`}
+                     ref={parametersIcon}
+                     onMouseEnter={showMenu}
+                     onMouseLeave={hideMenu}
+                     onTouchStart={menuIconClickListener}
+                  >
+                     <img src="./icons/other.svg" alt="Set parameters icon" />
+                  </div>
+                  {
+                     popupMenu.needToShowElement
+                        ? (
+                           <Menu
+                              hideMenu={hideMenu}
+                              popupMenu={popupMenu}
+                              menuRef={menu}
+                              setEditMode={setEditMode}
+                              showMenu={showMenu}
+                           />
+                        )
+                        : null
+                  }
                </div>
-               {
-                  popupMenu.needToShowElement
-                     ? (<div
-                        className={styles.menu}
-                        ref={menu}
-                        onMouseEnter={showMenu}
-                        onMouseLeave={hideMenu}
-                     >
-                        <ul className={styles.list}>
-                           {menuButtons.map((item, index: number, array) => {
-                              return (
-                                 <li
-                                    className={styles.listItem}
-                                    key={item}
-                                    onClick={() => setEditMode(item)}
-                                 >
-                                    {
-                                       index === array.length - 1
-                                          ? <img
-                                             onLoad={() => popupMenu.setContentLoaded(true)}
-                                             className={styles.listItemIcon}
-                                             src={`./icons/${item}Black.svg`}
-                                             alt={`${item} icon`}
-                                          />
-                                          : <img
-                                             className={styles.listItemIcon}
-                                             src={`./icons/${item}Black.svg`}
-                                             alt={`${item} icon`}
-                                          />
-                                    }
-                                    {splitStringIntoWords(item as string, true)}
-                                 </li>
-                              )
-                           })}
-                        </ul>
-                     </div>)
-                     : null
-               }
-            </div>
-            <div className={styles.parameters}>
-               {parameters.map((item) => (
-                  item[1]
-                     ? <Parameter
-                        key={item[0]}
-                        parameterName={item[0]}
-                        parameterValue={item[1]}
-                     />
-                     : null
-               ))}
+               <div className={styles.parameters}>
+                  {parameters.map((item) => (
+                     item[1]
+                        ? <Parameter
+                           key={item[0]}
+                           parameterName={item[0]}
+                           parameterValue={item[1]}
+                        />
+                        : null
+                  ))}
+               </div>
             </div>
          </div>
          {

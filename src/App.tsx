@@ -1,9 +1,9 @@
-import { Header, LeftPanel, RightPanel } from './alwaysPresent'
 import styles from './App.module.scss'
-import { useAppDispatch } from './hooks/redux'
-import { Profile } from './pages'
 import { useEffect } from 'react';
-import { getProfileProps, profileActions } from './pages/Profile/redux/profileReducer';
+import { Header, LeftPanel, RightPanel } from 'alwaysPresent';
+import { Profile } from 'pages';
+import { getProfileProps, profileActions } from 'pages/Profile/redux/profileReducer';
+import { useAppDispatch } from 'hooks/redux';
 
 
 type Props = {
@@ -14,8 +14,8 @@ const App = (props: Props) => {
    const dispatch = useAppDispatch();
 
    useEffect(() => {
-      dispatch(profileActions.setProfileInfoMode("view"))
-      dispatch(getProfileProps())
+      dispatch(profileActions.setProfileInfoMode("view"));
+      dispatch(getProfileProps());
    }, [])
 
 

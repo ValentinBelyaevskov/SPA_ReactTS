@@ -63,3 +63,29 @@
       transition-duration: 0.3s;
    }
 }
+
+// media queries
+@media (max-width: 550px) {
+   .parameter {
+      .parameterName {
+         flex: 0 0 95px;
+      }
+   
+      .parameterValue {
+         flex: 1 1 75%;
+      }
+   }
+}
+
+@media (max-width: 500px) {
+   .parameter {
+      // display: block;
+      // .parameterName {
+      //    flex: 0 0 95px;
+      // }
+   
+      // .parameterValue {
+      //    flex: 1 1 75%;
+      // }
+   }
+}
