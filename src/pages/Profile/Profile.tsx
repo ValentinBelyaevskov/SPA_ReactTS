@@ -16,6 +16,7 @@ type ProfilePageStyle = {
 
 
 const Profile = () => {
+   const dispatch = useAppDispatch()
    const [trySignIn, setTrySignIn] = useState<boolean>(false);
    const [profilePageStyle, setProfilePageStyle] = useState<ProfilePageStyle>({});
    const loading = useAppSelector(getLoadingStatus);
@@ -23,7 +24,6 @@ const Profile = () => {
    const loadInfo = useAppSelector(getLoadInfo);
    const errorTypes = useAppSelector(getErrorTypes)
    const profileMode: string = useAppSelector(getProfileMode);
-   const dispatch = useAppDispatch()
 
 
    useEffect(() => {

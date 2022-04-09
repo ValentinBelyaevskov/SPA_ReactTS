@@ -1,4 +1,4 @@
-import Recommendations from "../Recommendations/Recommendations"
+import Recommendations from "alwaysPresent/Recommendations/Recommendations"
 import styles from "./RightPanel.module.scss"
 
 

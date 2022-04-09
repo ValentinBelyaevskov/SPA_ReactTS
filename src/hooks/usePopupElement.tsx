@@ -7,94 +7,130 @@ export type Popup = {
    setContentLoaded: React.Dispatch<React.SetStateAction<boolean>>
    showElementWithTimeout: (timeValue: number) => void
    hideElementWithTimeout: (timeValue: number) => void
+   hideElementWithoutAnimation: () => void
 }
 
 
 export const usePopupElement = (elementRef: React.RefObject<HTMLDivElement>, expectContentToLoad?: boolean): Popup => {
    // consts
-   const [needToShowElement, setNeedToShowElement] = useState<boolean>(false)
-   const [contentLoaded, setContentLoaded] = useState<boolean>(false)
-   const [isThereTransitionendListener, setIsThereTransitionendListener] = useState<boolean>(false)
-   const [theElementWillBeHiddenLater, setTheElementWillBeHiddenLater] = useState<boolean>(false)
-   const [hiddingTimeotValue, setHiddingTimeoutValue] = useState<null | NodeJS.Timeout>(null)
-   const [showTimeotValue, setShowTimeoutValue] = useState<null | NodeJS.Timeout>(null)
+   const [needToShowElement, setNeedToShowElement] = useState<boolean>(false);
+   const [contentLoaded, setContentLoaded] = useState<boolean>(false);
+   const [isThereAnHiddingEndListener, setIsThereAnHiddingEndListener] = useState<boolean>(false);
+   const [thereIsAZeroHideTimeout, setThereIsAZeroHideTimeout] = useState<boolean>(false);
+   const [theElementWillBeHidden, setTheElementWillBeHidden] = useState<boolean>(false);
+   const [hiddingTimeotValue, setHiddingTimeoutValue] = useState<null | NodeJS.Timeout>(null);
+   const [showElementTimeoutValue, setShowElementTimeoutValue] = useState<null | NodeJS.Timeout>(null);
 
 
    // effects
+   // * Если не нужно ждать загрузки контента - contentLoaded: true;
    useEffect(() => {
       if (needToShowElement && !expectContentToLoad) {
          setContentLoaded(true)
       }
    }, [needToShowElement, expectContentToLoad])
 
+   // * Если элемент готов к появлению - смена opacity с 0 на 1
+   // * Если элемент надо скрыть - смена opacity с 1 на 0
+   // * Перед новым render  удалить timeout
    useEffect(() => {
       if (!elementRef.current) return
 
       let timeout: any
 
-      if (needToShowElement && contentLoaded && !isThereTransitionendListener) {
+      if (needToShowElement && contentLoaded && !isThereAnHiddingEndListener) {
          timeout = setTimeout(() => {
-            elementRef.current!.style.opacity = "1"
+            elementRef.current!.style.opacity = "1";
          }, 20)
-      } else if (isThereTransitionendListener) {
+      } else if (isThereAnHiddingEndListener) {
          timeout = setTimeout(() => {
-            elementRef.current!.style.opacity = "0"
+            elementRef.current!.style.opacity = "0";
          }, 0, true)
       }
 
       return () => {
          clearTimeout(timeout)
       }
-   }, [needToShowElement, contentLoaded, isThereTransitionendListener])
+   }, [needToShowElement, contentLoaded, isThereAnHiddingEndListener])
 
+   // * Если элемент не нужно скрывать, тогда нужно удалить timeout с вызовом hideElement()
    useEffect(() => {
-      if (!theElementWillBeHiddenLater && hiddingTimeotValue) clearTimeout(hiddingTimeotValue)
-   }, [hiddingTimeotValue, theElementWillBeHiddenLater])
+      if (!theElementWillBeHidden && hiddingTimeotValue) setHiddingTimeotValueFalse();
+   }, [hiddingTimeotValue, theElementWillBeHidden])
 
 
    // funcs
-   const transitionendListener = useCallback((e: TransitionEvent): void => {
-      if (e.target !== e.currentTarget) return
-      setNeedToShowElement(false)
-      setContentLoaded(false)
-      setIsThereTransitionendListener(false)
+   const setHiddingTimeotValueFalse = (): void => {
+      if (hiddingTimeotValue) clearTimeout(hiddingTimeotValue);
+      setHiddingTimeoutValue(null);
+   }
+
+   const setShowElementTimeoutValueFalse = (): void => {
+      if (showElementTimeoutValue) clearTimeout(showElementTimeoutValue);
+      setShowElementTimeoutValue(null);
+   }
+
+   const hiddingEndListener = useCallback((e: TransitionEvent): void => {
+      if (e.target !== e.currentTarget) return;
+      setNeedToShowElement(false);
+      setContentLoaded(false);
+      setIsThereAnHiddingEndListener(false);
    }, [])
 
    const showElement = (callbackToSetShowStatus: (status: boolean) => void): void => {
-      callbackToSetShowStatus(true)
-      setTheElementWillBeHiddenLater(false)
-      setIsThereTransitionendListener(false)
+      callbackToSetShowStatus(true);
+      setTheElementWillBeHidden(false);
+      setIsThereAnHiddingEndListener(false);
+      setThereIsAZeroHideTimeout(false);
+      setShowElementTimeoutValueFalse();
    }
 
    const hideElement = (ref: React.RefObject<HTMLDivElement>): void => {
-      setIsThereTransitionendListener(true)
+      setIsThereAnHiddingEndListener(true);
 
       if (ref.current) {
-         const currentOpacity = getComputedStyle(ref.current!).opacity
-         ref.current!.style.opacity = currentOpacity
+         const currentOpacity = getComputedStyle(ref.current!).opacity;
+         ref.current!.style.opacity = currentOpacity;
       }
    }
 
    const showElementWithTimeout = (timeValue: number): void => {
-      const time = !needToShowElement ? timeValue : 0
+      const time = !needToShowElement ? timeValue : 0;
       const timeout = setTimeout(() => {
-         showElement(setNeedToShowElement)
-         if (elementRef.current) elementRef.current.removeEventListener("transitionend", transitionendListener)
-      }, time)
-      setShowTimeoutValue(timeout)
+         showElement(setNeedToShowElement);
+         if (elementRef.current) elementRef.current.removeEventListener("transitionend", hiddingEndListener);
+      }, time);
+      setShowElementTimeoutValue(timeout);
    }
 
    const hideElementWithTimeout = (timeValue: number): void => {
-      setTheElementWillBeHiddenLater(true)
+      if (
+         ((!timeValue && thereIsAZeroHideTimeout)
+         || (timeValue && theElementWillBeHidden))
+         && !showElementTimeoutValue
+      ) return;
+
+      if (!timeValue) setThereIsAZeroHideTimeout(true);
+      setTheElementWillBeHidden(true);
+
       const time = needToShowElement ? timeValue : 0
       const timeout = setTimeout(() => {
-         if (showTimeotValue) clearTimeout(showTimeotValue)
+         if (showElementTimeoutValue) setShowElementTimeoutValueFalse();
          if (elementRef.current) {
-            elementRef.current.addEventListener("transitionend", transitionendListener)
+            elementRef.current.addEventListener("transitionend", hiddingEndListener);
             hideElement(elementRef);
          }
       }, time)
       setHiddingTimeoutValue(timeout)
+   }
+
+   const hideElementWithoutAnimation = (): void => {
+      if (elementRef.current) {
+         elementRef.current!.style.opacity = "0";
+         setNeedToShowElement(false);
+         setContentLoaded(false);
+         setIsThereAnHiddingEndListener(false);
+      }
    }
 
 
@@ -103,5 +139,6 @@ export const usePopupElement = (elementRef: React.RefObject<HTMLDivElement>, exp
       setContentLoaded,
       showElementWithTimeout,
       hideElementWithTimeout,
+      hideElementWithoutAnimation
    }
 }

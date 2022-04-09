@@ -6,4 +6,5 @@ export type ImageProps = {
    width?: string
    height?: string
    onClick?: (() => void) | ((e: React.MouseEvent<HTMLDivElement>) => void)
+   onLoad?: () => void
 }

@@ -18,6 +18,12 @@ type LocalState = {
    clickedButton: string | undefined,
 }
 
+type EditorStyle = {
+   opacity: number
+}
+
+type ClickedButton = string | undefined
+
 interface Inputs {
    username: string,
    email: string,
@@ -28,18 +34,17 @@ interface Inputs {
 
 const ChangeProfileInfoForm = (props: Props) => {
    // hooks
-   const profile = useAppSelector(getProfileInfo)
-   const loadInfo = useAppSelector(getLoadInfo)
-   const dispatch = useAppDispatch()
-   const [localState, setLocalState] = useState<LocalState>({
-      editorStyle: { opacity: 1 },
-      clickedButton: undefined,
-   })
+   const dispatch = useAppDispatch();
+   const profile = useAppSelector(getProfileInfo);
+   const loadInfo = useAppSelector(getLoadInfo);
+   const [editorStyle, setEditorStyle] = useState<EditorStyle>({ opacity: 1 });
+   const [clickedButton, setClickedButton] = useState<ClickedButton>(undefined);
 
 
    // funcs
    const hideEditorStyle = (): void => {
-      setLocalState({ ...localState, editorStyle: { opacity: 0 } })
+      // setLocalState({ ...localState, editorStyle: { opacity: 0 } })
+      setEditorStyle({ opacity: 0 })
    }
 
    const transitionEndListener = (e: React.TransitionEvent): void => {
@@ -49,8 +54,7 @@ const ChangeProfileInfoForm = (props: Props) => {
    }
 
    const setClickedButtonName = (e: React.MouseEvent): void => {
-      localState.clickedButton = e.currentTarget.classList[e.currentTarget.classList.length - 1]
-      if (e.currentTarget.classList.contains("closeButton")) {
+      if (e.currentTarget.classList.contains("closeButton") && clickedButton !== "saveButton") {
          dispatch(profileActions.setLoadInfo({
             error: undefined,
             errorType: undefined,
@@ -58,6 +62,8 @@ const ChangeProfileInfoForm = (props: Props) => {
             loading: false,
          }))
       }
+      // setLocalState({ ...localState, clickedButton: e.currentTarget.classList[0] })
+      setClickedButton(e.currentTarget.classList[0])
    }
 
    // handle form
@@ -91,107 +97,108 @@ const ChangeProfileInfoForm = (props: Props) => {
 
    // render
    return (
-      <div style={localState.editorStyle} onTransitionEnd={transitionEndListener} className={`${styles.editor} editor`}>
-         <form className={styles.form} onSubmit={handleSubmit(onSubmit)}>
-            <h2 className={styles.title}>
-               Edit person
-            </h2>
-            <div className={styles.inputFields}>
-               <label className={styles.label} htmlFor="username">User name:</label>
-               <input
-                  className={styles.input}
-                  type="text"
-                  {
-                  ...register(
-                     "username",
+      <div style={editorStyle} onTransitionEnd={transitionEndListener} className={`${styles.editor} editor`}>
+         <div className={`${styles.changeProfileInfoFormContainer} ${styles.formContainer}`}>
+            <form className={styles.form} onSubmit={handleSubmit(onSubmit)}>
+               <h2 className={styles.title}>
+                  Edit profile information
+               </h2>
+               <div className={styles.inputFields}>
+                  <label className={styles.label} htmlFor="username">User name:</label>
+                  <input
+                     className={styles.input}
+                     type="text"
                      {
-                        maxLength: {
-                           value: 40,
-                           message: "Must be 40 characters or less"
-                        },
-                        minLength: {
-                           value: 4,
-                           message: "Must be 4 characters or more"
-                        },
-                        required: "Required",
+                     ...register(
+                        "username",
+                        {
+                           maxLength: {
+                              value: 40,
+                              message: "Must be 40 characters or less"
+                           },
+                           minLength: {
+                              value: 4,
+                              message: "Must be 4 characters or more"
+                           },
+                           required: "Required",
+                        }
+                     )
                      }
-                  )
-                  }
-                  autoComplete="on"
-               />
-               <p className={styles.validationError}>{errors.username ? errors.username.message : null}</p>
+                     autoComplete="on"
+                  />
+                  <p className={styles.validationError}>{errors.username ? errors.username.message : null}</p>
 
-               <label className={styles.label} htmlFor="email">Email:</label>
-               <input
-                  className={styles.input}
-                  type="text"
-                  {
-                  ...register(
-                     "email",
+                  <label className={styles.label} htmlFor="email">Email:</label>
+                  <input
+                     className={styles.input}
+                     type="text"
                      {
-                        maxLength: {
-                           value: 250,
-                           message: "Must be 250 characters or less"
-                        },
-                        required: "Required",
+                     ...register(
+                        "email",
+                        {
+                           maxLength: {
+                              value: 250,
+                              message: "Must be 250 characters or less"
+                           },
+                           required: "Required",
+                        }
+                     )
                      }
-                  )
-                  }
-                  autoComplete="on"
-               />
-               <p className={styles.validationError}>{errors.email ? errors.email.message : null}</p>
+                     autoComplete="on"
+                  />
+                  <p className={styles.validationError}>{errors.email ? errors.email.message : null}</p>
 
-               <label className={styles.label} htmlFor="location">Location:</label>
-               <input
-                  className={styles.input}
-                  type="text"
+                  <label className={styles.label} htmlFor="location">Location:</label>
+                  <input
+                     className={styles.input}
+                     type="text"
+                     {
+                     ...register(
+                        "location",
+                        {
+                           maxLength: {
+                              value: 250,
+                              message: "Must be 250 characters or less"
+                           },
+                        }
+                     )
+                     }
+                     autoComplete="on"
+                  />
+                  <p className={styles.validationError}>{errors.location ? errors.location.message : null}</p>
                   {
-                  ...register(
-                     "location",
-                     {
-                        maxLength: {
-                           value: 250,
-                           message: "Must be 250 characters or less"
-                        },
-                     }
-                  )
+                     loadInfo.loading ? <div className={`${styles.warning} ${styles.loadingWarning}`}>Loading...</div>
+                        : loadInfo.error ? <div className={`${styles.warning} ${styles.errorWarning}`}>{`${loadInfo.error}`}</div>
+                           : null
                   }
-                  autoComplete="on"
-               />
-               <p className={styles.validationError}>{errors.location ? errors.location.message : null}</p>
-               {
-                  loadInfo.loading ? <div className={`${styles.warning} ${styles.loadingWarning}`}>Loading...</div>
-                     : loadInfo.error ? <div className={`${styles.warning} ${styles.errorWarning}`}>{`${loadInfo.error}`}</div>
-                        : null
-               }
-            </div>
-            <div className={styles.buttons}>
-               <Button
-                  params={
-                     {
-                        containerClassName: "saveButtonContainer",
-                        clickHandler: setClickedButtonName,
-                        text: "Save",
-                        type: "submit",
-                        buttonStyle: { padding: "5px 20px" },
-                        disabled: !isValid
+               </div>
+               <div className={styles.buttons}>
+                  <Button
+                     params={
+                        {
+                           containerClassName: "saveButtonContainer",
+                           clickHandler: setClickedButtonName,
+                           text: "Save",
+                           type: "submit",
+                           disabled: !isValid,
+                           buttonClassName: `${styles.formButton} saveButton`
+                        }
                      }
-                  }
-               />
-               <Button
-                  params={
-                     {
-                        containerClassName: "closeButtonContainer",
-                        clickHandler: (e) => { hideEditorStyle(); setClickedButtonName(e) },
-                        text: "Close",
-                        type: "button",
-                        buttonStyle: { padding: "5px 20px" },
-                        buttonClassName: "closeButton"
+                  />
+                  <Button
+                     params={
+                        {
+                           containerClassName: "closeButtonContainer",
+                           clickHandler: (e) => { hideEditorStyle(); setClickedButtonName(e) },
+                           text: "Close",
+                           type: "button",
+                           buttonClassName: `${styles.formButton} closeButton`
+                        }
                      }
-                  }
-               />
-            </div>
-         </form>
+                  />
+               </div>
+            </form>
+         </div>
 
 
       </div>

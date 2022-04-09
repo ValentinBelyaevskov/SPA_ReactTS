@@ -1,27 +1,53 @@
 import styles from './Header.module.scss'
-import Controls from '../Controls/Controls';
+import { useState, useEffect } from 'react';
+import Controls from 'alwaysPresent/Controls/Controls';
 import SearchForm from './SearchForm';
-import { useState } from 'react';
+import { RoundAvatar } from 'common';
+import { useAppSelector } from '../../hooks/redux';
+import { getProfileInfo } from '../../pages/Profile/redux/profileReducer';
 
 
 type Props = {
 }
 
+type HeaderElementStyle = { display?: "none" }
+
 
 const Header = (props: Props) => {
-   const [showBurgerMenu, setShowBurgerMenu] = useState<boolean>(false);
+   // vars
+   const profileInfo = useAppSelector(getProfileInfo)
+   const [controlsLoaded, setControlsLoaded] = useState<boolean>(false);
+   const [searchFormLoaded, setSearchFormLoaded] = useState<boolean>(false);
+   const [avatarLoaded, setAvatarLoaded] = useState<boolean>(false);
+   const [headerElementStyle, setHeaderElementStyle] = useState<HeaderElementStyle>({ display: 'none' });
 
-   // const []
+
+   // effects
+   useEffect(() => {
+      if (controlsLoaded && searchFormLoaded && avatarLoaded) {
+         setHeaderElementStyle({})
+      } else {
+         setHeaderElementStyle({ display: 'none' })
+      }
+   }, [controlsLoaded, searchFormLoaded, avatarLoaded])
 
 
    return (
       <div className={styles.header}>
-         <div className={styles.controls}>
-            <Controls />
+         <div className={styles.searchForm} style={headerElementStyle}>
+            <SearchForm setSearchFormLoaded={setSearchFormLoaded} />
          </div>
-         <div className={styles.headerOptions}>
-            <SearchForm />
+         <div className={styles.controls} style={headerElementStyle}>
+            <Controls setControlsLoaded={setControlsLoaded} />
          </div>
+         <RoundAvatar
+            additionalClass={styles.avatar}
+            width='32px'
+            height='32px'
+            src={profileInfo.avatar}
+            wrapperStyle={headerElementStyle}
+            onLoad={() => setAvatarLoaded(true)}
+         />
       </div>
    )
 }

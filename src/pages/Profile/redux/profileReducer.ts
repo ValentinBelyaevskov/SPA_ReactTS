@@ -24,7 +24,7 @@ const initialState: ProfileState = {
    signInMode: "login",
    loadInfo: {
       loaded: false,
-      loading: false,
+      loading: true,
       error: undefined,
       errorType: undefined,
    },

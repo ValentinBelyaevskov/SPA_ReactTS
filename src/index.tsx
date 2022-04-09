@@ -7,8 +7,8 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react'
-import { store, persistor } from './redux/store';
 import Backendless from 'backendless'
+import { persistor, store } from 'redux/store';
 
 // init backendless
 Backendless.serverURL = "https://eu-api.backendless.com"

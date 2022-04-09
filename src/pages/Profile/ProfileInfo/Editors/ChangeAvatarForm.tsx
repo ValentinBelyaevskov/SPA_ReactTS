@@ -18,7 +18,7 @@ interface LocalState {
 }
 
 type Inputs = {
-   fileList: {0: File}
+   fileList: { 0: File }
 }
 
 
@@ -90,64 +90,67 @@ const ChangeAvatarForm = (props: Props) => {
 
    return (
       <div style={localState.editorStyle} onTransitionEnd={transitionEndListener} className={`${styles.editor}`}>
-         <form id="updloadAvatar" className={styles.form} onSubmit={handleSubmit(onSubmit)}>
-            <h2 className={styles.title}>
-               Update avatar:
-            </h2>
-            <div className={styles.inputFields}>
-               <label className={styles.label} htmlFor="fileList">Select a file:</label>
-               <input
-                  className={styles.input}
-                  type="file"
-                  {...register("fileList", { onChange: setImgSrc })}
-               />
-               {
-                  localState.imgSrc
-                     ? (
-                        <div className={styles.changeAvatarPreview}>
-                           <img src={localState.imgSrc as string}></img>
-                        </div>
-                     )
-                     : null
-               }
-               {
-                  loadInfo.loading ? <div className={`${styles.warning} ${styles.loadingWarning}`}>Loading...</div>
-                     : loadInfo.error ? <div className={`${styles.warning} ${styles.errorWarning}`}>{`${loadInfo.error}`}</div>
+         <div className={`${styles.changeAvatarFormContainer} ${styles.formContainer}`}>
+            <form id="updloadAvatar" className={styles.form} onSubmit={handleSubmit(onSubmit)}>
+               <h2 className={styles.title}>
+                  Update avatar:
+               </h2>
+               <div className={styles.inputFields}>
+                  <label className={styles.label} htmlFor="fileList">Select a file:</label>
+                  <input
+                     className={styles.input}
+                     type="file"
+                     {...register("fileList", { onChange: setImgSrc })}
+                  />
+                  {
+                     localState.imgSrc
+                        ? (
+                           <div className={styles.changeAvatarPreview}>
+                              <img src={localState.imgSrc as string}></img>
+                           </div>
+                        )
                         : null
-               }
-            </div>
-            <div className={styles.buttons}>
-               <Button
-                  params={
-                     {
-                        clickHandler: () => { },
-                        text: "Upload new avatar",
-                        type: "submit",
-                        buttonStyle: { padding: "5px 20px" },
-                        disabled: watch("fileList")
-                           ? (
-                              watch("fileList")[0]
-                              ? false
-                              : true
-                           )
-                           : true
-                     }
                   }
-               />
-               <Button
-                  params={
-                     {
-                        containerClassName: "closeButtonContainer",
-                        clickHandler: (e) => { hideEditorStyle(); setClickedButtonName(e) },
-                        text: "Close",
-                        type: "button",
-                        buttonStyle: { padding: "5px 20px" },
-                        buttonClassName: "closeButton"
-                     }
+                  {
+                     loadInfo.loading ? <div className={`${styles.warning} ${styles.loadingWarning}`}>Loading...</div>
+                        : loadInfo.error ? <div className={`${styles.warning} ${styles.errorWarning}`}>{`${loadInfo.error}`}</div>
+                           : null
                   }
-               />
-            </div>
-         </form>
+               </div>
+               <div className={styles.buttons}>
+                  <Button
+                     params={
+                        {
+                           clickHandler: () => { },
+                           text: "Upload new avatar",
+                           type: "submit",
+                           buttonStyle: { padding: "5px 20px" },
+                           disabled: watch("fileList")
+                              ? (
+                                 watch("fileList")[0]
+                                    ? false
+                                    : true
+                              )
+                              : true,
+                           buttonClassName: `${styles.formButton} uploadNewAvatar`
+                        }
+                     }
+                  />
+                  <Button
+                     params={
+                        {
+                           containerClassName: "closeButtonContainer",
+                           clickHandler: (e) => { hideEditorStyle(); setClickedButtonName(e) },
+                           text: "Close",
+                           type: "button",
+                           buttonStyle: { padding: "5px 20px" },
+                           buttonClassName: `${styles.formButton} closeButton`
+                        }
+                     }
+                  />
+               </div>
+            </form>
+         </div>
       </div>
    )
 }

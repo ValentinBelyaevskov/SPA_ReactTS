@@ -6,7 +6,12 @@ import { ImageProps } from "./types"
 const PostImage = (props: ImageProps) => {
    return (
       <div className={`${styles.postImage} ${props.additionalClass}`} style={props.wrapperStyle}>
-         <img src={props.src} alt="Post image" style={props.imgStyle} />
+         <img
+            src={props.src}
+            alt="Post image"
+            style={props.imgStyle}
+            onLoad={props.onLoad ? props.onLoad : () => { }}
+         />
       </div>
    )
 }
