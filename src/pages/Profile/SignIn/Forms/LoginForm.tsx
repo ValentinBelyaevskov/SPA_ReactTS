@@ -4,6 +4,7 @@ import { useAppDispatch, useAppSelector } from '../../../../hooks/redux';
 import { login, profileActions, getLoadInfo, getProfileMode, passwordReset, getSignInMode } from '../../redux/profileReducer';
 import { useState, useEffect } from 'react';
 import { useForm, SubmitHandler } from "react-hook-form";
+import { useInputVisibilitySwitch } from '../../../../hooks/useInputVisibilitySwitch';
 
 
 // types
@@ -20,20 +21,21 @@ type Inputs = {
 
 const LoginForm = () => {
    // consts
-   const loadInfo = useAppSelector(getLoadInfo)
-   const profileMode = useAppSelector(getProfileMode)
-   const signInMode = useAppSelector(getSignInMode)
-   const dispatch = useAppDispatch()
+   const loadInfo = useAppSelector(getLoadInfo);
+   const profileMode = useAppSelector(getProfileMode);
+   const signInMode = useAppSelector(getSignInMode);
+   const dispatch = useAppDispatch();
+   const [clickedButton, setClickedButton] = useState<ClickedButton>(undefined);
+   const [resetPasswordWasClicked, setResetPasswordWasClicked] = useState<ResetPasswordWasClicked>(false);
 
-   const [clickedButton, setClickedButton] = useState<ClickedButton>(undefined)
-
-   const [resetPasswordWasClicked, setResetPasswordWasClicked] = useState<ResetPasswordWasClicked>(false)
+   // custom hooks
+   const passwordVisibility = useInputVisibilitySwitch("./icons/showPasswordIcon.svg", "./icons/hidePasswordIcon.svg");
 
 
    // effects
    useEffect(() => {
-      setResetPasswordWasClicked(false)
-   }, [])
+      setResetPasswordWasClicked(false);
+   }, []);
 
 
    // handle form
@@ -44,7 +46,7 @@ const LoginForm = () => {
          password: "",
          rememberMe: false,
       }
-   })
+   });
 
    const onSubmit: SubmitHandler<Inputs> = data => {
       if (clickedButton === "login") {
@@ -124,8 +126,8 @@ const LoginForm = () => {
 
                <div className={styles.inputContainer} >
                   <input
-                     className={styles.input}
-                     type="password"
+                     className={`${styles.input} ${styles.passwordInput}`}
+                     type={passwordVisibility.inputType}
                      {
                      ...register(
                         "password",
@@ -145,6 +147,12 @@ const LoginForm = () => {
                      placeholder={"Password"}
                      autoComplete="on"
                   />
+                  <img
+                        className={styles.passwordVisibilityIcon}
+                        src={passwordVisibility.icon}
+                        alt="show or hide password icon"
+                        onClick={passwordVisibility.iconClickListener}
+                     />
                   <p className={styles.validationError}>{errors.password ? errors.password.message : null}</p>
                </div>
                <SignInButton
@@ -161,7 +169,7 @@ const LoginForm = () => {
                         <div className={styles.resetPasswordInfo}>
                            <p className={styles.prompt}>Forgot your password? In order to change your password, you need:
                               <br />1. Enter your email and current password in the input fields.
-                              <br />2. Instead of "Login", click "Reset Password".</p>
+                              <br />2. Instead of «Login», click «Reset Password».</p>
                         </div>
                      )
                      : null
@@ -175,6 +183,7 @@ const LoginForm = () => {
                         {...register("rememberMe")}
                      />
                      <label htmlFor="rememberMe" className={`${styles.checkboxLabel} unselectable`}>remember me</label>
+                     <img className={styles.rememberMeIcon} src='./image/checked.svg' alt="remember me icon"/>
                   </div>
                   <SignInButton
                      type="submit"

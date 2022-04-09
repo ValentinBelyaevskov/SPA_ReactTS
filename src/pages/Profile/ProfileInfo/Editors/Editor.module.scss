@@ -17,15 +17,16 @@
    background-color: rgba(0, 0, 0, 0.35);
    transition-duration: 0.3s;
    transition-property: opacity;
-   animation: bcg_opacity 0.3s;
+   animation: bcg_opacity 0.5s;
 }
 
-.form,
-.signOutBody {
+// .form,
+.signOutBody,
+.formContainer {
    position: absolute;
    transform: translateX(-50%);
    margin-left: 50%;
-   margin-top: 85px;
+   margin-top: 160px;
    width: 400px;
    border-radius: 0.7rem;
 
@@ -42,6 +43,18 @@
    }
 }
 
+.formContainer {
+   overflow: auto;
+
+   &::-webkit-scrollbar {
+      display: none;
+   }
+
+   .form {
+      overflow: hidden;
+   }
+}
+
 .signOutBody {
    .buttons {
       display: flex;
@@ -52,6 +65,7 @@
    }
 
    .warning {
+      font-size: 1.3rem;
       margin: 5px 25px 5px 25px;
    }
 }
@@ -75,7 +89,10 @@
          }
       }
 
-      // .label,
+      .passwordInputContainer {
+         position: relative;
+      }
+
       .input {
          display: block;
 
@@ -90,8 +107,8 @@
 
       .inputWithoutError,
       .input {
-         padding: 7px 15px;
          width: 100%;
+         padding: 7px 15px;
          border: solid 1px rgb(211, 211, 211);
          border-radius: 5px;
 
@@ -106,6 +123,28 @@
          &:focus {
             border: solid 1px var(--theme-transperent-color);
             outline: solid 1px var(--theme-transperent-color);
+         }
+      }
+
+      .passwordInput {
+         padding: 7px 40px 7px 15px;
+      }
+
+      .passwordVisibilityIcon {
+         position: absolute;
+         top: 4px;
+         right: 7px;
+
+         height: 23px;
+
+         opacity: 1;
+
+         transition-property: opacity;
+         transition-duration: 0.1s;
+
+         &:hover {
+            cursor: pointer;
+            opacity: 0.6;
          }
       }
 
@@ -161,14 +200,19 @@
          margin-bottom: 10px;
       }
    }
+}
 
-   .buttons {
-      display: flex;
-      justify-content: space-between;
-      margin-left: auto;
+.form .buttons,
+.buttons {
+   display: flex;
+   justify-content: space-between;
+   margin-left: auto;
 
-      padding: 1.3rem 2rem 1.5rem 2rem;
-      width: 100%;
+   padding: 1.3rem 2rem 1.5rem 2rem;
+   width: 100%;
+
+   .formButton {
+      padding: 5px 20px;
    }
 }
 
@@ -179,5 +223,17 @@
 
    to {
       opacity: 1;
+   }
+}
+
+// media quries
+@media (max-width: 550px) {
+   .formContainer {
+      width: 280px;
+   }
+
+   .form .buttons .formButton,
+   .buttons .formButton {
+      padding: 0.5rem 1.5rem;
    }
 }

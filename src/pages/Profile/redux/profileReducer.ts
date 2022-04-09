@@ -24,7 +24,7 @@ const initialState: ProfileState = {
    signInMode: "login",
    loadInfo: {
       loaded: false,
-      loading: false,
+      loading: true,
       error: undefined,
       errorType: undefined,
    },
@@ -82,6 +82,7 @@ const profileSlice = createSlice({
             }
             if (key === "avatar") state.profileInfo.avatar = state.profileInfo.avatar
          }
+         console.log("resetProfileInfo: ", action.payload)
          state.profileMode = action.payload
       }
    },
@@ -140,7 +141,7 @@ const profileSlice = createSlice({
          })
          // ? uploadFile
          .addCase(uploadFile.fulfilled, (state, action: PayloadAction<any>) => {
-            state.profileInfo.avatar = action.payload;
+            state.profileInfo = {...state.profileInfo, avatar: action.payload};
             state.loadInfo.loading = false
             state.loadInfo.loaded = true
             state.loadInfo.error = undefined
@@ -263,7 +264,6 @@ export const getProfileProps = createAsyncThunk(
          } else if (objectId) {
             const profile: Profile = await Backendless.Data.of('Users').findById(`${objectId}`)
             const avatar = await fetch(`${profile.avatar}`)
-            // console.log("profile.avatar: ", profile.avatar)
             if (!avatar.ok || !profile.avatar) {
                profile.avatar = "";
             }
@@ -351,13 +351,11 @@ export const uploadFile = createAsyncThunk(
             throw Error("Wrong file type specified");
          }
 
-
          const response = await cloudinary.uploadImage(uploadFileParams.file, uploadFileParams.objectId)
 
-         console.log("upload response: ", response)
          if (response && uploadFileParams.callback) {
             const avatar = separatePatnAndName(uploadFileParams.avatar)[1];
-            cloudinary.deleteImage(avatar);
+            await cloudinary.deleteImage(avatar);
 
             uploadFileParams.callback();
             return response;

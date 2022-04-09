@@ -12,6 +12,7 @@ type Props = {
    hideMenu: () => void,
    popupMenu: Popup,
    setEditMode: React.Dispatch<React.SetStateAction<EditMode>>
+   hideMenuOnTouchStart: () => void
 }
 
 
@@ -21,7 +22,7 @@ const Menu = (props: Props) => {
 
    return (
       <div
-         className={styles.menu}
+         className={`${styles.menu} profilePanelMenuElement`}
          ref={props.menuRef}
          onMouseEnter={props.showMenu}
          onMouseLeave={props.hideMenu}
@@ -32,7 +33,8 @@ const Menu = (props: Props) => {
                   <li
                      className={styles.listItem}
                      key={item}
-                     onClick={() => props.setEditMode(item)}
+                     onClick={() => { props.hideMenuOnTouchStart(); props.setEditMode(item) }}
+                     onTouchEnd={() => {props.hideMenuOnTouchStart(); props.setEditMode(item)}}
                   >
                      {
                         index === array.length - 1

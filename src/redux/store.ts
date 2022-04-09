@@ -17,7 +17,7 @@ import storage from 'redux-persist/lib/storage'; // defaults to localStorage for
 const profilePersistConfig = {
    key: 'profile',
    storage,
-   whitelist: ['profileMode', 'profileInfoMode', 'signInMode', 'errorTypes', 'loadInfo'],
+   whitelist: ['profileMode', 'profileInfoMode', 'signInMode', 'errorTypes'],
 }
 
 const rootPersistConfig = {

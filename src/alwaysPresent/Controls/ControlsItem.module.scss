@@ -41,6 +41,7 @@
    }
 }
 
+// media-queries
 @media (max-width: 750px) {
    .controlsListItem {
       padding: 5px 9px;
@@ -57,6 +58,19 @@
 
       .buttonName {
          display: inline;
+      }
+   }
+}
+
+@media (max-width: 460px) {
+   .controlsListItem {
+      padding: 15px 20px 15px 12px;
+      font-size: 1.8rem;
+
+      .buttonIcon {
+         margin: 0px 10px 0 8px;
+
+         width: 20px;
       }
    }
 }

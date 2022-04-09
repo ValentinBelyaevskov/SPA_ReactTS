@@ -12,6 +12,15 @@
    .controls {
       display: none;
    }
+
+   .avatar {
+      width: 32px;
+      padding-bottom: 32px;
+   }
+
+   .burgerIcon {
+      display: none;
+   }
 }
 
 // media queries
@@ -30,6 +39,8 @@
 
       .avatar {
          margin-left: 20px;
+
+         box-shadow: 0px 1px 5px 2px rgb(0 0 0 / 10%);
       }
    }
 }
@@ -54,7 +65,6 @@
 
 @media (max-width: 600px) {
    .header {
-
       .avatar {
          order: -2;
          margin: 0;
@@ -63,10 +73,47 @@
       .searchForm {
          margin: 0;
       }
-      
+
+      .burgerIcon {
+         display: block;
+
+         padding: 10px;
+         margin-right: -10px;
+
+         background-color: white;
+
+         transition-property: opacity;
+         transition-duration: 0.1s;
+
+         img {
+            height: 16px;
+            width: 20px;
+         }
+
+         &:hover {
+            opacity: 0.6;
+            cursor: pointer;
+         }
+      }
+
       .controls {
-         justify-self: end;
-         margin: 0;
+         display: none;
+      }
+   }
+}
+
+@media (max-width: 460px) {
+   .header {
+      .burgerIcon {
+         img {
+            height: 24px;
+            width: 28px;
+         }
+      }
+
+      .avatar {
+         width: 36px;
+         padding-bottom: 36px;
       }
    }
 }

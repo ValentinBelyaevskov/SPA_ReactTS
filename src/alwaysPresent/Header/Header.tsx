@@ -1,10 +1,12 @@
 import styles from './Header.module.scss'
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import Controls from 'alwaysPresent/Controls/Controls';
 import SearchForm from './SearchForm';
 import { RoundAvatar } from 'common';
 import { useAppSelector } from '../../hooks/redux';
 import { getProfileInfo } from '../../pages/Profile/redux/profileReducer';
+import { IconsThatAreLoaded } from 'common/IconsThatAreLoaded/IconsThatAreLoaded';
+import { ControlsContext } from 'App';
 
 
 type Props = {
@@ -15,38 +17,53 @@ type HeaderElementStyle = { display?: "none" }
 
 const Header = (props: Props) => {
    // vars
+   const context = useContext(ControlsContext);
+
+   const burgerIconsList: string[] = [
+      "./icons/burger.svg",
+      "./icons/hide.svg",
+   ];
+   const [burgerIconsLoaded, setBurgerIconsLoaded] = useState<boolean>(false);
    const profileInfo = useAppSelector(getProfileInfo)
-   const [controlsLoaded, setControlsLoaded] = useState<boolean>(false);
    const [searchFormLoaded, setSearchFormLoaded] = useState<boolean>(false);
    const [avatarLoaded, setAvatarLoaded] = useState<boolean>(false);
-   const [headerElementStyle, setHeaderElementStyle] = useState<HeaderElementStyle>({ display: 'none' });
+   const [headerStyle, setHeaderStyle] = useState<HeaderElementStyle>({ display: 'none' });
 
 
    // effects
    useEffect(() => {
-      if (controlsLoaded && searchFormLoaded && avatarLoaded) {
-         setHeaderElementStyle({})
+      if (burgerIconsLoaded && context.controlsLoaded && searchFormLoaded && avatarLoaded) {
+         setHeaderStyle({});
       } else {
-         setHeaderElementStyle({ display: 'none' })
+         setHeaderStyle({ display: 'none' });
       }
-   }, [controlsLoaded, searchFormLoaded, avatarLoaded])
+   }, [burgerIconsLoaded, context.controlsLoaded, searchFormLoaded, avatarLoaded]);
 
 
    return (
-      <div className={styles.header}>
-         <div className={styles.searchForm} style={headerElementStyle}>
+      <div className={styles.header} style={headerStyle}>
+         <div className={styles.searchForm}>
             <SearchForm setSearchFormLoaded={setSearchFormLoaded} />
          </div>
-         <div className={styles.controls} style={headerElementStyle}>
-            <Controls setControlsLoaded={setControlsLoaded} />
+         <div className={styles.controls}>
+            <Controls />
+         </div>
+         <div
+            className={`${styles.burgerIcon} headerControlsElement unselectable`}
+            onClick={() => {
+               context.burgerIconClickListener!(context.needToShowControls!)
+            }}
+         >
+            <img src={context.icon} alt="burger menu icon" />
          </div>
          <RoundAvatar
             additionalClass={styles.avatar}
-            width='32px'
-            height='32px'
             src={profileInfo.avatar}
-            wrapperStyle={headerElementStyle}
             onLoad={() => setAvatarLoaded(true)}
+         />
+         <IconsThatAreLoaded
+            icons={burgerIconsList}
+            setIconsLoaded={setBurgerIconsLoaded}
          />
       </div>
    )

@@ -1,4 +1,4 @@
-import styles from './Editor.module.scss'
+import styles from './Editor.module.scss';
 import { useAppSelector, useAppDispatch } from '../../../../hooks/redux';
 import { getLoadInfo, profileActions, logout, getProfileMode } from '../../redux/profileReducer';
 import { useState, useEffect } from 'react';
@@ -18,24 +18,24 @@ interface LocalState {
 
 const SignOut = (props: Props) => {
    // hooks
-   const profileMode = useAppSelector(getProfileMode)
+   const profileMode = useAppSelector(getProfileMode);
 
-   const loadInfo = useAppSelector(getLoadInfo)
+   const loadInfo = useAppSelector(getLoadInfo);
 
-   const dispatch = useAppDispatch()
+   const dispatch = useAppDispatch();
 
    const [localState, setLocalState] = useState<LocalState>({
       editorStyle: { opacity: 1 },
       clickedButton: undefined,
    })
 
-   const profileLogout = () => dispatch(logout())
+   const profileLogout = () => dispatch(logout());
 
    useEffect(() => {
       if (profileMode === "loggedOut") {
-         hideEditorStyle()
+         hideEditorStyle();
       }
-   }, [profileMode])
+   }, [profileMode]);
 
 
    // funcs
@@ -45,9 +45,9 @@ const SignOut = (props: Props) => {
 
    const transitionEndListener = (e: React.TransitionEvent): void => {
       if (e.currentTarget === e.target) {
-         props.finishEditing()
+         props.finishEditing();
       }
-      if (profileMode === "loggedOut") dispatch(profileActions.resetProfileInfo("signIn"))
+      if (profileMode === "loggedOut") dispatch(profileActions.resetProfileInfo("signIn"));
    }
 
    const setClickedButtonName = (e: React.MouseEvent): void => {
@@ -82,8 +82,8 @@ const SignOut = (props: Props) => {
                         clickHandler: (e) => {profileLogout(); setClickedButtonName(e)},
                         text: "Sign out",
                         type: "submit",
-                        buttonStyle: { padding: "5px 20px" },
-                        color: "red"
+                        color: "red",
+                        buttonClassName: `${styles.formButton}`,
                      }
                   }
                />
@@ -94,8 +94,7 @@ const SignOut = (props: Props) => {
                         clickHandler: (e) => { hideEditorStyle(); setClickedButtonName(e) },
                         text: "Close",
                         type: "button",
-                        buttonStyle: { padding: "5px 20px" },
-                        buttonClassName: "closeButton"
+                        buttonClassName: `${styles.formButton} closeButton`,
                      }
                   }
                />

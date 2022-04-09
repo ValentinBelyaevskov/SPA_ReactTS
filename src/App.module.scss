@@ -6,9 +6,9 @@ $pages-color: rgb(99, 59, 59);
 
 // sizes
 $header-height: 4.8rem;
+$header-height_460: 5.3rem;
 $gtc_min-width_915: 1fr 550px 1fr;
 $gtc_max-width_915: 550px 1fr;
-
 
 .app {
    position: relative;
@@ -33,6 +33,9 @@ $gtc_max-width_915: 550px 1fr;
 
       background-color: var(--main-color);
       box-shadow: 0 1px 2px 1px rgb(0 0 0 / 14%);
+
+      transition-property: transform;
+      transition-duration: 0.3s;
    }
 
    .sidebarsContainer {
@@ -44,16 +47,6 @@ $gtc_max-width_915: 550px 1fr;
       min-height: calc(100vh - $header-height);
 
       background-color: var(--global-bcg-color);
-
-      .pageBackground {
-         position: absolute;
-         height: 4px;
-         width: 100%;
-
-         grid-column: 2 / 3;
-
-         background-color: var(--main-color);
-      }
    }
 
    .pagesContainer {
@@ -62,6 +55,17 @@ $gtc_max-width_915: 550px 1fr;
       min-height: calc(100vh - $header-height);
 
       background-color: var(--global-bcg-color);
+
+      .pageBackground {
+         position: absolute;
+         top: -3px;
+         height: 20px;
+         width: 100%;
+
+         grid-column: 2 / 3;
+
+         background-color: var(--main-color);
+      }
    }
 
    // .page {
@@ -77,6 +81,10 @@ $gtc_max-width_915: 550px 1fr;
    //    background-color: var(--main-color);
    //    border-bottom: 1px solid var(--border-color);
    // }
+
+   .popupControlsContainer {
+      display: none;
+   }
 }
 
 // media queries
@@ -112,6 +120,32 @@ $gtc_max-width_915: 550px 1fr;
       .headerContainer,
       .pagesContainer {
          display: block;
+      }
+   }
+}
+
+@media (max-width: 600px) {
+   .app {
+      .popupControlsContainer {
+         display: block;
+         position: absolute;
+         z-index: 1;
+      }
+   }
+}
+
+@media (max-width: 460px) {
+   .app {
+      padding-top: $header-height_460;
+
+      .headerContainer {
+         height: $header-height_460;
+      }
+
+      .pagesContainer {
+         position: relative;
+
+         min-height: calc(100vh - $header-height_460);
       }
    }
 }

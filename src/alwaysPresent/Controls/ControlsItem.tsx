@@ -6,26 +6,16 @@ type IconsLoaded = boolean[];
 
 type Props = {
    buttonName: "Profile" | "News" | "Messages" | "Friends" | "Communities" | "Settings",
-   index: number,
-   controlIconsLoaded: IconsLoaded,
-   setControlIconsLoaded: React.Dispatch<React.SetStateAction<IconsLoaded>>
+   icon: string
 }
 
 
 const ControlsItem = (props: Props) => {
-   const setIconLoadingStatus = () => {
-      const newLoadedIconsArr = [...props.controlIconsLoaded];
-      newLoadedIconsArr[props.index] = true;
-      props.setControlIconsLoaded(newLoadedIconsArr);
-   }
-
-
    return (
       <li className={styles.controlsListItem}>
          <img
             className={styles.buttonIcon}
-            onLoad={setIconLoadingStatus}
-            src={`./icons/${props.buttonName.toLocaleLowerCase()}.svg`}
+            src={props.icon}
             alt={`${props.buttonName} page icon`}
          />
          <span className={`${styles.buttonName} unselectable`}>

@@ -10,11 +10,11 @@ type Props = {
 
 
 const ErrorPage = (props: Props) => {
-   const dispatch = useAppDispatch()
+   const dispatch = useAppDispatch();
 
    const clickHandler = (): void => {
-      props.setTrySignIn(true)
-      dispatch(profileActions.setProfileMode('signIn'))
+      props.setTrySignIn(true);
+      dispatch(profileActions.setProfileMode('signIn'));
    }
 
    return (
@@ -29,7 +29,10 @@ const ErrorPage = (props: Props) => {
                   clickHandler: clickHandler,
                   text: "Try Sign in",
                   containerStyle: {
-                     margin: "20px auto 0 auto"
+                     margin: "10px auto 0 auto"
+                  },
+                  buttonStyle: {
+                     padding: "5px 20px"
                   }
                }
             }

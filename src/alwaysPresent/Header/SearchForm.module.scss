@@ -34,6 +34,7 @@
       background-color: rgb(233, 233, 233);
 
       .searchIcon {
+         height: 15px;
          margin-right: 10px;
          margin-top: 1px;
       }
@@ -72,6 +73,32 @@
       .searchInput {
          display: inline;
          width: 115px;
+      }
+   }
+}
+
+@media (max-width: 460px) {
+   .form {
+      width: 200px;
+      padding: 6px 17px;
+      border-radius: 7px;
+
+      .searchIcon {
+         height: 19px;
+         margin-top: 1px;
+         margin-right: 12px;
+      }
+
+      .searchInput {
+         display: inline;
+         width: 120px;
+         line-height: 1.9rem;
+         font-size: 1.6rem;
+
+         &::placeholder {
+            color: rgba(149, 149, 149);
+            font-size: 1.6rem;
+         }
       }
    }
 }

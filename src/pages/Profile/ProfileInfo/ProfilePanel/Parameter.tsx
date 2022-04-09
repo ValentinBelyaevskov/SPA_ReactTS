@@ -4,6 +4,8 @@ import { useRef, useEffect, useState } from 'react';
 import getValueWithoutMeasurer from '../../../../functions/getValueWithoutMeasurer';
 import { shortenTheString } from '../../../../functions/shortenTheString';
 import { Popup, usePopupElement } from '../../../../hooks';
+import { useTouchEvents } from '../../../../hooks/useTouchEvents';
+import React from 'react';
 
 
 type Props = {
@@ -12,48 +14,47 @@ type Props = {
 }
 
 
-/* SELECT *
-FROM `cityutf8_1`
-LEFT JOIN `cityutf8`
-ON `cityutf8_1`.`id` = `cityutf8`.`id` */
-
 const Parameter = (props: Props) => {
    // consts
-   const [parameterValue, setParameterValue] = useState<string | undefined | number | null>(props.parameterValue)
-   const [isTheStringLong, setIsTheStringLong] = useState<boolean>(false)
-   const [showNotVisibleValue, setShowNotVisibleValue] = useState<boolean>(true)
+   const [parameterValue, setParameterValue] = useState<string | undefined | number | null>(props.parameterValue);
+   const [isTheStringLong, setIsTheStringLong] = useState<boolean>(false);
+   const [showNotVisibleValue, setShowNotVisibleValue] = useState<boolean>(true);
+   const [showPromptOnTouchStart, setShowPromptOnTouchStart] = useState<boolean>(true);
 
    const notVisibleValue: React.RefObject<HTMLDivElement> = useRef<HTMLDivElement>(null)
    const prompt: React.RefObject<HTMLDivElement> = useRef<HTMLDivElement>(null)
 
-   // popup
-   const popup: Popup = usePopupElement(prompt)
+   // custom hooks
+   const touchMove = useTouchEvents("touchmove", [".profileParameterPrompt"], hidePrompt);
+   const popup: Popup = usePopupElement(prompt);
 
 
    // effects
    useEffect(() => {
-      if (!notVisibleValue.current && !showNotVisibleValue) return
+      if (!notVisibleValue.current && !showNotVisibleValue) return;
 
       const parameterValueWidth: string = getComputedStyle(notVisibleValue.current!).width;
 
-      if (+getValueWithoutMeasurer(parameterValueWidth) > 200) {
-         setParameterValue(shortenTheString(`${props.parameterValue}`, 15))
-         setIsTheStringLong(true)
+      if (+getValueWithoutMeasurer(parameterValueWidth) > 250) {
+      // if (+getValueWithoutMeasurer(parameterValueWidth) > 150) {
+         setParameterValue(shortenTheString(`${props.parameterValue}`, 20));
+         setIsTheStringLong(true);
       } else {
-         setParameterValue(props.parameterValue)
-         setIsTheStringLong(false)
+         setParameterValue(props.parameterValue);
+         setIsTheStringLong(false);
       }
-      if (!notVisibleValue.current) return
-      notVisibleValue.current.style.display = "none"
-   }, [notVisibleValue, props.parameterValue, showNotVisibleValue])
 
+      if (!notVisibleValue.current) return;
+
+      notVisibleValue.current.style.display = "none";
+   }, [notVisibleValue, props.parameterValue, showNotVisibleValue])
 
    useEffect(() => {
       setTimeout(() => {
-         setShowNotVisibleValue(false)
+         setShowNotVisibleValue(false);
       }, 0);
       setTimeout(() => {
-         setShowNotVisibleValue(true)
+         setShowNotVisibleValue(true);
       }, 0);
    }, [props.parameterValue])
 
@@ -64,11 +65,34 @@ const Parameter = (props: Props) => {
    }
 
    const showPrompt = (): void => {
-      popup.showElementWithTimeout(200)
+      popup.showElementWithTimeout(300)
+      setShowPromptOnTouchStart(false)
    }
 
-   const hidePrompt = (): void => {
+   function hidePrompt(): void {
       popup.hideElementWithTimeout(0)
+      touchMove.enableEventSimulation();
+      setShowPromptOnTouchStart(true);
+   }
+
+   const showPromptOnTouch = (): void => {
+      popup.showElementWithTimeout(0);
+      setShowPromptOnTouchStart(false);
+      touchMove.addEventListener();
+   }
+
+   const hidePromptOnTouch = (): void => {
+      popup.hideElementWithTimeout(0);
+      setShowPromptOnTouchStart(true);
+      touchMove.enableEventSimulation();
+   }
+
+   const parameterValueTouchListener = (e: React.TouchEvent<HTMLDivElement>): void => {
+      if (showPromptOnTouchStart) {
+         showPromptOnTouch();
+      } else {
+         hidePromptOnTouch();
+      }
    }
 
 
@@ -81,7 +105,7 @@ const Parameter = (props: Props) => {
             popup.needToShowElement
                ? (<div
                   ref={prompt}
-                  className={styles.prompt}
+                  className={`${styles.prompt} profileParameterPrompt`}
                   onMouseEnter={showPrompt}
                   onMouseLeave={hidePrompt}
                >
@@ -97,6 +121,7 @@ const Parameter = (props: Props) => {
                      onMouseEnter={showPrompt}
                      onMouseLeave={hidePrompt}
                      onDoubleClick={copyValue}
+                     onTouchStart={parameterValueTouchListener}
                   >
                      {`${parameterValue}`}
                   </div>

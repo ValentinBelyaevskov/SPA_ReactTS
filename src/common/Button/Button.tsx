@@ -24,11 +24,11 @@ type Style = {
 const Button = (props: Props) => {
    return (
       <div
-         className={`${styles.buttonContainer} ${props.params.containerClassName ? props.params.containerClassName : undefined}`}
+         className={`unselectable ${styles.buttonContainer} ${props.params.containerClassName ? props.params.containerClassName : undefined}`}
          style={props.params.containerStyle}
       >
          <button
-            className={`${props.params.buttonClassName} ${props.params.color === "red" ? styles.redButton : styles.blueButton}`}
+            className={`${styles.button} ${props.params.buttonClassName} ${props.params.color === "red" ? styles.redButton : styles.blueButton}`}
             style={props.params.buttonStyle}
             onClick={props.params.clickHandler}
             type={props.params.type ? props.params.type : undefined}

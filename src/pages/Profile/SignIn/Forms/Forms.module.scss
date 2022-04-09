@@ -17,13 +17,11 @@
    .redPrompt {
       color: red;
    }
-
+   
    .prompt {
       line-height: 22px;
-      margin: 0 0 15px 0;
       color: var(--theme-color);
       font-weight: 500;
-      margin: 0;
    }
 
    .title {
@@ -39,6 +37,7 @@
 
    .inputFields {
       .inputContainer:not(:first-of-type) {
+         position: relative;
          margin-top: 17px;
       }
 
@@ -73,6 +72,28 @@
          }
       }
 
+      .passwordInput {
+         padding: 7px 40px 7px 15px;
+      }
+
+      .passwordVisibilityIcon {
+         position: absolute;
+         top: 4px;
+         right: 7px;
+
+         height: 23px;
+
+         opacity: 1;
+
+         transition-property: opacity;
+         transition-duration: 0.1s;
+
+         &:hover {
+            cursor: pointer;
+            opacity: 0.6;
+         }
+      }
+
       .validationError {
          margin-top: 8px;
          margin-left: 15px;
@@ -93,6 +114,10 @@
                background-repeat: no-repeat;
             }
          }
+      }
+
+      .rememberMeIcon {
+         display: none;
       }
 
       .checkboxLabel {

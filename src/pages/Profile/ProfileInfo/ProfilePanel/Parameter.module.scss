@@ -4,20 +4,26 @@
    justify-content: space-between;
    align-items: center;
 
+   .notVisibleValue,
    .parameterValue,
    .parameterName {
       font-size: 13px;
       font-weight: normal;
    }
 
+   .parameterName,
+   .parameterValue {
+      padding: 4px 0;
+      line-height: 1.8rem;
+   }
+
    .parameterName {
-      flex: 1 1 40%;
+      flex: 0 0 100px;
+      align-self: start;
    }
 
    .parameterValue {
-      flex: 1 1 60%;
-
-      padding: 5px 0;
+      flex: 1 1 72%;
 
       color: var(--gray-fontColor);
    }
@@ -33,20 +39,18 @@
    }
 
    .notVisibleValue {
+      position: absolute;
       white-space: nowrap;
+      width: fit-content;
 
-      font-size: 13px;
-      font-weight: normal;
       opacity: 0;
    }
 
    .prompt {
       position: absolute;
-      z-index: 2;
+      z-index: 1;
       bottom: 22px;
       right: 0;
-
-      word-wrap: break-word;
 
       max-width: 350px;
       padding: 5px 12px;
@@ -54,6 +58,7 @@
 
       font-weight: 300;
       font-size: 13px;
+      line-height: 15px;
       color: white;
 
       background-color: var(--theme-prompt-color);
@@ -65,27 +70,18 @@
 }
 
 // media queries
-@media (max-width: 550px) {
+@media (max-width: 460px) {
    .parameter {
-      .parameterName {
-         flex: 0 0 95px;
+      .notVisibleValue,
+      .parameterValue,
+      .parameterName,
+      .prompt {
+         font-size: 1.5rem;
       }
-   
-      .parameterValue {
-         flex: 1 1 75%;
-      }
-   }
-}
 
-@media (max-width: 500px) {
-   .parameter {
-      // display: block;
-      // .parameterName {
-      //    flex: 0 0 95px;
-      // }
-   
-      // .parameterValue {
-      //    flex: 1 1 75%;
-      // }
+      .parameterName,
+      .parameterValue {
+         padding: 6px 0;
+      }
    }
 }

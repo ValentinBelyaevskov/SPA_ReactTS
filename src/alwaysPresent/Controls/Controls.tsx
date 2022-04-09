@@ -1,26 +1,26 @@
-import { useState, useEffect } from 'react';
-import { useWindowsSize } from '../../hooks/useWindowsSize';
 import styles from './Controls.module.scss'
+import { useState, useEffect, useContext, useRef } from 'react';
+import { useWindowsSize } from '../../hooks/useWindowsSize';
 import ControlsItem from './ControlsItem'
-import React from 'react';
+import { useTouchEvents } from '../../hooks/useTouchEvents';
+import { usePopupElement } from '../../hooks/usePopupElement';
+import { IconsThatAreLoaded } from 'common/IconsThatAreLoaded/IconsThatAreLoaded';
+import { ControlsContext } from '../../App';
 
 
 // types
 type Props = {
-   setControlsLoaded: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 type PagesList = ("Profile" | "News" | "Messages" | "Friends" | "Communities" | "Settings")[];
 
-type Icon = "./icons/hide.svg" | "./icons/burger.svg";
-
-type ControlsListContainerStyle = { transform?: "translateX(100%)", display?: "none" }
-
-type IconsLoaded = boolean[]
+type ControlsListContainerStyle = { transform?: "translateX(100%)", display?: "none" };
 
 
 const Controls = (props: Props) => {
-   // vars
+   // consts, vars
+   const context = useContext(ControlsContext);
+
    const pagesList: PagesList = [
       "Profile",
       "News",
@@ -29,76 +29,91 @@ const Controls = (props: Props) => {
       "Communities",
       "Settings",
    ];
-   const [showControls, setShowControls] = useState<boolean>(false);
-   const [icon, setIcon] = useState<Icon>("./icons/burger.svg");
-   const [controlIconsLoaded, setControlIconsLoaded] = useState<IconsLoaded>(pagesList.map(() => false));
-   const [burgerIconLoaded, setBurgerIconLoaded] = useState<boolean>(false);
-   const [hideIconLoaded, setHideIconLoaded] = useState<boolean>(false);
+   const icons = pagesList.map(pageName => `./icons/${pageName.toLocaleLowerCase()}.svg`);
+
    const [controlsListContainerStyle, setControlsListContainerStyle] = useState<ControlsListContainerStyle>({ display: 'none' });
    const { windowSize, addResizeListener, removeResizeListener } = useWindowsSize(600);
+   const controlsBackground: React.RefObject<HTMLDivElement> = useRef<HTMLDivElement>(null)
+
+   // custom hooks
+   const touchMove = useTouchEvents("touchmove", [".headerControlsElement"], hideControlsOnTouchEvent);
+   const touchStart = useTouchEvents("touchstart", [".headerControlsElement"], hideControlsOnTouchEvent);
+   const popupBackground = usePopupElement(controlsBackground)
 
 
    // functions
-   const burgerIconClickListener = (showControls: boolean): void => {
-      if (showControls) {
-         setShowControls(false);
-      } else {
-         setShowControls(true);
-      }
+   function hideControlsOnTouchEvent(): void {
+      context.burgerIconClickListener!(context.needToShowControls!)
+   }
+
+   const addTouchEventListeners = (): void => {
+      touchMove.removeEventListener();
+      touchMove.addEventListener();
+      touchStart.removeEventListener();
+      touchStart.addEventListener();
+   }
+
+   const enableTouchEventsSimulation = (): void => {
+      touchMove.enableEventSimulation();
+      touchStart.enableEventSimulation();
+   }
+
+   const showControls = (): void => {
+      context.setIcon!('./icons/hide.svg');
+      setControlsListContainerStyle({ transform: 'translateX(100%)' });
+      addResizeListener();
+      addTouchEventListeners();
+      popupBackground.showElementWithTimeout(0);
+   }
+
+   function hideControls(): void {
+      context.setIcon!('./icons/burger.svg');
+      setControlsListContainerStyle({});
+      removeResizeListener();
+      enableTouchEventsSimulation();
+      popupBackground.hideElementWithTimeout(0);
    }
 
 
    // effects
    useEffect(() => {
-      if (windowSize[0] > 750) {
-         setShowControls(false);
+      if (windowSize[0] > 600) {
+         context.setNeedToShowControls!(false);
+         popupBackground.hideElementWithoutAnimation()
       }
    }, [windowSize]);
 
    useEffect(() => {
-      if (showControls) {
-         setIcon('./icons/hide.svg');
-         setControlsListContainerStyle({ transform: 'translateX(100%)' });
-         addResizeListener();
-      } else if (!controlIconsLoaded.includes(false) && burgerIconLoaded && hideIconLoaded) {
-         setIcon('./icons/burger.svg');
-         setControlsListContainerStyle({});
-         removeResizeListener();
-         props.setControlsLoaded(true);
+      if (context.needToShowControls) {
+         showControls();
+      } else {
+         hideControls();
       }
-   }, [showControls, controlIconsLoaded, burgerIconLoaded, hideIconLoaded]);
+   }, [context.needToShowControls]);
 
 
    return (
-      <div className={styles.controls}>
-         <div className={`${styles.burgerIcon} unselectable`} onClick={() => burgerIconClickListener(showControls)} >
-            <img src={icon} alt="burger menu icon" />
-         </div>
-         <div className={styles.iconLoadingContainer}>
-            <img
-               src="./icons/hide.svg"
-               alt="burger menu icon"
-               onLoad={() => {setBurgerIconLoaded(true)}}
-            />
-            <img
-               src="./icons/burger.svg"
-               alt="burger menu icon"
-               onLoad={() => {setHideIconLoaded(true)}}
-            />
-         </div>
-         <div className={styles.controlsListContainer} style={controlsListContainerStyle}>
+      <div className={`${styles.controls}`}>
+         {
+            popupBackground.needToShowElement ?
+               <div className={styles.controlsBackground} ref={controlsBackground}></div>
+               : null
+         }
+         <div className={`${styles.controlsListContainer}  headerControlsElement`} style={controlsListContainerStyle}>
             <ul className={styles.controlsList}>
-               {pagesList.map((item, index) => (
+               {pagesList.map((item, i) => (
                   <ControlsItem
                      key={item}
-                     index={index}
-                     controlIconsLoaded={controlIconsLoaded}
-                     setControlIconsLoaded={setControlIconsLoaded}
                      buttonName={item}
+                     icon={icons[i]}
                   />
                ))}
             </ul>
          </div>
+         <IconsThatAreLoaded
+            icons={icons}
+            setIconsLoaded={context.setControlsLoaded!}
+         />
       </div>
    )
 }
