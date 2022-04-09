@@ -1,4 +1,4 @@
-import styles from "./RoundAvatar.module.css"
+import styles from "./RoundAvatar.module.scss"
 import { ImageProps } from './types';
 
 

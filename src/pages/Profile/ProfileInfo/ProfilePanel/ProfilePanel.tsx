@@ -11,6 +11,7 @@ import ChangePasswordForm from '../Editors/ChangePasswordForm';
 import SignOut from '../Editors/SignOut';
 import ChangeAvatarForm from '../Editors/ChangeAvatarForm';
 import Menu from './Menu';
+import { useTouchEvents } from 'hooks/useTouchEvents';
 
 
 type AvatarWrapperStyle = {
@@ -26,74 +27,101 @@ type PagePartStyle = {
 
 
 const ProfilePanel = () => {
-   // consts
-
    const avatarWrapperStyle: AvatarWrapperStyle = {
       overflow: 'hidden',
       borderRadius: "0.6rem",
    }
 
    const dispatch = useAppDispatch();
-   const [showMenuOnClick, setShowMenuOnClick] = useState<boolean>(true)
-   const [editMode, setEditMode] = useState<EditMode>(false)
+   const [showMenuOnTouchStart, setShowMenuOnTouchStart] = useState<boolean>(true);
+   const [editMode, setEditMode] = useState<EditMode>(false);
    const [pagePartStyle, setPagePartStyle] = useState<PagePartStyle>({});
-   const profileInfo: Profile = useAppSelector(getProfileInfo)
+   const profileInfo: Profile = useAppSelector(getProfileInfo);
    const profileInfoMode: string = useAppSelector(getProfileInfoMode);
    const parameters: [string, string | undefined | number | null][] = [
       ["email", profileInfo.email],
       ["location", profileInfo.location],
       ["education", profileInfo.education],
       ["dateOfBirth", profileInfo.dateOfBirth],
-   ];
+   ]
 
    const menu: React.RefObject<HTMLDivElement> = useRef<HTMLDivElement>(null);
    const parametersIcon: React.RefObject<HTMLDivElement> = useRef<HTMLDivElement>(null);
 
-   // popup elements
+   // custom hooks
    const popupMenu: Popup = usePopupElement(menu, true);
-
+   const touchMove = useTouchEvents('touchmove', [".profilePanelMenuElement"], resetShowMenuOnTouchEvent);
+   const touchStart = useTouchEvents('touchstart', [".profilePanelMenuElement"], resetShowMenuOnTouchEvent);
 
    // effects
    useEffect(() => {
       if (editMode) {
-         dispatch(profileActions.setProfileInfoMode("edit"))
+         dispatch(profileActions.setProfileInfoMode("edit"));
       }
-
       return () => {
-         dispatch(profileActions.setProfileInfoMode("view"))
+         dispatch(profileActions.setProfileInfoMode("view"));
       }
-   }, [editMode])
+   }, [editMode]);
 
    useEffect(() => {
       if (profileInfoMode === "edit") {
          setPagePartStyle({
             paddingTop: "27px",
-         })
+         });
       } else {
-         setPagePartStyle({})
+         setPagePartStyle({});
       }
    }, [profileInfoMode]);
 
 
    // funcs
+   const addTouchEventListeners = (): void => {
+      touchMove.removeEventListener();
+      touchMove.addEventListener();
+      touchStart.removeEventListener();
+      touchStart.addEventListener();
+   }
+
+   const enableTouchEventsSimulation = (): void => {
+      touchMove.enableEventSimulation();
+      touchStart.enableEventSimulation();
+   }
+
+   function resetShowMenuOnTouchEvent(): void {
+      popupMenu.hideElementWithTimeout(0);
+      setShowMenuOnTouchStart(true);
+   }
+
    const finishEditing: () => void = () => setEditMode(false);
 
    const showMenu = (): void => {
       popupMenu.showElementWithTimeout(200);
+      setShowMenuOnTouchStart(false);
    }
 
    const hideMenu = (): void => {
       popupMenu.hideElementWithTimeout(200);
+      setShowMenuOnTouchStart(true);
+      enableTouchEventsSimulation();
    }
 
-   const menuIconClickListener = (): void => {
-      if (showMenuOnClick) {
-         popupMenu.hideElementWithTimeout(0);
-         popupMenu.showElementWithTimeout(0);
-         setShowMenuOnClick(false)
+   const showMenuOnTouch = (): void => {
+      popupMenu.showElementWithTimeout(0);
+      setShowMenuOnTouchStart(false);
+      addTouchEventListeners();
+   }
+
+   const hideMenuOnTouch = (): void => {
+      popupMenu.hideElementWithTimeout(0);
+      setShowMenuOnTouchStart(true);
+      enableTouchEventsSimulation();
+   }
+
+   const menuIconTouchListener = (): void => {
+      if (showMenuOnTouchStart) {
+         showMenuOnTouch();
       } else {
-         popupMenu.hideElementWithTimeout(0);
-         setShowMenuOnClick(true);
+         hideMenuOnTouch();
       }
    }
 
@@ -115,11 +143,11 @@ const ProfilePanel = () => {
                      {profileInfo.username}
                   </h3>
                   <div
-                     className={`${styles.setParametersIcon} unselectable`}
+                     className={`${styles.parametersIcon} profilePanelMenuElement unselectable`}
                      ref={parametersIcon}
                      onMouseEnter={showMenu}
                      onMouseLeave={hideMenu}
-                     onTouchStart={menuIconClickListener}
+                     onTouchStart={menuIconTouchListener}
                   >
                      <img src="./icons/other.svg" alt="Set parameters icon" />
                   </div>
@@ -132,6 +160,7 @@ const ProfilePanel = () => {
                               menuRef={menu}
                               setEditMode={setEditMode}
                               showMenu={showMenu}
+                              hideMenuOnTouchStart={resetShowMenuOnTouchEvent}
                            />
                         )
                         : null

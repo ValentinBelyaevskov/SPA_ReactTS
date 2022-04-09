@@ -100,97 +100,97 @@ const ChangePasswordForm = (props: Props) => {
    // render
    return (
       <div style={localState.editorStyle} onTransitionEnd={transitionEndListener} className={`${styles.editor}`}>
-         <form className={styles.form} onSubmit={handleSubmit(onSubmit)}>
-            <h2 className={styles.title}>
-               Change password
-            </h2>
-            <div className={styles.inputFields}>
-               <label className={styles.label} htmlFor="currentPassword">Current password:</label>
-               <input
-                  className={styles.input}
-                  type="password"
-                  {
-                  ...register(
-                     "currentPassword",
+         <div className={`${styles.changePasswordFormContainer} ${styles.formContainer}`}>
+            <form className={styles.form} onSubmit={handleSubmit(onSubmit)}>
+               <h2 className={styles.title}>
+                  Change password
+               </h2>
+               <div className={styles.inputFields}>
+                  <label className={styles.label} htmlFor="currentPassword">Current password:</label>
+                  <input
+                     className={styles.input}
+                     type="password"
                      {
-                        minLength: {
-                           value: 8,
-                           message: "Must be 8 characters or more",
-                        },
-                        maxLength: {
-                           value: 250,
-                           message: "Must be 250 characters or less",
-                        },
-                        required: "Required",
+                     ...register(
+                        "currentPassword",
+                        {
+                           minLength: {
+                              value: 8,
+                              message: "Must be 8 characters or more",
+                           },
+                           maxLength: {
+                              value: 250,
+                              message: "Must be 250 characters or less",
+                           },
+                           required: "Required",
+                        }
+                     )
                      }
-                  )
-                  }
-                  autoComplete="on"
-               />
-               <p className={styles.validationError}>{errors.currentPassword ? errors.currentPassword.message : null}</p>
+                     autoComplete="on"
+                  />
+                  <p className={styles.validationError}>{errors.currentPassword ? errors.currentPassword.message : null}</p>
 
-               <label className={styles.label} htmlFor="newPassword">New password:</label>
-               <input
-                  className={styles.input}
-                  type="password"
-                  {
-                  ...register(
-                     "newPassword",
+                  <label className={styles.label} htmlFor="newPassword">New password:</label>
+                  <input
+                     className={styles.input}
+                     type="password"
                      {
-                        minLength: {
-                           value: 8,
-                           message: "Must be 8 characters or more"
-                        },
-                        maxLength: {
-                           value: 250,
-                           message: "Must be 250 characters or less"
-                        },
-                        required: "Required",
+                     ...register(
+                        "newPassword",
+                        {
+                           minLength: {
+                              value: 8,
+                              message: "Must be 8 characters or more"
+                           },
+                           maxLength: {
+                              value: 250,
+                              message: "Must be 250 characters or less"
+                           },
+                           required: "Required",
+                        }
+                     )
                      }
-                  )
-                  }
-                  autoComplete="on"
-               />
-               <p className={styles.validationError}>{errors.newPassword ? errors.newPassword.message : null}</p>
+                     autoComplete="on"
+                  />
+                  <p className={styles.validationError}>{errors.newPassword ? errors.newPassword.message : null}</p>
 
-               {
-                  loadInfo.loading ? <div className={`${styles.warning} ${styles.loadingWarning}`}>Loading...</div>
-                     : loadInfo.error ? <div className={`${styles.warning} ${styles.errorWarning}`}>{`${loadInfo.error}`}</div>
-                        : null
-               }
-               <div>
-                  <p className={styles.description}>
-                     After changing the password, you will need to log in again using the new password.
-                  </p>
+                  {
+                     loadInfo.loading ? <div className={`${styles.warning} ${styles.loadingWarning}`}>Loading...</div>
+                        : loadInfo.error ? <div className={`${styles.warning} ${styles.errorWarning}`}>{`${loadInfo.error}`}</div>
+                           : null
+                  }
+                  <div>
+                     <p className={styles.description}>
+                        After changing the password, you will need to log in again using the new password.
+                     </p>
+                  </div>
                </div>
-            </div>
-            <div className={styles.buttons}>
-               <Button
-                  params={
-                     {
-                        clickHandler: setClickedButtonName,
-                        text: "Set new Password",
-                        type: "submit",
-                        buttonStyle: { padding: "5px 20px" },
-                        buttonClassName: "setNewPasswordButton",
-                        disabled: !isValid
+               <div className={styles.buttons}>
+                  <Button
+                     params={
+                        {
+                           clickHandler: setClickedButtonName,
+                           text: "Set new Password",
+                           type: "submit",
+                           buttonClassName: `${styles.formButton} setNewPasswordButton`,
+                           disabled: !isValid
+                        }
                      }
-                  }
-               />
-               <Button
-                  params={
-                     {
-                        containerClassName: "closeButtonContainer",
-                        clickHandler: (e) => { hideEditorStyle(); setClickedButtonName(e) },
-                        text: "Close",
-                        type: "button",
-                        buttonStyle: { padding: "5px 20px" },
-                        buttonClassName: "closeButton"
+                  />
+                  <Button
+                     params={
+                        {
+                           containerClassName: "closeButtonContainer",
+                           clickHandler: (e) => { hideEditorStyle(); setClickedButtonName(e) },
+                           text: "Close",
+                           type: "button",
+                           buttonClassName: `${styles.formButton} closeButton`
+                        }
                      }
-                  }
-               />
-            </div>
-         </form>
+                  />
+               </div>
+            </form>
+         </div>
       </div>
    )
 }

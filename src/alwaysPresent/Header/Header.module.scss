@@ -30,6 +30,8 @@
 
       .avatar {
          margin-left: 20px;
+
+         box-shadow: 0px 1px 5px 1px rgb(0 0 0 / 10%);
       }
    }
 }
@@ -54,7 +56,6 @@
 
 @media (max-width: 600px) {
    .header {
-
       .avatar {
          order: -2;
          margin: 0;
@@ -63,7 +64,7 @@
       .searchForm {
          margin: 0;
       }
-      
+
       .controls {
          justify-self: end;
          margin: 0;

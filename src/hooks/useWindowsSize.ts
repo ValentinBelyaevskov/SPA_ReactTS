@@ -11,14 +11,14 @@ export const useWindowsSize = (maxWidth: number) => {
 
    const addResizeListener = useCallback(
       (): void => {
-         window.addEventListener("resize", resizeListener);
+         document.documentElement.addEventListener("resize", resizeListener);
       }
       , []
    );
 
    const removeResizeListener = useCallback(
       (): void => {
-         window.removeEventListener("resize", resizeListener);
+         document.documentElement.removeEventListener("resize", resizeListener);
       }
       , []
    );
