@@ -1,28 +1,17 @@
 import styles from "./Editor.module.scss"
 import { useAppDispatch, useAppSelector } from '../../../../hooks/redux';
-import React, { useState } from "react";
 import { profileActions, getProfileInfo, getLoadInfo, update } from '../../redux/profileReducer';
 import { useForm, SubmitHandler } from "react-hook-form";
 import { removeExtraSpaces } from "../../../../functions";
 import Backendless from 'backendless';
 import { Button } from "../../../../common";
+import { usePopupForm } from "hooks/usePopup/usePopupForm";
 
 
-// types
+
 type Props = {
    finishEditing: () => void,
 }
-
-type LocalState = {
-   editorStyle: { opacity: number },
-   clickedButton: string | undefined,
-}
-
-type EditorStyle = {
-   opacity: number
-}
-
-type ClickedButton = string | undefined
 
 interface Inputs {
    username: string,
@@ -32,41 +21,15 @@ interface Inputs {
 }
 
 
+
 const ChangeProfileInfoForm = (props: Props) => {
-   // hooks
    const dispatch = useAppDispatch();
    const profile = useAppSelector(getProfileInfo);
    const loadInfo = useAppSelector(getLoadInfo);
-   const [editorStyle, setEditorStyle] = useState<EditorStyle>({ opacity: 1 });
-   const [clickedButton, setClickedButton] = useState<ClickedButton>(undefined);
+   const popupForm = usePopupForm(props.finishEditing);
 
 
-   // funcs
-   const hideEditorStyle = (): void => {
-      // setLocalState({ ...localState, editorStyle: { opacity: 0 } })
-      setEditorStyle({ opacity: 0 })
-   }
 
-   const transitionEndListener = (e: React.TransitionEvent): void => {
-      if (e.currentTarget === e.target) {
-         props.finishEditing()
-      }
-   }
-
-   const setClickedButtonName = (e: React.MouseEvent): void => {
-      if (e.currentTarget.classList.contains("closeButton") && clickedButton !== "saveButton") {
-         dispatch(profileActions.setLoadInfo({
-            error: undefined,
-            errorType: undefined,
-            loaded: false,
-            loading: false,
-         }))
-      }
-      // setLocalState({ ...localState, clickedButton: e.currentTarget.classList[0] })
-      setClickedButton(e.currentTarget.classList[0])
-   }
-
-   // handle form
    const { register, handleSubmit, formState: { errors, isValid } } = useForm<Inputs>({
       mode: "onBlur",
       defaultValues: {
@@ -90,14 +53,14 @@ const ChangeProfileInfoForm = (props: Props) => {
 
       dispatch(update({
          profile: { ...editedData, objectId: profile.objectId },
-         callback: hideEditorStyle,
+         callback: popupForm.hideEditorStyle,
       }))
    }
 
 
-   // render
+
    return (
-      <div style={editorStyle} onTransitionEnd={transitionEndListener} className={`${styles.editor} editor`}>
+      <div style={popupForm.editorStyle} onTransitionEnd={popupForm.transitionEndListener} className={`${styles.editor} ${styles.changeProfileInfoEditor} editor`}>
          <div className={`${styles.changeProfileInfoFormContainer} ${styles.formContainer}`}>
             <form className={styles.form} onSubmit={handleSubmit(onSubmit)}>
                <h2 className={styles.title}>
@@ -176,33 +139,35 @@ const ChangeProfileInfoForm = (props: Props) => {
                   <Button
                      params={
                         {
-                           containerClassName: "saveButtonContainer",
-                           clickHandler: setClickedButtonName,
+                           containerClassName: `saveButtonContainer ${styles.formButtonContainer}`,
+                           clickHandler: popupForm.setClickedButtonName,
                            text: "Save",
                            type: "submit",
                            disabled: !isValid,
-                           buttonClassName: `${styles.formButton} saveButton`
+                           buttonClassName: `${styles.formButton} saveButton`,
+                           changeStyleOnHover: true
                         }
                      }
                   />
                   <Button
                      params={
                         {
-                           containerClassName: "closeButtonContainer",
-                           clickHandler: (e) => { hideEditorStyle(); setClickedButtonName(e) },
+                           containerClassName: `closeButtonContainer ${styles.formButtonContainer}`,
+                           clickHandler: (e) => { popupForm.hideEditorStyle(); popupForm.setClickedButtonName(e) },
                            text: "Close",
                            type: "button",
-                           buttonClassName: `${styles.formButton} closeButton`
+                           buttonClassName: `${styles.formButton} closeButton`,
+                           changeStyleOnHover: true
                         }
                      }
                   />
                </div>
             </form>
          </div>
-
-
       </div>
    )
 }
+
+
 
 export default ChangeProfileInfoForm

@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import React from 'react';
 
 
+
 export type Popup = {
    needToShowElement: boolean
    setContentLoaded: React.Dispatch<React.SetStateAction<boolean>>
@@ -11,8 +12,8 @@ export type Popup = {
 }
 
 
+
 export const usePopupElement = (elementRef: React.RefObject<HTMLDivElement>, expectContentToLoad?: boolean): Popup => {
-   // consts
    const [needToShowElement, setNeedToShowElement] = useState<boolean>(false);
    const [contentLoaded, setContentLoaded] = useState<boolean>(false);
    const [isThereAnHiddingEndListener, setIsThereAnHiddingEndListener] = useState<boolean>(false);
@@ -22,11 +23,11 @@ export const usePopupElement = (elementRef: React.RefObject<HTMLDivElement>, exp
    const [showElementTimeoutValue, setShowElementTimeoutValue] = useState<null | NodeJS.Timeout>(null);
 
 
-   // effects
+
    // * Если не нужно ждать загрузки контента - contentLoaded: true;
    useEffect(() => {
       if (needToShowElement && !expectContentToLoad) {
-         setContentLoaded(true)
+         setContentLoaded(true);
       }
    }, [needToShowElement, expectContentToLoad])
 
@@ -59,7 +60,7 @@ export const usePopupElement = (elementRef: React.RefObject<HTMLDivElement>, exp
    }, [hiddingTimeotValue, theElementWillBeHidden])
 
 
-   // funcs
+
    const setHiddingTimeotValueFalse = (): void => {
       if (hiddingTimeotValue) clearTimeout(hiddingTimeotValue);
       setHiddingTimeoutValue(null);
@@ -106,7 +107,7 @@ export const usePopupElement = (elementRef: React.RefObject<HTMLDivElement>, exp
    const hideElementWithTimeout = (timeValue: number): void => {
       if (
          ((!timeValue && thereIsAZeroHideTimeout)
-         || (timeValue && theElementWillBeHidden))
+            || (timeValue && theElementWillBeHidden))
          && !showElementTimeoutValue
       ) return;
 
@@ -132,6 +133,7 @@ export const usePopupElement = (elementRef: React.RefObject<HTMLDivElement>, exp
          setIsThereAnHiddingEndListener(false);
       }
    }
+
 
 
    return {

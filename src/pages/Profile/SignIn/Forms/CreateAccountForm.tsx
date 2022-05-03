@@ -3,6 +3,9 @@ import SignInButton from '../SignInButton/SignInButton';
 import { useAppDispatch, useAppSelector } from '../../../../hooks/redux';
 import { createAccount, profileActions, getObjectId, getLoadInfo, getProfileMode } from '../../redux/profileReducer';
 import { SubmitHandler, useForm } from 'react-hook-form';
+import { useFocusOnInput } from 'hooks/useFocusOnInput';
+import { useInputVisibilitySwitch } from 'hooks/useInputVisibilitySwitch';
+
 
 
 type Inputs = {
@@ -14,15 +17,17 @@ type Inputs = {
 }
 
 
+
 const CreateAccountForm = () => {
-   // hooks
-   const objectId = useAppSelector(getObjectId)
-   const loadInfo = useAppSelector(getLoadInfo)
-   const progfileMode = useAppSelector(getProfileMode)
-   const dispatch = useAppDispatch()
+   const objectId = useAppSelector(getObjectId);
+   const loadInfo = useAppSelector(getLoadInfo);
+   const progfileMode = useAppSelector(getProfileMode);
+   const dispatch = useAppDispatch();
+   const passwordVisibility = useInputVisibilitySwitch("./icons/hidePasswordIcon.svg", "./icons/showPasswordIcon.svg");
+   const passwordInputFocus = useFocusOnInput();
 
 
-   // handle form
+
    const { register, handleSubmit, clearErrors, formState: { errors, isValid } } = useForm<Inputs>({
       mode: "onBlur",
       defaultValues: {
@@ -52,9 +57,10 @@ const CreateAccountForm = () => {
    }
 
 
+
    return (
       <div className={`${styles.signIn} pagePart`}>
-         <form className={styles.form} onSubmit={handleSubmit(onSubmit)}>
+         <form className={`${styles.form} ${styles.createAccount}`} onSubmit={handleSubmit(onSubmit)}>
             <h3 className={styles.title} >
                Create account
             </h3>
@@ -136,10 +142,10 @@ const CreateAccountForm = () => {
                   <p className={styles.validationError}>{errors.email ? errors.email.message : null}</p>
                </div>
 
-               <div className={styles.inputContainer} >
+               <div className={styles.inputContainer} ref={passwordInputFocus.inputFieldContainer}>
                   <input
                      className={styles.input}
-                     type="password"
+                     type={passwordVisibility.inputType}
                      {
                      ...register(
                         "password",
@@ -158,6 +164,14 @@ const CreateAccountForm = () => {
                      }
                      placeholder={"Password"}
                      autoComplete="on"
+                  />
+                  <img
+                     className={styles.passwordVisibilityIcon}
+                     src={passwordVisibility.icon}
+                     alt="show or hide password icon"
+                     onClick={passwordVisibility.iconClickListener}
+                     onMouseDown={passwordInputFocus.innerElementClickListener}
+                     onTouchStart={passwordInputFocus.innerElementClickListener}
                   />
                   <p className={styles.validationError}>{errors.password ? errors.password.message : null}</p>
                </div>

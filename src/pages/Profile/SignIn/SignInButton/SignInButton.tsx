@@ -17,12 +17,13 @@ type SignInButton = {
    containerClassName: string,
    buttonStyle: { padding: string },
    isValid?: boolean
+   changeStyleOnHover: boolean
 }
 
 
 const SignInButton = (props: Props) => {
    const buttonParams: SignInButton = {
-      buttonStyle: { padding: "6px 20px" },
+      buttonStyle: { padding: "4px 15px" },
 
       clickHandler: props.clickHandler,
 
@@ -41,7 +42,8 @@ const SignInButton = (props: Props) => {
                      : undefined,
 
       type: props.type,
-      isValid: !props.isValid
+      isValid: !props.isValid,
+      changeStyleOnHover: true
    }
 
 

@@ -1,0 +1,43 @@
+.parameters {
+   position: relative;
+
+   .parametersTitleContainer {
+      display: flex;
+      align-items: center;
+      margin-bottom: 9px;
+
+      hr {
+         flex: 1 1 5%;
+         margin-top: 2px;
+
+         height: 1px;
+         border: none;
+
+         background-color: rgb(204, 204, 204);
+      }
+
+      .parametersTitle {
+         color: var(--theme-color);
+         font-size: 1.3rem;
+         font-weight: 500;
+
+         padding-right: 10px;
+      }
+   }
+
+   .parametersList {
+   }
+}
+
+// media queries
+@media (max-width: 460px) {
+   .parameters {
+      .parametersTitleContainer {
+         margin-bottom: 15px;
+
+         .parametersTitle {
+            font-size: 1.5rem;
+         }
+      }
+   }
+}

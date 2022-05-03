@@ -1,14 +1,14 @@
 .form {
    margin: 0 auto;
 
-   width: 350px;
+   max-width: 350px;
 
-   padding-top: 30px;
+   padding-top: 18px;
    padding-bottom: 30px;
 
    .error,
    .prompt {
-      font-size: 14px;
+      font-size: 1.4rem;
       line-height: 2rem;
       margin: 0 0 15px 0;
    }
@@ -20,17 +20,16 @@
 
    .prompt {
       line-height: 22px;
-      margin: 0 0 15px 0;
       color: var(--theme-color);
       font-weight: 500;
-      margin: 0;
    }
 
    .title {
-      margin: 0px 25px 20px 25px;
+      margin: 0px 25px 15px 25px;
 
       text-align: center;
-      font-size: 20px;
+      font-size: 1.8rem;
+      font-weight: 500;
    }
 
    .resetPasswordInfo {
@@ -39,12 +38,14 @@
 
    .inputFields {
       .inputContainer:not(:first-of-type) {
+         position: relative;
          margin-top: 17px;
       }
 
-      .rememberMeAndLoginFlex {
+      .rememberMeAndLoginFlex,
+      .rememberMeAndLoginAsGuestFlex {
          width: 100%;
-         margin-top: 17px;
+         margin-top: 13px;
          display: flex;
          align-items: center;
          justify-content: space-between;
@@ -52,14 +53,14 @@
 
       .input {
          display: block;
-         padding: 7px 15px;
+         padding: 5px 15px;
 
          border: solid 1px rgb(211, 211, 211);
          border-radius: 4px;
 
          color: rgb(58, 58, 58);
          font-weight: 400;
-         font-size: 12px;
+         font-size: 1.2rem;
 
          width: 100%;
 
@@ -70,6 +71,29 @@
          &:focus {
             border: solid 1px var(--theme-prompt-color);
             outline: solid 1px var(--theme-prompt-color);
+         }
+      }
+
+      .passwordInput {
+         padding: 5px 40px 5px 15px;
+      }
+
+      .passwordVisibilityIcon {
+         position: absolute;
+         top: 2px;
+         right: 7px;
+
+         height: 23px;
+
+         opacity: 1;
+
+         transition-property: opacity;
+         transition-duration: 0.1s;
+
+         &.hover:hover,
+         &.touch {
+            cursor: pointer;
+            opacity: 0.6;
          }
       }
 
@@ -95,6 +119,10 @@
          }
       }
 
+      .rememberMeIcon {
+         display: none;
+      }
+
       .checkboxLabel {
          line-height: 20px;
          font-size: 14px;
@@ -117,7 +145,8 @@
          transition-property: color;
          transition-duration: 0.1s;
 
-         &:hover {
+         &.hover:hover,
+         &.touch {
             cursor: pointer;
             color: rgba(0, 0, 0, 0.65);
 
@@ -133,11 +162,13 @@
          font-size: 14px;
          line-height: 22px;
          margin: 0;
-         margin-top: 20px;
+         margin-top: 10px;
       }
 
-      .createAccountButtons {
-         margin-top: 15px;
+      .createAccountButtons,
+      .loginButtons,
+      .loginAsGuestButtons {
+         margin-top: 10px;
 
          display: flex;
          width: 100%;
@@ -146,6 +177,145 @@
          .buttonContainer {
             &:not(:last-of-type) {
                margin-right: 15px;
+            }
+         }
+      }
+   }
+}
+
+@media (max-width: 750px) {
+   .form {
+      height: calc(100vh - 4.6rem);
+   }
+}
+
+@media (max-height: 433px) {
+   .form.createAccount {
+      height: fit-content;
+   }
+}
+
+@media (max-height: 387px) {
+   .form.login {
+      height: fit-content;
+   }
+}
+
+@media (max-height: 255px) {
+   .form.loginAsGuest {
+      height: fit-content;
+   }
+}
+
+@media (max-width: 460px) {
+   .form {
+      padding-top: 20px;
+      height: calc(100vh - 5.3rem);
+
+      .title {
+         font-size: 1.8rem;
+         margin: 0px 25px 20px 25px;
+      }
+
+      .inputFields {
+         .input {
+            font-size: 1.4rem;
+            padding: 5px 15px;
+         }
+
+         .rememberMeAndLoginFlex,
+         .rememberMeAndLoginAsGuestFlex {
+            margin-top: 20px;
+         }
+      }
+
+      .createAccount {
+         .createAccountSubtitle,
+         .createAccountButtons,
+         .loginButtons,
+         .loginAsGuestButtons {
+            margin-top: 20px;
+         }
+      }
+   }
+}
+
+@media (max-height: 477px) {
+   .form.createAccount {
+      height: fit-content;
+   }
+}
+
+@media (max-height: 431px) {
+   .form.login {
+      height: fit-content;
+   }
+}
+
+@media (max-height: 299px) {
+   .form.loginAsGuest {
+      height: fit-content;
+   }
+}
+
+@media (max-width: 350px) {
+   .form {
+      .createAccount {
+         .loginButtons {
+            display: block;
+
+            & > div {
+               width: 100%;
+
+               button {
+                  width: 100%;
+               }
+
+               &:last-child {
+                  margin-top: 2rem;
+               }
+            }
+         }
+      }
+   }
+}
+
+@media (max-width: 320px) {
+   .form {
+      .inputFields {
+         .rememberMeAndLoginAsGuestFlex {
+            flex-direction: column-reverse;
+
+            & > div {
+               width: 100%;
+
+               &:first-child {
+                  width: fit-content;
+                  margin: 2rem auto 0 auto;
+               }
+
+               button {
+                  width: 100%;
+               }
+            }
+         }
+      }
+
+      .createAccount {
+         .createAccountButtons,
+         .loginAsGuestButtons {
+            display: block;
+
+            & > div {
+               width: 100%;
+
+               button {
+                  width: 100%;
+               }
+
+               &:last-child {
+                  margin-top: 2rem;
+               }
             }
          }
       }

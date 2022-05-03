@@ -1,4 +1,4 @@
-import styles from './ProfileInfo.module.scss'
+import styles from './ProfilePage.module.scss'
 import ProfilePanel from './ProfilePanel/ProfilePanel';
 import Wall from './Wall/Wall';
 
@@ -7,7 +7,7 @@ type Props = {
 }
 
 
-const ProfileInfo = (props: Props) => {
+const ProfilePage = (props: Props) => {
    return (
       <div
          className={styles.profileInfo}
@@ -18,4 +18,4 @@ const ProfileInfo = (props: Props) => {
    )
 }
 
-export default ProfileInfo
+export default ProfilePage

@@ -1,5 +1,7 @@
 import styles from './SearchForm.module.scss'
 import { useState, useEffect } from 'react';
+import { useAppSelector } from '../../hooks/redux';
+import { getProfileMode } from 'pages/Profile/redux/profileReducer';
 
 
 type Props = {
@@ -12,11 +14,12 @@ type FormStyle = {
 
 
 const SearchForm = (props: Props) => {
-   // consts
+   const profileMode = useAppSelector(getProfileMode)
    const [formStyle, setFormStyle] = useState<FormStyle>({ display: 'none' });
    const [searchIconHasBeenLoaded, setSearchIconHasBeenLoaded] = useState<boolean>(false)
 
-   // effects
+
+
    useEffect(() => {
       if (searchIconHasBeenLoaded) {
          setFormStyle({})
@@ -31,6 +34,7 @@ const SearchForm = (props: Props) => {
    }, [searchIconHasBeenLoaded])
 
 
+
    return (
       <form className={styles.form} style={formStyle} >
          <img
@@ -39,6 +43,7 @@ const SearchForm = (props: Props) => {
             src="./icons/loupe.svg" alt="Search icon"
          />
          <input
+            disabled={profileMode === 'loggedIn' ? false: true}
             className={styles.searchInput}
             placeholder='Search'
             type="text"

@@ -12,7 +12,7 @@ import { persistor, store } from 'redux/store';
 
 // init backendless
 Backendless.serverURL = "https://eu-api.backendless.com"
-Backendless.initApp("A61B4FCE-2976-8AE0-FFAA-F678297C5B00", "9A38A26E-D1EF-4883-B778-35017ED7C0C6")
+Backendless.initApp("837EDF4A-701E-9063-FF9A-9D9A531C0F00", "ABF9732D-F93A-4B95-8043-287F51F76589")
 
 ReactDOM.render(
    <React.StrictMode>

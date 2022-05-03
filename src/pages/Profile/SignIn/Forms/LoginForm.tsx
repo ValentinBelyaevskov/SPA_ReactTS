@@ -4,6 +4,9 @@ import { useAppDispatch, useAppSelector } from '../../../../hooks/redux';
 import { login, profileActions, getLoadInfo, getProfileMode, passwordReset, getSignInMode } from '../../redux/profileReducer';
 import { useState, useEffect } from 'react';
 import { useForm, SubmitHandler } from "react-hook-form";
+import { useInputVisibilitySwitch } from '../../../../hooks/useInputVisibilitySwitch';
+import { useFocusOnInput } from '../../../../hooks/useFocusOnInput';
+import { useHoverAndTouchClassNames } from 'hooks/useHoverAndTouchClassNames';
 
 
 // types
@@ -19,24 +22,24 @@ type Inputs = {
 
 
 const LoginForm = () => {
-   // consts
-   const loadInfo = useAppSelector(getLoadInfo)
-   const profileMode = useAppSelector(getProfileMode)
-   const signInMode = useAppSelector(getSignInMode)
-   const dispatch = useAppDispatch()
-
-   const [clickedButton, setClickedButton] = useState<ClickedButton>(undefined)
-
-   const [resetPasswordWasClicked, setResetPasswordWasClicked] = useState<ResetPasswordWasClicked>(false)
-
-
-   // effects
-   useEffect(() => {
-      setResetPasswordWasClicked(false)
-   }, [])
+   const loadInfo = useAppSelector(getLoadInfo);
+   const profileMode = useAppSelector(getProfileMode);
+   const signInMode = useAppSelector(getSignInMode);
+   const dispatch = useAppDispatch();
+   const [clickedButton, setClickedButton] = useState<ClickedButton>(undefined);
+   const [resetPasswordWasClicked, setResetPasswordWasClicked] = useState<ResetPasswordWasClicked>(false);
+   const passwordVisibility = useInputVisibilitySwitch("./icons/hidePasswordIcon.svg", "./icons/showPasswordIcon.svg");
+   const passwordInputFocus = useFocusOnInput();
+   const passwordIconPseudoClassNames = useHoverAndTouchClassNames();
+   const rememberMePseudoClassNames = useHoverAndTouchClassNames();
 
 
-   // handle form
+
+   const passwordIconTouchStartListener = (e: React.TouchEvent): void => {
+      passwordIconPseudoClassNames.setTouchClassName(styles.touch);
+      passwordInputFocus.innerElementClickListener(e);
+   }
+
    const { register, handleSubmit, clearErrors, formState: { errors, isValid } } = useForm<Inputs>({
       mode: "onBlur",
       defaultValues: {
@@ -44,7 +47,7 @@ const LoginForm = () => {
          password: "",
          rememberMe: false,
       }
-   })
+   });
 
    const onSubmit: SubmitHandler<Inputs> = data => {
       if (clickedButton === "login") {
@@ -61,20 +64,27 @@ const LoginForm = () => {
             email: data.email,
             password: data.password,
             rememberMe: data.rememberMe,
-         }))
-         dispatch(profileActions.setSignInMode('passwordReset'))
+         }));
+         dispatch(profileActions.setSignInMode('passwordReset'));
       }
       dispatch(profileActions.setLoadInfo({
          ...loadInfo,
          loading: true,
          loaded: false,
-      }))
+      }));
    }
+
+
+
+   useEffect(() => {
+      setResetPasswordWasClicked(false);
+   }, []);
+
 
 
    return (
       <div className={`${styles.signIn} pagePart`}>
-         <form className={styles.form} onSubmit={handleSubmit(onSubmit)}>
+         <form className={`${styles.form}  ${styles.login}`} onSubmit={handleSubmit(onSubmit)}>
             <h3 className={styles.title} >
                Login
             </h3>
@@ -122,10 +132,10 @@ const LoginForm = () => {
                   <p className={styles.validationError}>{errors.email ? errors.email.message : null}</p>
                </div>
 
-               <div className={styles.inputContainer} >
+               <div className={styles.inputContainer} ref={passwordInputFocus.inputFieldContainer}>
                   <input
-                     className={styles.input}
-                     type="password"
+                     className={`${styles.input} ${styles.passwordInput}`}
+                     type={passwordVisibility.inputType}
                      {
                      ...register(
                         "password",
@@ -145,6 +155,17 @@ const LoginForm = () => {
                      placeholder={"Password"}
                      autoComplete="on"
                   />
+                  <img
+                     className={`${styles.passwordVisibilityIcon} ${passwordIconPseudoClassNames.className} unselectable`}
+                     src={passwordVisibility.icon}
+                     alt="show or hide password icon"
+                     onClick={passwordVisibility.iconClickListener}
+                     onMouseDown={passwordInputFocus.innerElementClickListener}
+                     onMouseEnter={() => passwordIconPseudoClassNames.setHoverClassName(styles.hover)}
+                     onMouseLeave={() => passwordIconPseudoClassNames.setHoverClassName("")}
+                     onTouchStart={passwordIconTouchStartListener}
+                     onTouchEnd={() => passwordIconPseudoClassNames.resetTouchClassName(true)}
+                  />
                   <p className={styles.validationError}>{errors.password ? errors.password.message : null}</p>
                </div>
                <SignInButton
@@ -161,7 +182,7 @@ const LoginForm = () => {
                         <div className={styles.resetPasswordInfo}>
                            <p className={styles.prompt}>Forgot your password? In order to change your password, you need:
                               <br />1. Enter your email and current password in the input fields.
-                              <br />2. Instead of "Login", click "Reset Password".</p>
+                              <br />2. Instead of «Login», click «Reset Password».</p>
                         </div>
                      )
                      : null
@@ -174,7 +195,17 @@ const LoginForm = () => {
                         id="rememberMe"
                         {...register("rememberMe")}
                      />
-                     <label htmlFor="rememberMe" className={`${styles.checkboxLabel} unselectable`}>remember me</label>
+                     <label
+                        htmlFor="rememberMe"
+                        className={`${styles.checkboxLabel} ${rememberMePseudoClassNames.className} unselectable`}
+                        onMouseEnter={() => rememberMePseudoClassNames.setHoverClassName(styles.hover)}
+                        onMouseLeave={() => rememberMePseudoClassNames.setHoverClassName("")}
+                        onTouchStart={() => rememberMePseudoClassNames.setTouchClassName(styles.touch)}
+                        onTouchEnd={() => rememberMePseudoClassNames.resetTouchClassName(true)}
+                     >
+                        remember me
+                     </label>
+                     <img className={styles.rememberMeIcon} src='./image/checked.svg' alt="remember me icon" />
                   </div>
                   <SignInButton
                      type="submit"
@@ -189,7 +220,7 @@ const LoginForm = () => {
                <p className={styles.createAccountSubtitle}>
                   Create an account if you don't have one, or login as a guest:
                </p>
-               <div className={styles.createAccountButtons}>
+               <div className={styles.loginButtons}>
                   <SignInButton
                      type="button"
                      name="createAccountBtn"

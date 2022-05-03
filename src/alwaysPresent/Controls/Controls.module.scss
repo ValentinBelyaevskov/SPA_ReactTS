@@ -1,22 +1,22 @@
 .controls {
    width: 140px;
-   margin: 28px 20px 0 auto;
+   margin: 43px 20px 0 auto;
 
    .controlsListContainer {
       .controlsList {
+         display: block;
       }
-   }
-
-   .burgerIcon {
-      display: none;
    }
 
    .iconLoadingContainer {
       display: none;
    }
+
+   .controlsBackground {
+      display: none;
+   }
 }
 
-// media queries
 @media (max-width: 950px) {
    .controls {
       width: auto;
@@ -26,49 +26,66 @@
 
 @media (max-width: 600px) {
    .controls {
-      width: fit-content;
-
-      .burgerIcon {
-         display: block;
-
-         padding: 10px;
-         margin-right: -10px;
-
-         transition-property: opacity;
-         transition-duration: 0.1s;
-
-         img {
-            height: 16px;
-            width: 20px;
-         }
-
-         &:hover {
-            opacity: 0.6;
-            cursor: pointer;
-         }
-      }
-
       .controlsListContainer {
          display: flex;
          align-items: start;
          justify-content: space-between;
 
          position: fixed;
-         left: -198px;
-         top: 5.1rem;
+         left: -199px;
+         top: 4.6rem;
 
-         padding: 20px 20px 0 20px;
-         height: calc(100vh - 5.1rem);
+         padding: 20px 20px 20px 20px;
+         height: calc(100vh - 4.6rem);
 
          background-color: var(--main-color);
-         border-right: 1px solid var(--border-color);
-         // box-shadow: 0px 3px 3px 1px rgb(0 0 0 / 14%);
+         box-shadow: 1px 0px 5px 0px rgb(0 0 0 / 14%);
 
          transition-property: transform;
          transition-duration: 0.4s;
 
+         overflow: auto;
+
+         &::-webkit-scrollbar {
+            width: 0;
+         }
+
          .controlsList {
          }
+      }
+
+      .controlsBackground {
+         display: block;
+         position: fixed;
+         left: 0;
+         top: 4.6rem;
+
+         height: calc(100vh - 4.6rem);
+         width: 100vw;
+
+         opacity: 0;
+         background-color: rgba(0, 0, 0, 0.25);
+
+         transition-property: opacity;
+         transition-duration: 0.4s;
+      }
+   }
+}
+
+@media (max-width: 460px) {
+   .controls {
+      .burgerIcon {
+         img {
+            height: 24px;
+            width: 28px;
+         }
+      }
+
+      .controlsListContainer {
+         top: 5.3rem;
+         left: -222px;
+
+         height: calc(100vh - 5.3rem);
       }
    }
 }

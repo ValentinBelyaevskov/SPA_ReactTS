@@ -1,28 +1,26 @@
-import { useState, useEffect } from 'react';
-import { useWindowsSize } from '../../hooks/useWindowsSize';
 import styles from './Controls.module.scss'
-import ControlsItem from './ControlsItem'
-import React from 'react';
-import { useTouchEvents } from '../../hooks/useTouchEvents';
-import BurgerIcons from './BurgerIcons';
+import { useState, useEffect, useContext, useRef } from 'react';
+import ControlsItem from './ControlsItem';
+import { useContinuonusEvents } from 'hooks/useContinuonusEvents';
+import { usePopupElement } from 'hooks/usePopup/usePopupElement';
+import { IconsThatAreLoaded } from 'common/IconsThatAreLoaded/IconsThatAreLoaded';
+import { PopupControlsContext } from 'App';
+import { useWindowSize } from 'hooks/useWindowSize';
 
 
-// types
+
 type Props = {
-   setControlsLoaded: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 type PagesList = ("Profile" | "News" | "Messages" | "Friends" | "Communities" | "Settings")[];
 
-type Icon = "./icons/hide.svg" | "./icons/burger.svg";
-
 type ControlsListContainerStyle = { transform?: "translateX(100%)", display?: "none" };
 
-type IconsLoaded = boolean[];
 
 
 const Controls = (props: Props) => {
-   // consts, vars
+   const popupContext = useContext(PopupControlsContext);
+   const resize = useWindowSize("resize");
    const pagesList: PagesList = [
       "Profile",
       "News",
@@ -31,31 +29,18 @@ const Controls = (props: Props) => {
       "Communities",
       "Settings",
    ];
-   const [needToShowControls, setNeedToShowControls] = useState<boolean>(false);
-   const [icon, setIcon] = useState<Icon>("./icons/burger.svg");
-   const [controlIconsLoaded, setControlIconsLoaded] = useState<IconsLoaded>(pagesList.map(() => false));
-   const [burgerIconLoaded, setBurgerIconLoaded] = useState<boolean>(false);
-   const [hideIconLoaded, setHideIconLoaded] = useState<boolean>(false);
+   const icons = pagesList.map(pageName => `./icons/${pageName.toLocaleLowerCase()}.svg`);
    const [controlsListContainerStyle, setControlsListContainerStyle] = useState<ControlsListContainerStyle>({ display: 'none' });
-   const { windowSize, addResizeListener, removeResizeListener } = useWindowsSize(600);
+   const controlsBackground: React.RefObject<HTMLDivElement> = useRef<HTMLDivElement>(null);
+   const controls: React.RefObject<HTMLDivElement> = useRef<HTMLDivElement>(null);
+   const touchMove = useContinuonusEvents("touchmove", hideControlsOnTouchEvent, [".headerControlsElement"]);
+   const touchStart = useContinuonusEvents("touchstart", hideControlsOnTouchEvent, [".headerControlsElement"]);
+   const popupBackground = usePopupElement(controlsBackground);
 
-   // custom hooks
-   const touchMove = useTouchEvents("touchmove", [".headerControlsElement"], hideControlsOnTouchEvent);
-   const touchStart = useTouchEvents("touchstart", [".headerControlsElement"], hideControlsOnTouchEvent);
 
 
-   // functions
-   function hideControlsOnTouchEvent (): void {
-      hideControls();
-      burgerIconClickListener(needToShowControls);
-   }
-
-   const burgerIconClickListener = (needToShowControls: boolean): void => {
-      if (needToShowControls) {
-         setNeedToShowControls(false);
-      } else {
-         setNeedToShowControls(true);
-      }
+   function hideControlsOnTouchEvent(): void {
+      popupContext.popupSwitcherlickListener!(popupContext.needToShowPopup!);
    }
 
    const addTouchEventListeners = (): void => {
@@ -71,65 +56,72 @@ const Controls = (props: Props) => {
    }
 
    const showControls = (): void => {
-      setIcon('./icons/hide.svg');
+      popupContext.setIcon!('./icons/hide.svg');
       setControlsListContainerStyle({ transform: 'translateX(100%)' });
-      addResizeListener();
+      addTouchEventListeners();
+      popupBackground.showElementWithTimeout(0);
    }
 
    function hideControls(): void {
-      setIcon('./icons/burger.svg');
+      popupContext.setIcon!('./icons/burger.svg');
       setControlsListContainerStyle({});
-      removeResizeListener();
-      props.setControlsLoaded(true);
+      enableTouchEventsSimulation();
+      popupBackground.hideElementWithTimeout(0);
    }
 
 
-   // effects
-   useEffect(() => {
-      if (windowSize[0] > 750) {
-         setNeedToShowControls(false);
-         enableTouchEventsSimulation()
-      }
-   }, [windowSize]);
 
    useEffect(() => {
-      if (needToShowControls) {
-         showControls();
-         addTouchEventListeners();
-      } else if (!controlIconsLoaded.includes(false) && burgerIconLoaded && hideIconLoaded) {
-         hideControls();
-         enableTouchEventsSimulation();
+      popupContext.setNeedToShowBackground!(popupBackground.needToShowElement);
+   }, [popupBackground.needToShowElement]);
+
+   // * перенести логику в header что бы при размере для мобильного не было лишних рендеров во время скролла
+   useEffect(() => {
+      if ((resize.value[0] > 600) && popupContext.needToShowPopup) {
+         popupContext.setNeedToShowPopup!(false);
+         popupBackground.hideElementWithoutAnimation();
       }
-   }, [needToShowControls, controlIconsLoaded, burgerIconLoaded, hideIconLoaded]);
+   }, [resize.value[0]]);
+
+   useEffect(() => {
+      if (popupContext.needToShowPopup) {
+         resize.addEventListener();
+         showControls();
+         if (controls.current) controls.current.scrollTop = 0;
+      } else {
+         resize.removeEventListener();
+         hideControls();
+      }
+   }, [popupContext.needToShowPopup]);
+
 
 
    return (
-      <div className={`${styles.controls} headerControlsElement`}>
-         <div
-            className={`${styles.burgerIcon} unselectable`}
-            onClick={() => {burgerIconClickListener(needToShowControls); console.log("clickStart")}}
-         >
-            <img src={icon} alt="burger menu icon" />
-         </div>
-         <BurgerIcons
-            setBurgerIconLoaded={setBurgerIconLoaded}
-            setHideIconLoaded={setHideIconLoaded}
-         />
-         <div className={styles.controlsListContainer} style={controlsListContainerStyle}>
+      <div className={`${styles.controls}`}>
+         {
+            popupBackground.needToShowElement ?
+               <div className={styles.controlsBackground} ref={controlsBackground}></div>
+               : null
+         }
+         <div className={`${styles.controlsListContainer} headerControlsElement`} style={controlsListContainerStyle} ref={controls}>
             <ul className={styles.controlsList}>
-               {pagesList.map((item, index) => (
+               {pagesList.map((item, i) => (
                   <ControlsItem
                      key={item}
-                     index={index}
-                     controlIconsLoaded={controlIconsLoaded}
-                     setControlIconsLoaded={setControlIconsLoaded}
                      buttonName={item}
+                     icon={icons[i]}
                   />
                ))}
             </ul>
          </div>
+         <IconsThatAreLoaded
+            icons={icons}
+            setIconsLoaded={popupContext.setPopupLoaded!}
+         />
       </div>
    )
 }
+
+
 
 export default Controls
