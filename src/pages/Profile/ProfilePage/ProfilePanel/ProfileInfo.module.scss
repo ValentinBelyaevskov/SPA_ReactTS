@@ -179,24 +179,67 @@
          margin-left: 1px;
          padding: 1px 10px;
 
-         color: rgba(0, 0, 0, 0.45);
          font-size: 1.3rem;
+         color: rgba(0, 0, 0, 0.45);
 
          background-color: var(--main-color);
          transition-property: outline-color, opacity, color;
          transition-duration: 0.1s;
+         transform: translateZ(0);
          outline: 1px solid rgba(0, 0, 0, 0);
+         // -moz-outline-radius: 0.6rem;
+
+         &::before {
+            content: "";
+
+            position: absolute;
+            left: -1px;
+            top: -1px;
+
+            width: calc(100% + 2px);
+            height: 19px;
+
+            // background-color: black;
+            border: 1px solid #cccccc;
+            border-radius: 0.6rem;
+
+            transition-duration: 0.1s;
+            transition-property: opacity;
+            opacity: 0;
+         }
 
          &.hover:hover,
          &.touch {
             opacity: 0.85;
-            outline: 1px solid #cccccc;
+            // outline: 1px solid #cccccc;
+
+            &::before {
+               opacity: 1;
+            }
          }
       }
 
       .showMoreHighlighted,
       .showMoreTemporarilyHighlighted {
-         outline: 1px solid #cccccc;
+         // outline: 1px solid #cccccc;
+         &::before {
+            content: "";
+
+            position: absolute;
+            left: -1px;
+            top: -1px;
+
+            width: calc(100% + 2px);
+            height: 19px;
+
+            // background-color: black;
+            border: 1px solid #cccccc;
+            border-radius: 0.6rem;
+
+            transition-duration: 0.1s;
+            transition-property: opacity;
+            opacity: 1;
+         }
 
          &.hover:hover,
          &.touch {
@@ -253,16 +296,28 @@
 
             transition-property: background-color;
 
+            &::before {
+               content: none;
+            }
+
             &.hover:hover,
             &.touch {
                background-color: var(--theme-hover-color);
                opacity: 1;
                outline: none;
+
+               &::before {
+                  content: none;
+               }
             }
          }
 
          .showMoreTemporarilyHighlighted {
             background-color: var(--theme-hightlight-color);
+
+            &::before {
+               content: none;
+            }
          }
       }
    }
