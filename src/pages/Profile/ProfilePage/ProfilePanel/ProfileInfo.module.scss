@@ -1,0 +1,269 @@
+.profileInfo {
+   display: grid;
+   grid-template-rows: repeat(4, auto);
+
+   width: 100%;
+
+   &.fullHeight {
+      padding-top: 0rem;
+   }
+
+   &.notFullHeight {
+      padding-top: 1.2rem;
+
+      &.gridV6 {
+         padding-top: 2.4rem;
+      }
+   }
+
+   &.gridV1 {
+      grid-template-areas:
+         "personalInfo"
+         "infoBlock-1"
+         "showMore"
+         "profileInfo"
+         "infoBlock-2"
+         "infoBlock-3";
+   }
+
+   &.gridV2 {
+      grid-template-areas:
+         "personalInfo"
+         "profileInfo"
+         "showMore"
+         "infoBlock-2"
+         "infoBlock-3";
+   }
+
+   &.gridV3 {
+      grid-template-areas:
+         "personalInfo"
+         "infoBlock-1"
+         "profileInfo"
+         "showMore"
+         "infoBlock-2"
+         "infoBlock-3";
+   }
+
+   &.gridV4 {
+      grid-template-areas:
+         "personalInfo"
+         "profileInfo"
+         "infoBlock-2"
+         "showMore"
+         "infoBlock-3";
+   }
+
+   &.gridV5 {
+      grid-template-areas:
+         "personalInfo"
+         "profileInfo"
+         "infoBlock-2"
+         "showMore"
+         "infoBlock-3";
+   }
+
+   &.gridV6 {
+      grid-template-areas:
+         "profileInfo"
+         "infoBlock-1"
+         "infoBlock-2";
+
+      grid-template-rows: repeat(3, fit-content);
+   }
+}
+
+.hideMoreInfo {
+   overflow: hidden;
+
+   &.fullHeight {
+      height: 154px;
+   }
+
+   &.notFullHeight {
+      height: 140px;
+
+      &.gridV6 {
+         height: 122px;
+      }
+   }
+}
+
+.profileInfo {
+   .personalInformation {
+      grid-area: personalInfo;
+      position: relative;
+   }
+
+   .showMoreButtonContainer {
+      grid-area: showMore;
+      margin: 2px 0 4px 0;
+      width: 100%;
+
+      .showMoreButton {
+         padding: 4px 10px;
+      }
+   }
+
+   .infoBlock {
+      &:nth-of-type(2) {
+         grid-area: infoBlock-1;
+      }
+
+      &:nth-of-type(4) {
+         grid-area: infoBlock-2;
+      }
+
+      &:nth-of-type(5) {
+         grid-area: infoBlock-3;
+      }
+   }
+
+   .profileInformation {
+      grid-area: profileInfo;
+   }
+
+   &.fullHeight {
+      .infoBlock:nth-of-type(2) {
+         margin-bottom: 0.2rem;
+         grid-area: infoBlock-1;
+      }
+
+      .profileInformation {
+         margin-top: 1rem;
+      }
+   }
+
+   &.notFullHeight {
+      .infoBlock:nth-of-type(2) {
+         margin-bottom: 0.8rem;
+         grid-area: infoBlock-1;
+      }
+
+      .profileInformation {
+         margin-top: 1.6rem;
+      }
+   }
+
+   &.gridV4 {
+      .showMoreButtonContainer {
+         margin-top: 4px;
+      }
+   }
+
+   &.gridV6 {
+      .showMoreButtonContainer {
+         display: none;
+      }
+
+      .infoBlock:nth-of-type(2) {
+         margin-bottom: 0rem;
+         grid-area: infoBlock-1;
+      }
+
+      .profileInformation {
+         margin-top: 0rem;
+      }
+   }
+}
+
+// * element styles
+.profileInfo {
+   .showMoreButtonContainer {
+      margin-right: 0;
+      margin-left: auto;
+      width: 100%;
+
+      .showMoreButton {
+         width: calc(100% - 2px);
+         margin-left: 1px;
+         padding: 1px 10px;
+
+         color: rgba(0, 0, 0, 0.45);
+         font-size: 1.3rem;
+
+         background-color: var(--main-color);
+         transition-property: outline-color, opacity, color;
+         transition-duration: 0.1s;
+         outline: 1px solid rgba(0, 0, 0, 0);
+
+         &.hover:hover,
+         &.touch {
+            opacity: 0.85;
+            outline: 1px solid #cccccc;
+         }
+      }
+
+      .showMoreHighlighted,
+      .showMoreTemporarilyHighlighted {
+         outline: 1px solid #cccccc;
+
+         &.hover:hover,
+         &.touch {
+            opacity: 0.85;
+         }
+      }
+   }
+}
+
+// media queries
+@media (max-width: 460px) {
+   .hideMoreInfo {
+      &.fullHeight {
+         height: 224px;
+      }
+
+      &.notFullHeight {
+         height: 195px;
+
+         &.gridV6 {
+            height: 144px;
+         }
+      }
+   }
+
+   .profileInfo {
+      &.fullHeight {
+         padding-top: 2.4rem;
+      }
+
+      &.notFullHeight {
+         padding-top: 2.4rem;
+
+         &.gridV6 {
+            padding-top: 2.4rem;
+         }
+      }
+
+      .showMoreButtonContainer {
+         align-self: center;
+         margin: 1rem 0;
+         outline: none;
+
+         .showMoreButton,
+         .showMoreHighlighted {
+            width: 100%;
+            padding: 5px 10px;
+            margin-left: 0;
+
+            color: var(--main-color);
+            font-size: 1.5rem;
+            background-color: var(--theme-color);
+            outline: none;
+
+            transition-property: background-color;
+
+            &.hover:hover,
+            &.touch {
+               background-color: var(--theme-hover-color);
+               opacity: 1;
+               outline: none;
+            }
+         }
+
+         .showMoreTemporarilyHighlighted {
+            background-color: var(--theme-hightlight-color);
+         }
+      }
+   }
+}

@@ -2975,6 +2975,11 @@ cliui@^7.0.2:
     strip-ansi "^6.0.0"
     wrap-ansi "^7.0.0"
 
+clsx@^1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/clsx/-/clsx-1.1.1.tgz#98b3134f9abbdf23b2663491ace13c5c03a73188"
+  integrity sha512-6/bPho624p3S2pMyvP5kKBPXnI3ufHLObBFCfgx+LkeR5lg2XYy2hqZqUf45ypD8COn2bhgGJSUE+l5dhNBieA==
+
 co@^4.6.0:
   version "4.6.0"
   resolved "https://registry.yarnpkg.com/co/-/co-4.6.0.tgz#6ea6bdf3d853ae54ccb8e47bfa0bf3f9031fb184"
@@ -7337,6 +7342,13 @@ react-hook-form@^7.27.1:
   version "7.27.1"
   resolved "https://registry.yarnpkg.com/react-hook-form/-/react-hook-form-7.27.1.tgz#fe5fbcb6bf58751f66d9569e998d671480cc57f6"
   integrity sha512-N3a7A6zIQ8DJeThisVZGtOUabTbJw+7DHJidmB9w8m3chckv2ZWKb5MHps9d2pPJqmCDoWe53Bos56bYmJms5w==
+
+react-image-crop@^10.0.0:
+  version "10.0.0"
+  resolved "https://registry.yarnpkg.com/react-image-crop/-/react-image-crop-10.0.0.tgz#0d9c0a74b2aa1a6d856d9acb77d70c9d095ea45e"
+  integrity sha512-KyNIY66R6T5LqDKDivXcFkvgy6MOjRvZQxURQDhGfW5AFDx/Mw+I32kGlR8g4657ArxHAHKPFhNsao440yAdow==
+  dependencies:
+    clsx "^1.1.1"
 
 react-is@^16.13.1, react-is@^16.7.0:
   version "16.13.1"

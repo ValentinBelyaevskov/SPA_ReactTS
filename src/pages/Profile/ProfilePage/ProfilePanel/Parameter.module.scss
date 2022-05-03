@@ -1,0 +1,115 @@
+.parameter {
+   position: relative;
+
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+
+   .notVisibleValue,
+   .parameterValue,
+   .parameterName {
+      font-size: 13px;
+      font-weight: normal;
+   }
+
+   .parameterName,
+   .parameterValue {
+      padding: 4px 0;
+      line-height: 1.8rem;
+   }
+
+   .parameterName {
+      flex: 0 0 100px;
+      align-self: start;
+   }
+
+   .parameterValue {
+      flex: 1 1 72%;
+
+      color: var(--gray-fontColor);
+
+      .breakWord {
+         word-break: break-all;
+      }
+   }
+
+   .selectedValue {
+      transition-duration: 0.1s;
+      transition-property: opacity;
+
+      &.hover:hover,
+      &.touch {
+         opacity: 0.8;
+         cursor: pointer;
+      }
+   }
+
+   .notVisibleValue {
+      position: absolute;
+      white-space: nowrap;
+      width: fit-content;
+
+      opacity: 0;
+   }
+
+   .prompt {
+      position: absolute;
+      z-index: 1;
+      bottom: 23px;
+      right: 0;
+
+      overflow: hidden;
+
+      word-break: break-all;
+
+      max-width: 100%;
+      padding: 3px 10px;
+      border-radius: 4px;
+
+      font-weight: 300;
+      font-size: 12px;
+      line-height: 15px;
+      color: white;
+
+      background-color: var(--theme-prompt-color);
+
+      opacity: 0;
+      transition-property: opacity;
+      transition-duration: 0.3s;
+   }
+
+   &:first-of-type {
+      .prompt {
+         top: 25px;
+         bottom: auto;
+      }
+   }
+}
+
+// media queries
+@media (max-width: 460px) {
+   .parameter {
+      .notVisibleValue,
+      .parameterValue,
+      .parameterName {
+         font-size: 1.5rem;
+      }
+
+      .prompt {
+         bottom: 30px;
+      }
+
+      .parameterName,
+      .parameterValue {
+         padding: 6px 0;
+      }
+
+      .parameterName {
+         flex: 0 0 112px;
+      }
+
+      .parameterValue {
+         flex: 1 1 72%;
+      }
+   }
+}

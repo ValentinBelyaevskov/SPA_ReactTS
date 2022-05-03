@@ -1,0 +1,48 @@
+.header {
+   display: flex;
+   align-items: center;
+   justify-content: space-between;
+
+   .username {
+      word-wrap: break-word;
+      max-width: 285px;
+
+      line-height: 2.1rem;
+      font-size: 1.6rem;
+      font-weight: 500;
+   }
+
+   .parametersIcon {
+      margin-right: -15px;
+      padding: 8px 15px;
+
+      transition-property: opacity;
+      transition-duration: 0.1s;
+
+      &.hover:hover,
+      &.touch {
+         cursor: pointer;
+         opacity: 0.6;
+      }
+
+      img {
+         display: block;
+      }
+   }
+}
+
+// media queries
+@media (max-width: 460px) {
+   .header {
+      .username {
+         line-height: 2.2rem;
+         font-size: 1.8rem;
+      }
+
+      .parametersIcon {
+         img {
+            height: 8px;
+         }
+      }
+   }
+}

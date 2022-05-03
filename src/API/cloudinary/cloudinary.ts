@@ -55,7 +55,6 @@ class Cloudinary implements Cloud {
 
          Backendless.UserService.update({ objectId: objectId, avatar: imageObj.secure_url });
 
-         console.log(imageObj)
          return imageObj.secure_url;
 
       } catch (err: any) {
@@ -82,17 +81,13 @@ class Cloudinary implements Cloud {
             invalidate: true,
          }
 
-         const response: Response = await fetch(url, {
+         await fetch(url, {
             method: "POST",
             headers: {
                'Content-Type': 'application/json;charset=utf-8'
             },
             body: JSON.stringify(deleteBodyObj),
          })
-
-         const result: DestroyResult = await response.json()
-
-         console.log(result)
 
       } catch (err: any) {
          console.log(err.message)

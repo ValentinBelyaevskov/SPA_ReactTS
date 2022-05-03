@@ -1,8 +1,6 @@
+import { useHoverAndTouchClassNames } from 'hooks/useHoverAndTouchClassNames';
 import styles from './ControlsItem.module.scss';
-import React from 'react';
 
-
-type IconsLoaded = boolean[];
 
 type Props = {
    buttonName: "Profile" | "News" | "Messages" | "Friends" | "Communities" | "Settings",
@@ -11,8 +9,17 @@ type Props = {
 
 
 const ControlsItem = (props: Props) => {
+   const itemHoverAndTouchClassNames = useHoverAndTouchClassNames();
+
+
    return (
-      <li className={styles.controlsListItem}>
+      <li
+         className={`${styles.controlsListItem} ${itemHoverAndTouchClassNames.className} unselectable`}
+         onMouseEnter={() => itemHoverAndTouchClassNames.setHoverClassName(styles.hover)}
+         onMouseLeave={() => itemHoverAndTouchClassNames.setHoverClassName("")}
+         onTouchStart={() => itemHoverAndTouchClassNames.setTouchClassName(styles.touch)}
+         onTouchEnd={() => itemHoverAndTouchClassNames.resetTouchClassName(true)}
+      >
          <img
             className={styles.buttonIcon}
             src={props.icon}

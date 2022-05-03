@@ -1,7 +1,15 @@
 .loading,
 .error {
-   height: calc(100vh - 4.8rem);
+   position: fixed;
+   z-index: 3;
+
+   left: 50%;
+   transform: translateX(-50%);
+
+   height: calc(100vh - 4.6rem);
    padding-top: 20px;
+
+   width: 550px;
 
    font-weight: 500;
    font-size: 20px;
@@ -10,4 +18,27 @@
 .error {
    text-align: center;
    color: red;
+}
+
+// media queries
+@media (max-width: 950px) {
+   .loading {
+      left: 0;
+      transform: translateX(0);
+   }
+}
+
+@media (max-width: 750px) {
+   .loading {
+      top: 0;
+      padding-top: calc(20px + 4.6rem);
+      height: 100vh;
+      width: 100%;
+   }
+}
+
+@media (max-width: 460px) {
+   .loading {
+      padding-top: calc(20px + 5.3rem);
+   }
 }

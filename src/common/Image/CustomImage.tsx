@@ -17,6 +17,10 @@ const CustomImage = (props: ImageProps) => {
                : {}
          }
          onClick={props.onClick ? props.onClick : () => { }}
+         onMouseEnter={props.onMouseEnter ? props.onMouseEnter : () => { }}
+         onMouseLeave={props.onMouseLeave ? props.onMouseLeave : () => { }}
+         onTouchStart={props.onTouchStart ? props.onTouchStart : () => { }}
+         onTouchEnd={props.onTouchEnd ? props.onTouchEnd : () => { }}
       >
          <img
             src={props.src}
@@ -24,6 +28,11 @@ const CustomImage = (props: ImageProps) => {
             style={props.imgStyle}
             onLoad={props.onLoad ? props.onLoad : () => { }}
          />
+         {
+            props.jsx ?
+               props.jsx
+               : null
+         }
       </div>
    )
 }

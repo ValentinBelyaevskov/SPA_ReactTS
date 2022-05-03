@@ -36,6 +36,7 @@ const initialState: ProfileState = {
       "manyFailedLoginAttempts",
       "update",
       "uploadFile",
+      "getProfileProps"
    ],
 }
 
@@ -82,7 +83,6 @@ const profileSlice = createSlice({
             }
             if (key === "avatar") state.profileInfo.avatar = state.profileInfo.avatar
          }
-         console.log("resetProfileInfo: ", action.payload)
          state.profileMode = action.payload
       }
    },

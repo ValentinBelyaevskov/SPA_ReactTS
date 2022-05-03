@@ -5,14 +5,17 @@ $sidebar-color: rgb(67, 67, 255);
 $pages-color: rgb(99, 59, 59);
 
 // sizes
-$header-height: 4.8rem;
+$header-height: 4.6rem;
 $header-height_460: 5.3rem;
 $gtc_min-width_915: 1fr 550px 1fr;
 $gtc_max-width_915: 550px 1fr;
 
 .app {
-   position: relative;
+   visibility: visible;
+   position: fixed;
+   width: 100%;
    padding-top: $header-height;
+   overflow-x: hidden;
 
    .headerContainer,
    .sidebarsContainer,
@@ -20,14 +23,16 @@ $gtc_max-width_915: 550px 1fr;
       display: grid;
       grid-template-columns: $gtc_min-width_915;
 
-      width: 100%;
+      //             *
+      width: 100vw;
+      //             *
    }
 
    .headerContainer {
       position: fixed;
       left: 0;
       top: 0;
-      z-index: 2;
+      z-index: 3;
 
       height: $header-height;
 
@@ -58,6 +63,7 @@ $gtc_max-width_915: 550px 1fr;
 
       .pageBackground {
          position: absolute;
+         z-index: 1;
          top: -3px;
          height: 20px;
          width: 100%;
@@ -68,20 +74,6 @@ $gtc_max-width_915: 550px 1fr;
       }
    }
 
-   // .page {
-   //    position: absolute;
-   //    z-index: 2;
-
-   //    grid-column: 2/3;
-
-   //    width: 100%;
-   //    height: 500px;
-   //    padding: var(--content-padding);
-
-   //    background-color: var(--main-color);
-   //    border-bottom: 1px solid var(--border-color);
-   // }
-
    .popupControlsContainer {
       display: none;
    }
@@ -90,29 +82,37 @@ $gtc_max-width_915: 550px 1fr;
 // media queries
 @media (max-width: 950px) {
    .app {
+      width: 550px;
+      left: 0;
+
       .sidebarsContainer,
       .pagesContainer {
          grid-template-columns: $gtc_max-width_915;
       }
 
       .sidebarsContainer {
-         .pageBackground {
-            grid-column: 1 / 2;
-         }
       }
 
       .headerContainer {
          display: block;
       }
 
-      .page {
-         grid-column: 1 / 2;
+      .pagesContainer {
+         .page {
+            grid-column: 1 / 2;
+         }
+
+         .pageBackground {
+            grid-column: 1 / 2;
+         }
       }
    }
 }
 
 @media (max-width: 750px) {
    .app {
+      width: 100%;
+
       .sidebarsContainer {
          display: none;
       }
@@ -121,6 +121,14 @@ $gtc_max-width_915: 550px 1fr;
       .pagesContainer {
          display: block;
       }
+
+      //                *
+      // .headerContainer,
+      // .sidebarsContainer,
+      // .pagesContainer {
+      //    padding-right: 20px;
+      // }
+      //                *
    }
 }
 
@@ -129,7 +137,15 @@ $gtc_max-width_915: 550px 1fr;
       .popupControlsContainer {
          display: block;
          position: absolute;
-         z-index: 1;
+         z-index: 2;
+      }
+
+      .pagesContainer {
+         .pageBackground {
+            position: absolute;
+            top: -46px;
+            height: 76px;
+         }
       }
    }
 }
@@ -146,6 +162,12 @@ $gtc_max-width_915: 550px 1fr;
          position: relative;
 
          min-height: calc(100vh - $header-height_460);
+
+         .pageBackground {
+            position: absolute;
+            top: -53px;
+            height: 73px;
+         }
       }
    }
 }

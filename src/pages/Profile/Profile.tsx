@@ -1,6 +1,6 @@
 import styles from './Profile.module.scss';
-import ProfileInfo from './ProfileInfo/ProfileInfo';
-import { useState, useEffect } from 'react';
+import ProfilePage from './ProfilePage/ProfilePage';
+import { useState, useEffect, useContext } from 'react';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux';
 import { getErrorTypes, getLoadInfo, getLoadingStatus, getProfileInfoMode, getProfileMode, profileActions } from './redux/profileReducer';
 import { Preloader } from '../../common';
@@ -8,6 +8,8 @@ import ErrorPage from './ErrorPage/ErrorPage';
 import GuestPage from './GuestPage/GuestPage';
 import SignIn from './SignIn/SignIn';
 import { IconsThatAreLoaded } from 'common/IconsThatAreLoaded/IconsThatAreLoaded';
+import { AppContext } from 'App';
+
 
 
 type ProfilePageStyle = {
@@ -16,17 +18,17 @@ type ProfilePageStyle = {
 } | {}
 
 
+
 const Profile = () => {
-   // consts
    const icons = [
       "./icons/other.svg",
       "./icons/editBlack.svg",
       "./icons/changePasswordBlack.svg",
       "./icons/signOutBlack.svg",
       "./icons/showPasswordIcon.svg",
-      "./icons/hidePasswordIcon.svg"
+      "./icons/hidePasswordIcon.svg",
+      "./image/checked.svg",
    ];
-
    const dispatch = useAppDispatch();
    const [trySignIn, setTrySignIn] = useState<boolean>(false);
    const [profilePageStyle, setProfilePageStyle] = useState<ProfilePageStyle>({});
@@ -36,9 +38,11 @@ const Profile = () => {
    const errorTypes = useAppSelector(getErrorTypes);
    const profileMode: string = useAppSelector(getProfileMode);
    const [iconsLoaded, setIconsLoaded] = useState<boolean>(false);
+   const [showIconsThatAreLoaded, setShowIconsThatAreLoaded] = useState<boolean>(false);
+   const showPreloader = useContext(AppContext).showPreloader!;
 
 
-   // effects
+
    useEffect(() => {
       return () => {
          dispatch(profileActions.setSignInMode("login"));
@@ -49,48 +53,65 @@ const Profile = () => {
    useEffect(() => {
       if (profileInfoMode === "edit") {
          setProfilePageStyle({
-            zIndex: 2,
+            zIndex: 3,
             marginTop: "3px",
-         })
+         });
       } else {
          setProfilePageStyle({});
       }
    }, [profileInfoMode]);
 
+   useEffect(() => {
+      if (loading && !iconsLoaded) {
+         setIconsLoaded(false);
+         setShowIconsThatAreLoaded(true);
+      } else if (iconsLoaded) {
+         setShowIconsThatAreLoaded(false);
+      }
+   }, [loading, iconsLoaded]);
+
+
 
    return (
       <div className={`${styles.profile} page`} style={profilePageStyle}>
          {
-            loading
+            ((loading
                && (
                   (!trySignIn && (profileInfoMode !== "edit"))
-                  || !iconsLoaded
-               )
+               ))
+               || !iconsLoaded
+               || (showPreloader && profileMode === "loggedIn")) && !loadInfo.error
                ? (
                   <div className={`${styles.loading} pagePart`} >
                      <Preloader containerStyle={{ margin: "0 auto 0 auto" }} />
                   </div>
-               )
-               : loadInfo.error
-                  && (!errorTypes.includes(loadInfo.errorType as string))
-                  && !trySignIn
-                  ? <ErrorPage setTrySignIn={setTrySignIn} />
-                  : (
-                     (profileMode === "loggedIn"
-                        || profileMode === "loggedOut")
-                        ? <ProfileInfo />
-                        : (profileMode === "loggedInAsGuest"
-                           || profileMode === "guestSignIn")
-                           ? <GuestPage />
-                           : profileMode === "signIn"
-                              ? <SignIn />
-                              : null
-                  )
+               ) : null
          }
-         <IconsThatAreLoaded
-            icons={icons}
-            setIconsLoaded={setIconsLoaded}
-         />
+         {
+            loadInfo.error
+               && (!errorTypes.includes(loadInfo.errorType as string))
+               && !trySignIn
+               ? <ErrorPage setTrySignIn={setTrySignIn} />
+               : (
+                  (profileMode === "loggedIn"
+                     || profileMode === "loggedOut")
+                     ? <ProfilePage />
+                     : (profileMode === "loggedInAsGuest"
+                        || profileMode === "guestSignIn")
+                        ? <GuestPage />
+                        : profileMode === "signIn"
+                           ? <SignIn />
+                           : null
+               )
+         }
+         {
+            showIconsThatAreLoaded ?
+               <IconsThatAreLoaded
+                  icons={icons}
+                  setIconsLoaded={setIconsLoaded}
+               />
+               : null
+         }
       </div>
    )
 }

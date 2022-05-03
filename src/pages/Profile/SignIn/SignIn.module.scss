@@ -92,7 +92,8 @@
          transition-property: color;
          transition-duration: 0.1s;
 
-         &:hover {
+         &.hover:hover,
+         &.touch {
             cursor: pointer;
             color: rgba(0, 0, 0, 0.65);
 

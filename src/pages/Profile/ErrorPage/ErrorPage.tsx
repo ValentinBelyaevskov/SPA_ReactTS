@@ -29,7 +29,7 @@ const ErrorPage = (props: Props) => {
                   clickHandler: clickHandler,
                   text: "Try Sign in",
                   containerStyle: {
-                     margin: "10px auto 0 auto"
+                     margin: "20px auto 0 auto"
                   },
                   buttonStyle: {
                      padding: "5px 20px"

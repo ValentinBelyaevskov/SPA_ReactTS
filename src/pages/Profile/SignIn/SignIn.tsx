@@ -4,13 +4,22 @@ import CreateAccountForm from './Forms/CreateAccountForm';
 import LoginAsGuestForm from './Forms/LoginAsGuestForm';
 import { useAppSelector } from '../../../hooks/redux';
 import { getSignInMode } from '../redux/profileReducer';
+import { useContext, useEffect } from 'react';
+import { AppContext } from 'App';
 
 
 
 const SignIn = () => {
-   // hooks
-
    const signInMode = useAppSelector(getSignInMode)
+   const setShowPreloader = useContext(AppContext).setShowPreloader!;
+
+
+
+   useEffect(() => {
+      setShowPreloader(false)
+   }, [])
+
+
 
    return (
       <div className={styles.signIn}>

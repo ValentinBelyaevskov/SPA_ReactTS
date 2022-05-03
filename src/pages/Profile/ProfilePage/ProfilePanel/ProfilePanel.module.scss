@@ -1,0 +1,158 @@
+.profilePanel {
+   padding-top: 16px;
+   padding-bottom: 20px;
+   background-color: var(--main-color);
+
+   .editIcons {
+      display: none;
+   }
+}
+
+.pagePartEditClass {
+   padding-top: 13px;
+}
+
+.profilePanel {
+   // * grid styles
+   .panelGridContainer {
+      display: grid;
+      grid-template-columns: 179px 1fr;
+      grid-template-rows: 37px 1fr;
+      grid-template-areas:
+         "header header"
+         "avatar info"
+         "avatar null";
+
+      .avatar {
+         grid-area: avatar;
+         margin-right: 25px;
+
+         width: 154px;
+         padding-bottom: 154px;
+      }
+
+      .header {
+         position: relative;
+         grid-area: header;
+
+         height: 22px;
+         width: 100%;
+      }
+
+      .profileInfo {
+         align-self: start;
+         grid-area: info;
+      }
+   }
+
+   // * element styles
+   .panelGridContainer {
+      margin: 0 auto;
+      max-width: 510px;
+
+      justify-content: space-between;
+      align-items: start;
+
+      .avatar {
+         overflow: hidden;
+         border-radius: 0.6rem;
+         box-shadow: 0px 1px 5px 2px rgb(0 0 0 / 10%);
+
+         &.hover:hover,
+         &.touch {
+            cursor: pointer;
+         }
+
+         .avatarInscriptionContainer {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+
+            background-color: rgba(0, 0, 0, 0.2);
+
+            transition-property: opacity;
+            transition-duration: 0.3s;
+            opacity: 0;
+
+            .avatarInscription {
+               position: absolute;
+               border-radius: 0.6rem;
+               left: 50%;
+               bottom: 50%;
+               transform: translateX(-50%) translateY(50%);
+               text-align: center;
+
+               padding: 7px 15px;
+               width: 130px;
+
+               font-weight: 500;
+               font-size: 1.5rem;
+
+               background-color: rgba(255, 255, 255, 0.8);
+               transition-property: background-color opacity;
+               transition-duration: 0.1s;
+               opacity: 0;
+
+               &:hover {
+                  background-color: rgba(255, 255, 255, 0.65);
+               }
+            }
+         }
+      }
+   }
+}
+
+// media queries
+@media (max-width: 460px) {
+   .profilePanel {
+      padding-top: 18px;
+
+      .panelGridContainer {
+         .avatar {
+            .avatarInscriptionContainer {
+               .avatarInscription {
+                  font-size: 17px;
+                  width: 140px;
+               }
+            }
+         }
+      }
+   }
+
+   .pagePartEditClass {
+      padding-top: 15px;
+   }
+
+   .profilePanel {
+      .panelGridContainer {
+         grid-template-columns: minmax(50px, 1fr) minmax(30px, 1fr);
+         grid-template-rows: 38px 250px minmax(160px, 1fr);
+         grid-template-areas:
+            "header header"
+            "avatar avatar"
+            "info info";
+
+         .avatar {
+            width: 250px;
+            padding-bottom: 250px;
+
+            border-radius: 50%;
+
+            margin: 0 auto;
+         }
+      }
+   }
+}
+
+@media (max-width: 320px) {
+   .profilePanel {
+      .panelGridContainer {
+         grid-template-rows: 38px 240px minmax(160px, 1fr);
+
+         .avatar {
+            width: 240px;
+            padding-bottom: 240px;
+         }
+      }
+   }
+}

@@ -1,2 +1,2 @@
-export { usePopupElement } from './usePopupElement';
-export type { Popup } from './usePopupElement';
+export { usePopupElement } from './usePopup/usePopupElement';
+export type { Popup } from './usePopup/usePopupElement';

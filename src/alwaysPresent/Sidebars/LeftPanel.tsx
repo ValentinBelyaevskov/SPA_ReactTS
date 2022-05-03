@@ -1,15 +1,15 @@
 import Controls from "alwaysPresent/Controls/Controls"
 import styles from "./LeftPanel.module.scss"
 import { useContext } from 'react';
-import { ControlsContext } from "App";
+import { PopupControlsContext } from "App";
 
 
 export const LeftPanel = () => {
-   const context = useContext(ControlsContext);
+   const popupControlsContext = useContext(PopupControlsContext);
 
    return (
       <div className={styles.leftPanel}>
-         <div className={styles.ControlsContainer}  style={context.controlsStyle}>
+         <div className={styles.ControlsContainer}  style={popupControlsContext.popupStyle}>
             <Controls />
          </div>
       </div>

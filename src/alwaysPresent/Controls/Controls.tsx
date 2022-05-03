@@ -1,14 +1,14 @@
 import styles from './Controls.module.scss'
 import { useState, useEffect, useContext, useRef } from 'react';
-import { useWindowsSize } from '../../hooks/useWindowsSize';
-import ControlsItem from './ControlsItem'
-import { useTouchEvents } from '../../hooks/useTouchEvents';
-import { usePopupElement } from '../../hooks/usePopupElement';
+import ControlsItem from './ControlsItem';
+import { useContinuonusEvents } from 'hooks/useContinuonusEvents';
+import { usePopupElement } from 'hooks/usePopup/usePopupElement';
 import { IconsThatAreLoaded } from 'common/IconsThatAreLoaded/IconsThatAreLoaded';
-import { ControlsContext } from '../../App';
+import { PopupControlsContext } from 'App';
+import { useWindowSize } from 'hooks/useWindowSize';
 
 
-// types
+
 type Props = {
 }
 
@@ -17,10 +17,10 @@ type PagesList = ("Profile" | "News" | "Messages" | "Friends" | "Communities" | 
 type ControlsListContainerStyle = { transform?: "translateX(100%)", display?: "none" };
 
 
-const Controls = (props: Props) => {
-   // consts, vars
-   const context = useContext(ControlsContext);
 
+const Controls = (props: Props) => {
+   const popupContext = useContext(PopupControlsContext);
+   const resize = useWindowSize("resize");
    const pagesList: PagesList = [
       "Profile",
       "News",
@@ -30,20 +30,17 @@ const Controls = (props: Props) => {
       "Settings",
    ];
    const icons = pagesList.map(pageName => `./icons/${pageName.toLocaleLowerCase()}.svg`);
-
    const [controlsListContainerStyle, setControlsListContainerStyle] = useState<ControlsListContainerStyle>({ display: 'none' });
-   const { windowSize, addResizeListener, removeResizeListener } = useWindowsSize(600);
-   const controlsBackground: React.RefObject<HTMLDivElement> = useRef<HTMLDivElement>(null)
-
-   // custom hooks
-   const touchMove = useTouchEvents("touchmove", [".headerControlsElement"], hideControlsOnTouchEvent);
-   const touchStart = useTouchEvents("touchstart", [".headerControlsElement"], hideControlsOnTouchEvent);
-   const popupBackground = usePopupElement(controlsBackground)
+   const controlsBackground: React.RefObject<HTMLDivElement> = useRef<HTMLDivElement>(null);
+   const controls: React.RefObject<HTMLDivElement> = useRef<HTMLDivElement>(null);
+   const touchMove = useContinuonusEvents("touchmove", hideControlsOnTouchEvent, [".headerControlsElement"]);
+   const touchStart = useContinuonusEvents("touchstart", hideControlsOnTouchEvent, [".headerControlsElement"]);
+   const popupBackground = usePopupElement(controlsBackground);
 
 
-   // functions
+
    function hideControlsOnTouchEvent(): void {
-      context.burgerIconClickListener!(context.needToShowControls!)
+      popupContext.popupSwitcherlickListener!(popupContext.needToShowPopup!);
    }
 
    const addTouchEventListeners = (): void => {
@@ -59,37 +56,44 @@ const Controls = (props: Props) => {
    }
 
    const showControls = (): void => {
-      context.setIcon!('./icons/hide.svg');
+      popupContext.setIcon!('./icons/hide.svg');
       setControlsListContainerStyle({ transform: 'translateX(100%)' });
-      addResizeListener();
       addTouchEventListeners();
       popupBackground.showElementWithTimeout(0);
    }
 
    function hideControls(): void {
-      context.setIcon!('./icons/burger.svg');
+      popupContext.setIcon!('./icons/burger.svg');
       setControlsListContainerStyle({});
-      removeResizeListener();
       enableTouchEventsSimulation();
       popupBackground.hideElementWithTimeout(0);
    }
 
 
-   // effects
-   useEffect(() => {
-      if (windowSize[0] > 600) {
-         context.setNeedToShowControls!(false);
-         popupBackground.hideElementWithoutAnimation()
-      }
-   }, [windowSize]);
 
    useEffect(() => {
-      if (context.needToShowControls) {
+      popupContext.setNeedToShowBackground!(popupBackground.needToShowElement);
+   }, [popupBackground.needToShowElement]);
+
+   // * перенести логику в header что бы при размере для мобильного не было лишних рендеров во время скролла
+   useEffect(() => {
+      if ((resize.value[0] > 600) && popupContext.needToShowPopup) {
+         popupContext.setNeedToShowPopup!(false);
+         popupBackground.hideElementWithoutAnimation();
+      }
+   }, [resize.value[0]]);
+
+   useEffect(() => {
+      if (popupContext.needToShowPopup) {
+         resize.addEventListener();
          showControls();
+         if (controls.current) controls.current.scrollTop = 0;
       } else {
+         resize.removeEventListener();
          hideControls();
       }
-   }, [context.needToShowControls]);
+   }, [popupContext.needToShowPopup]);
+
 
 
    return (
@@ -99,7 +103,7 @@ const Controls = (props: Props) => {
                <div className={styles.controlsBackground} ref={controlsBackground}></div>
                : null
          }
-         <div className={`${styles.controlsListContainer}  headerControlsElement`} style={controlsListContainerStyle}>
+         <div className={`${styles.controlsListContainer} headerControlsElement`} style={controlsListContainerStyle} ref={controls}>
             <ul className={styles.controlsList}>
                {pagesList.map((item, i) => (
                   <ControlsItem
@@ -112,10 +116,12 @@ const Controls = (props: Props) => {
          </div>
          <IconsThatAreLoaded
             icons={icons}
-            setIconsLoaded={context.setControlsLoaded!}
+            setIconsLoaded={popupContext.setPopupLoaded!}
          />
       </div>
    )
 }
+
+
 
 export default Controls

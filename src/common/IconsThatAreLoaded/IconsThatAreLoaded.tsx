@@ -9,29 +9,25 @@ type Props = {
 
 
 export const IconsThatAreLoaded = (props: Props) => {
-   // consts
-   const iconsList: string[] = [...props.icons]
-   const [iconsStatus, setIconsStatus] = useState<boolean[]>([false, false]);
+   const iconsList: string[] = [...props.icons];
+   const [iconsStatus, setIconsStatus] = useState<boolean[]>(iconsList.map(() => false));
 
 
-   // effects
+
    useEffect(() => {
       if (!iconsStatus.includes(false)) {
-         props.setIconsLoaded(true)
+         props.setIconsLoaded(true);
       }
-
-      return () => {
-         props.setIconsLoaded(false)
-      }
-   }, [iconsStatus])
+   }, [iconsStatus, iconsList[0]])
 
 
-   // funcs
+
    const setIconLoaded = (index: number) => {
       const newLoadedIconsArr = [...iconsStatus];
       newLoadedIconsArr[index] = true;
       setIconsStatus(newLoadedIconsArr);
    }
+
 
 
    return (

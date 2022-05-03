@@ -10,10 +10,8 @@
       margin-top: 2px;
    }
 
-   .buttonName {
-   }
-
-   &:hover {
+   &.hover:hover,
+   &.touch {
       cursor: pointer;
 
       border-radius: 5px;
