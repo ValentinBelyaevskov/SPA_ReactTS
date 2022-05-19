@@ -36,6 +36,7 @@ export const useSetAppPaddinRight = (elements: Elements, resize: WindowSize, can
          && elements.pagesContainerElem
          && elements.sidebarsContainerElem
       ) {
+
          if (windowWidth <= 750) {
             pageElem.style.width = "100vw";
             pagePartElem.style.paddingRight = `${20 + scrollbarWidth}px`;
@@ -45,7 +46,7 @@ export const useSetAppPaddinRight = (elements: Elements, resize: WindowSize, can
             elements.sidebarsContainerElem.style.paddingRight = `${scrollbarWidth}px`
          } else {
             pageElem.style.width = "auto";
-            pagePartElem.style.paddingRight = `${20 + scrollbarWidth}px`;
+            pagePartElem.style.paddingRight = `20px`;
 
             elements.headerContainerElem.style.paddingRight = `0px`
             elements.pagesContainerElem.style.paddingRight = `0px`

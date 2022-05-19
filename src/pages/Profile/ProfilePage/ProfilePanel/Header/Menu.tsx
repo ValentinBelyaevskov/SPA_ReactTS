@@ -2,10 +2,9 @@ import { Popup } from 'hooks'
 import styles from './Menu.module.scss'
 import React from 'react';
 import MenuItem from './MenuItem';
+import { EditMode } from '../ProfilePanel';
 
 
-
-type EditMode = "edit" | "changePassword" | "signOut" | "changeAvatar" | false
 
 type Props = {
    menuRef: React.RefObject<HTMLDivElement>,

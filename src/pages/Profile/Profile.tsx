@@ -28,10 +28,13 @@ const Profile = () => {
       "./icons/showPasswordIcon.svg",
       "./icons/hidePasswordIcon.svg",
       "./image/checked.svg",
+      "./icons/image.svg",
+      "./icons/files.svg",
+      "./icons/music.svg",
+      "./icons/video.svg",
    ];
    const dispatch = useAppDispatch();
    const [trySignIn, setTrySignIn] = useState<boolean>(false);
-   const [profilePageStyle, setProfilePageStyle] = useState<ProfilePageStyle>({});
    const loading = useAppSelector(getLoadingStatus);
    const profileInfoMode: string = useAppSelector(getProfileInfoMode);
    const loadInfo = useAppSelector(getLoadInfo);
@@ -51,17 +54,6 @@ const Profile = () => {
    }, []);
 
    useEffect(() => {
-      if (profileInfoMode === "edit") {
-         setProfilePageStyle({
-            zIndex: 3,
-            marginTop: "3px",
-         });
-      } else {
-         setProfilePageStyle({});
-      }
-   }, [profileInfoMode]);
-
-   useEffect(() => {
       if (loading && !iconsLoaded) {
          setIconsLoaded(false);
          setShowIconsThatAreLoaded(true);
@@ -73,7 +65,7 @@ const Profile = () => {
 
 
    return (
-      <div className={`${styles.profile} page`} style={profilePageStyle}>
+      <div className={`${styles.profile} page`}>
          {
             ((loading
                && (
@@ -115,5 +107,7 @@ const Profile = () => {
       </div>
    )
 }
+
+
 
 export default Profile

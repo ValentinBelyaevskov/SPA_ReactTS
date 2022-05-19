@@ -77,6 +77,13 @@ $gtc_max-width_915: 550px 1fr;
    .popupControlsContainer {
       display: none;
    }
+
+   .appPopup {
+      z-index: 3;
+      position: absolute;
+      top: 0;
+      left: 0;
+   }
 }
 
 // media queries

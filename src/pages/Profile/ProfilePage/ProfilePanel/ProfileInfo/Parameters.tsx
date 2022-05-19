@@ -1,7 +1,7 @@
 import Parameter from './Parameter';
 import styles from './Parameters.module.scss';
 import profileInfoStyles from './ProfileInfo.module.scss';
-import { splitStringIntoWords } from '../../../../functions/splitStringIntoWords';
+import { splitStringIntoWords } from '../../../../../functions/splitStringIntoWords';
 import React from 'react';
 
 

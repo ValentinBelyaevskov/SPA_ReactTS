@@ -20,7 +20,7 @@ export const useFocusOnInput = () => {
       if (inputFieldContainer.current) {
          setInputField(inputFieldContainer.current.firstElementChild as HTMLInputElement)
       }
-   }, [inputFieldContainer]);
+   }, [inputFieldContainer.current]);
 
 
 

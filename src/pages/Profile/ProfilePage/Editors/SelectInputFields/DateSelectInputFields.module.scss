@@ -1,0 +1,155 @@
+.selectElementsContainer {
+   display: flex;
+   justify-content: space-between;
+
+   width: 100%;
+
+   .selectContainer {
+      &.day {
+         width: 70px;
+      }
+
+      &.mounth {
+         width: 121px;
+      }
+
+      &.year {
+         width: 85px;
+      }
+
+      position: relative;
+
+      .select {
+         position: relative;
+         display: block;
+         width: 100%;
+
+         padding: 0.5rem 1.2rem;
+
+         border: solid 1px rgb(211, 211, 211);
+         border-radius: 0.5rem;
+
+         font-size: 1.3rem;
+         line-height: 1.1;
+         font-family: inherit;
+         transition-duration: 0.1s;
+         transition-property: opacity;
+         opacity: 1;
+
+         &.hover:hover,
+         &.touch {
+            cursor: pointer;
+            opacity: 0.7;
+         }
+
+         .listArrow {
+            position: absolute;
+            right: 1.2rem;
+
+            width: 16px;
+            margin-left: 10px;
+            margin-top: 2px;
+         }
+      }
+
+      .datesList {
+         overflow: auto;
+         position: absolute;
+         z-index: 2;
+
+         padding: 0.4rem 0.5rem;
+         border-radius: 0.5rem;
+
+         width: 100%;
+         max-height: 110px;
+         // border: solid 1px rgb(211, 211, 211);
+         border: solid 1px var(--theme-transperent-color);
+
+         background-color: white;
+
+         .listItem {
+            width: 100%;
+            padding: 0.7rem 0.5rem 0.7rem 1.5rem;
+            border-radius: 0.4rem;
+
+            font-size: 1.3rem;
+
+            &.hover:hover,
+            &.touch {
+               cursor: pointer;
+               background-color: #e6e6e6;
+            }
+         }
+      }
+   }
+}
+
+@media (max-width: 460px) {
+   .selectElementsContainer .selectContainer {
+      &.day {
+         width: 65px;
+      }
+
+      &.mounth {
+         width: 116px;
+      }
+
+      &.year {
+         width: 80px;
+      }
+
+      .select {
+         padding: 0.6rem 0.9rem;
+
+         font-size: 1.4rem;
+
+         .listArrow {
+            position: absolute;
+            right: 0.9rem;
+         }
+      }
+
+      .datesList {
+         padding: 0.6rem 0.5rem;
+
+         -ms-overflow-style: none; /* IE 11 */
+         scrollbar-width: none;
+
+         &::-webkit-scrollbar {
+            width: 0;
+         }
+
+         .listItem {
+            padding: 1rem 0.5rem 1rem 1.8rem;
+
+            font-size: 1.4rem;
+         }
+      }
+   }
+}
+
+@media (max-width: 360px) {
+   .selectElementsContainer {
+      display: block;
+
+      .selectContainer {
+         &.day,
+         &.mounth,
+         &.year {
+            width: 100%;
+         }
+
+         &:not(:last-of-type) {
+            margin-bottom: 1.2rem;
+         }
+
+         .datesList {
+            .listItem {
+               padding: 1rem 0.5rem 1rem rem;
+               padding: 1rem;
+               text-align: center;
+            }
+         }
+      }
+   }
+}

@@ -1,23 +1,24 @@
 import styles from './ProfilePanel.module.scss';
 import { useState, useEffect, useRef, useContext } from 'react';
-import { getProfileInfo, getProfileInfoMode, profileActions } from '../../redux/profileReducer';
+import { getLoadInfo, getProfileInfo, getProfileInfoMode, profileActions, uploadFile } from '../../redux/profileReducer';
 import { Profile } from '../../types/types';
 import { useAppDispatch, useAppSelector } from '../../../../hooks/redux';
 import ChangeProfileInfoForm from '../Editors/ChangeProfileInfoForm';
 import ChangePasswordForm from '../Editors/ChangePasswordForm';
 import SignOut from '../Editors/SignOut';
-import ChangeAvatarForm from '../Editors/ChangeAvatarForm';
 import { IconsThatAreLoaded } from 'common/IconsThatAreLoaded/IconsThatAreLoaded';
 import { CustomImage } from 'common';
-import Header from './Header';
-import ProfileInfo from './ProfileInfo';
+import Header from './Header/Header';
+import ProfileInfo from './ProfileInfo/ProfileInfo';
 import { Popup, usePopupElement } from 'hooks';
 import { useElementTouchStartListener } from 'hooks/usePopup/useElementTouchStartListener';
-import { PopupContext } from '../../../../App';
+import { AppContext, PopupContext } from '../../../../App';
+import PanelForCreatingAPost from './PanelForCreatingAPost/PanelForCreatingAPost';
+import SelectAndEditAnImageForm from 'common/UploadFormsAndLightbox/SelectAndEditAnImageForm';
 
 
 
-type EditMode = "edit" | "changePassword" | "signOut" | "changeAvatar" | false;
+export type EditMode = "edit" | "changePassword" | "signOut" | "changeAvatar" | undefined;
 
 
 
@@ -27,10 +28,9 @@ const ProfilePanel = () => {
       "./icons/showPasswordIcon.svg",
       "./icons/hidePasswordIcon.svg"
    ];
+   const loadInfo = useAppSelector(getLoadInfo);
    const profileInfo: Profile = useAppSelector(getProfileInfo);
-   const profileInfoMode: string = useAppSelector(getProfileInfoMode);
-   const [pagePartEditClass, setPagePartEditClass] = useState<string>("");
-   const [editMode, setEditMode] = useState<EditMode>(false);
+   const [editMode, setEditMode] = useState<EditMode>(undefined);
    const [editIconsLoaded, setEditIconsLoaded] = useState<boolean>(false);
    const avatarPromptRef = useRef<HTMLDivElement>(null);
    const popupAvatarPrompt: Popup = usePopupElement(avatarPromptRef, false);
@@ -43,10 +43,11 @@ const ProfilePanel = () => {
       resetElementHoverClassName,
       resetElementTouchClassName,
       resetShowElementOnTouchEvent
-   } = useElementTouchStartListener(popupAvatarPrompt, styles.touch, styles.hover, ".showPopupAvatarPromptElement");
+   } = useElementTouchStartListener(styles.touch, styles.hover, ".showPopupAvatarPromptElement", popupAvatarPrompt, [0, 0]);
    const [showChangeAvatarButton, setShowChangeAvatarButton] = useState<boolean>(false);
    const [changeAvatarButtonStyle, setChangeAvatarButtonStyle] = useState<{ opacity?: string }>({});
    const popupContext = useContext(PopupContext);
+   const appContext = useContext(AppContext);
 
 
 
@@ -59,7 +60,11 @@ const ProfilePanel = () => {
       <div ref={avatarPromptRef} className={`${styles.avatarInscriptionContainer} unselectable`} >
          {
             showChangeAvatarButton ?
-               (<div style={changeAvatarButtonStyle} className={`${styles.avatarInscription} ${styles.showPopupAvatarPromptElement}`} onClick={avatarPromptClickListener}>
+               (<div
+                  style={changeAvatarButtonStyle}
+                  className={`${styles.avatarInscription} ${styles.showPopupAvatarPromptElement} showPopupAvatarPromptElement unselectable`}
+                  onClick={avatarPromptClickListener}
+               >
                   Change avatar
                </div>)
                : null
@@ -67,7 +72,10 @@ const ProfilePanel = () => {
       </div>
    )
 
-   const finishEditing: () => void = () => setEditMode(false);
+   const finishEditing: () => void = () => {
+      setEditMode(undefined);
+      appContext.setPopup!(undefined);
+   }
 
    const showPopupAvatarPrompt = (): void => {
       popupAvatarPrompt.showElementWithTimeout(0);
@@ -82,17 +90,32 @@ const ProfilePanel = () => {
       resetElementHoverClassName();
    }
 
+   const changeAvatarFormSubmitListener = (croppedImage: File | null, callback: () => void): void => {
+      dispatch(uploadFile({
+         file: croppedImage!,
+         typeOfFile: "avatar",
+         callback,
+         objectId: profileInfo.objectId,
+         avatar: profileInfo.avatar,
+      }));
+      dispatch(profileActions.setLoadInfo({
+         ...loadInfo,
+         loaded: false,
+         loading: true,
+      }));
+   }
+
 
 
    useEffect(() => {
       if (popupAvatarPrompt.needToShowElement) {
          setTimeout(() => {
             setShowChangeAvatarButton(true);
-            setTimeout(() => setChangeAvatarButtonStyle({ opacity: "1" }), 0)
+            setTimeout(() => setChangeAvatarButtonStyle({ opacity: "1" }), 0);
          }, 100)
       } else {
-         setShowChangeAvatarButton(false)
-         setChangeAvatarButtonStyle({})
+         setShowChangeAvatarButton(false);
+         setChangeAvatarButtonStyle({});
       }
    }, [popupAvatarPrompt.needToShowElement])
 
@@ -103,15 +126,7 @@ const ProfilePanel = () => {
       return () => {
          dispatch(profileActions.setProfileInfoMode("view"));
       }
-   }, [editMode]);
-
-   useEffect(() => {
-      if (profileInfoMode === "edit") {
-         setPagePartEditClass(styles.pagePartEditClass);
-      } else {
-         setPagePartEditClass("");
-      }
-   }, [profileInfoMode]);
+   }, [editMode])
 
    useEffect(() => {
       if (editMode) {
@@ -119,15 +134,38 @@ const ProfilePanel = () => {
       } else {
          popupContext.setNeedToShowPopup!(false);
       }
-   }, [editMode]);
+   }, [editMode])
+
+   useEffect(() => {
+      if (editMode === "edit") {
+         appContext.setPopup!(<ChangeProfileInfoForm finishEditing={finishEditing} />)
+      } else if ((editMode === "changePassword") && editIconsLoaded) {
+         appContext.setPopup!(<ChangePasswordForm finishEditing={finishEditing} />)
+      } else if (editMode === "signOut") {
+         appContext.setPopup!(<SignOut finishEditing={finishEditing} />)
+      } else if (editMode === "changeAvatar") {
+         appContext.setPopup!(< SelectAndEditAnImageForm
+            finishEditing={finishEditing}
+            imageAspect={1 / 1}
+            loadInfo={loadInfo}
+            submitListener={changeAvatarFormSubmitListener}
+            uploadUncroppedImage={false}
+            uploadButtonText="Upload new avatar"
+            popupText='Update avatar:'
+         />)
+      } else {
+         appContext.setPopup!(undefined)
+      }
+   }, [editMode, editIconsLoaded, loadInfo.loading])
 
 
 
    return (
-      <div className={`${styles.profilePanel} ${pagePartEditClass} pagePart`}>
+      <div className={`${styles.profilePanel} pagePart`}>
          <div className={styles.panelGridContainer}>
             <CustomImage
-               additionalClass={`${styles.avatar} ${elementHoverAndTouchClassName} unselectable`}
+               additionalClass={`${styles.avatar} ${elementHoverAndTouchClassName} showPopupAvatarPromptElement unselectable`}
+               additionalImageClass={`showPopupAvatarPromptElement unselectable`}
                src={profileInfo.avatar ? profileInfo.avatar : "./image/defaultAvatar.jpg"}
                onMouseEnter={showPopupAvatarPrompt}
                onMouseLeave={hidePopupAvatarPrompt}
@@ -136,24 +174,14 @@ const ProfilePanel = () => {
                jsx={popupAvatarPrompt.needToShowElement ? AvatarPrompt() : undefined}
             />
             <Header
-               username={profileInfo.username}
+               username={`${profileInfo.firstName} ${profileInfo.lastName}`}
                setEditMode={setEditMode}
             />
             <ProfileInfo
                profileInfo={profileInfo}
             />
+            <PanelForCreatingAPost />
          </div>
-         {
-            editMode === "edit"
-               ? <ChangeProfileInfoForm finishEditing={finishEditing} />
-               : (editMode === "changePassword") && editIconsLoaded
-                  ? <ChangePasswordForm finishEditing={finishEditing} />
-                  : editMode === "signOut"
-                     ? <SignOut finishEditing={finishEditing} />
-                     : editMode === "changeAvatar"
-                        ? <ChangeAvatarForm finishEditing={finishEditing} />
-                        : null
-         }
          <IconsThatAreLoaded
             icons={editIcons}
             setIconsLoaded={setEditIconsLoaded}

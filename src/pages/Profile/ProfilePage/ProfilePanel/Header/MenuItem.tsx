@@ -1,11 +1,10 @@
 import { splitStringIntoWords } from 'functions'
 import { Popup } from 'hooks'
 import { useHoverAndTouchClassNames } from 'hooks/useHoverAndTouchClassNames'
+import { EditMode } from '../ProfilePanel'
 import styles from './MenuItem.module.scss'
 
 
-
-type EditMode = "edit" | "changePassword" | "signOut" | "changeAvatar" | false
 
 type Props = {
    index: number

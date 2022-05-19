@@ -14,25 +14,28 @@ const CustomImage = (props: ImageProps) => {
                   padding: props.width ? `0  0 ${props.height} 0` : "0 0 150px 0",
                   ...props.wrapperStyle
                }
-               : {}
+               : { ...props.wrapperStyle }
          }
+         ref={props.wrapperRef}
          onClick={props.onClick ? props.onClick : () => { }}
          onMouseEnter={props.onMouseEnter ? props.onMouseEnter : () => { }}
          onMouseLeave={props.onMouseLeave ? props.onMouseLeave : () => { }}
          onTouchStart={props.onTouchStart ? props.onTouchStart : () => { }}
          onTouchEnd={props.onTouchEnd ? props.onTouchEnd : () => { }}
       >
-         <img
-            src={props.src}
-            alt="image"
-            style={props.imgStyle}
-            onLoad={props.onLoad ? props.onLoad : () => { }}
-         />
          {
             props.jsx ?
                props.jsx
                : null
          }
+         <img
+            src={props.src}
+            ref={props.imageRef}
+            className={props.additionalImageClass}
+            alt="image"
+            style={props.imgStyle}
+            onLoad={props.onLoad ? props.onLoad : () => { }}
+         />
       </div>
    )
 }

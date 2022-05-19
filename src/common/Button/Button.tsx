@@ -74,7 +74,7 @@ const Button = (props: Props) => {
 
 
    useEffect(() => {
-      setMakeTimeout(false)
+      return () => setMakeTimeout(false)
    }, [])
 
 

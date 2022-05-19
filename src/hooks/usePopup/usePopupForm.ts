@@ -28,8 +28,10 @@ export const usePopupForm = (endEditingCallback: EndEditingCallback) => {
    }
 
    const setClickedButtonName = (e: React.MouseEvent): void => {
-      setClickedButton(e.currentTarget.className)
+      setClickedButton(e.currentTarget.className);
    }
+
+
 
    return {
       editorStyle,

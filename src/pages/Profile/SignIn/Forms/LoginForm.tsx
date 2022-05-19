@@ -9,7 +9,7 @@ import { useFocusOnInput } from '../../../../hooks/useFocusOnInput';
 import { useHoverAndTouchClassNames } from 'hooks/useHoverAndTouchClassNames';
 
 
-// types
+
 type ClickedButton = undefined | "login" | "resetPassword";
 
 type ResetPasswordWasClicked = boolean;
@@ -19,6 +19,7 @@ type Inputs = {
    password: string,
    rememberMe: boolean,
 }
+
 
 
 const LoginForm = () => {
@@ -250,5 +251,7 @@ const LoginForm = () => {
       </div>
    )
 }
+
+
 
 export default LoginForm

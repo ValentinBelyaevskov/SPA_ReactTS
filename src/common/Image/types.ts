@@ -4,6 +4,7 @@ export type ImageProps = {
    wrapperStyle?: object
    imgStyle?: object
    additionalClass?: string
+   additionalImageClass?: string
    width?: string
    height?: string
    onClick?: (() => void) | ((e: React.MouseEvent<HTMLDivElement>) => void)
@@ -13,4 +14,6 @@ export type ImageProps = {
    onTouchEnd?: (() => void) | ((e: React.TouchEvent<HTMLDivElement>) => void)
    onLoad?: () => void
    jsx?: JSX.Element
+   wrapperRef?: React.RefObject<HTMLDivElement>
+   imageRef?: React.RefObject<HTMLImageElement>
 }

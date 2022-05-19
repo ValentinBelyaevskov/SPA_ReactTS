@@ -33,8 +33,7 @@ const Controls = (props: Props) => {
    const [controlsListContainerStyle, setControlsListContainerStyle] = useState<ControlsListContainerStyle>({ display: 'none' });
    const controlsBackground: React.RefObject<HTMLDivElement> = useRef<HTMLDivElement>(null);
    const controls: React.RefObject<HTMLDivElement> = useRef<HTMLDivElement>(null);
-   const touchMove = useContinuonusEvents("touchmove", hideControlsOnTouchEvent, [".headerControlsElement"]);
-   const touchStart = useContinuonusEvents("touchstart", hideControlsOnTouchEvent, [".headerControlsElement"]);
+   const touchEvents = useContinuonusEvents(["touchmove", "touchstart"], hideControlsOnTouchEvent, [".headerControlsElement"]);
    const popupBackground = usePopupElement(controlsBackground);
 
 
@@ -43,29 +42,18 @@ const Controls = (props: Props) => {
       popupContext.popupSwitcherlickListener!(popupContext.needToShowPopup!);
    }
 
-   const addTouchEventListeners = (): void => {
-      touchMove.removeEventListener();
-      touchMove.addEventListener();
-      touchStart.removeEventListener();
-      touchStart.addEventListener();
-   }
-
-   const enableTouchEventsSimulation = (): void => {
-      touchMove.enableEventSimulation();
-      touchStart.enableEventSimulation();
-   }
 
    const showControls = (): void => {
       popupContext.setIcon!('./icons/hide.svg');
       setControlsListContainerStyle({ transform: 'translateX(100%)' });
-      addTouchEventListeners();
+      touchEvents.addEventListener();
       popupBackground.showElementWithTimeout(0);
    }
 
    function hideControls(): void {
       popupContext.setIcon!('./icons/burger.svg');
       setControlsListContainerStyle({});
-      enableTouchEventsSimulation();
+      touchEvents.enableEventSimulation();
       popupBackground.hideElementWithTimeout(0);
    }
 

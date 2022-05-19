@@ -2,9 +2,15 @@ import { Profile } from "pages/Profile/types/types";
 import { useEffect, useState } from "react";
 
 
+
 type ParametersListItem = (string | undefined | number | null)[];
 type StringParametersListItem = (string | undefined)[];
 type ParametersList = ParametersListItem[] | [];
+
+
+
+const getStringPath = (string: string | null, isThisTheLastPart: boolean): string => string ? `${string}${isThisTheLastPart ? "" : ","}` : ""
+
 
 
 export const useCreateInfoConfiguration = (profileInfo: Profile, profileInfoLoaded: boolean, styles: any) => {
@@ -49,19 +55,21 @@ export const useCreateInfoConfiguration = (profileInfo: Profile, profileInfoLoad
 
    useEffect(() => {
       setInformationBlocksIsFull(false);
-   }, [profileInfo.location, profileInfo.dateOfBirth, profileInfo.education])
+   }, [profileInfo.country, profileInfo.region, profileInfo.city, profileInfo.dateOfBirth, profileInfo.education])
 
 
    useEffect(() => {
+
       if (!informationBlocks || informationBlocksIsFull) return;
 
 
-      const briefPersonalInfo: ParametersList = [
-         ["location", profileInfo.location],
-         ["dateOfBirth", profileInfo.dateOfBirth]
+      let briefPersonalInfo: ParametersList = [
+         ["location", `${getStringPath(profileInfo.country, (!profileInfo.region && !profileInfo.city))} ${getStringPath(profileInfo.region, !profileInfo.city)} ${getStringPath(profileInfo.city, true)}`.trim()],
+         ["dateOfBirth", profileInfo.dateOfBirth ? profileInfo.dateOfBirth.trim() : ""],
       ];
+
       let briefPersonalInfoLength: number = briefPersonalInfo.length;
-      const morePersonalInfo: StringParametersListItem = ["education", profileInfo.education];
+      const morePersonalInfo: StringParametersListItem = ["education", profileInfo.education ? profileInfo.education.trim() : ""];
       const informationBlocksCopy: ParametersList[] = informationBlocks.map(
          item => item.map(
             subItem => typeof subItem === "object" ?
@@ -71,11 +79,14 @@ export const useCreateInfoConfiguration = (profileInfo: Profile, profileInfoLoad
       );
 
 
+
       for (let i = 0; i < briefPersonalInfoLength; i++) {
          if (briefPersonalInfo[i][1] && `${briefPersonalInfo[i][1]}`.length && (typeof briefPersonalInfo[i][1] === "string" || typeof briefPersonalInfo[i][1] === "number")) {
             informationBlocksCopy[0][i + 1] = briefPersonalInfo[i];
          } else {
+            briefPersonalInfo = [...briefPersonalInfo.slice(i + 1)];
             --briefPersonalInfoLength;
+            informationBlocksCopy[0] = briefPersonalInfoLength ? [...informationBlocksCopy[0].slice(0, i + 1)] : [...informationBlocksCopy[0]]
             --i;
          }
       }
@@ -90,13 +101,13 @@ export const useCreateInfoConfiguration = (profileInfo: Profile, profileInfoLoad
 
          if (!informationBlocksIsFull) setInformationBlocksIsFull(true);
       } else {
+         informationBlocksCopy[1] = []
          if (!informationBlocksIsFull) setInformationBlocksIsFull(true);
       }
 
+      setInformationBlocks(informationBlocksCopy);
 
-      setInformationBlocks(informationBlocksCopy)
-
-   }, [informationBlocks, informationBlocksIsFull]);
+   }, [informationBlocks, informationBlocksIsFull, profileInfo.country, profileInfo.region, profileInfo.city, profileInfo.dateOfBirth, profileInfo.education]);
 
 
    useEffect(() => {

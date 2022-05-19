@@ -7,7 +7,8 @@ export type LoadInfo = {
 }
 
 export type UserProps = {
-   username: string
+   firstName: string
+   lastName: string
    email: string
    location: string
    password: string
@@ -62,4 +63,5 @@ export type AppCtxt = {
    pagePartRef?: React.RefObject<HTMLDivElement>
    showPreloader?: boolean
    setShowPreloader?: React.Dispatch<React.SetStateAction<boolean>>
+   setPopup?: React.Dispatch<React.SetStateAction<JSX.Element | undefined>>
 }

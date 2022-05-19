@@ -90,14 +90,14 @@ export const useAppScrollSetting = (needToShowPopup: boolean, needToShowBackgrou
          setCancelAppScrollStylesCalled(false);
          enableAppScroll(scrollTop);
       }
-   }, [needToShowPopup, needToShowBackground, elements.appElem])
+   }, [needToShowPopup, needToShowBackground, elements.appElem]);
 
 
    useEffect(() => {
       if (elements.pagesContainerElem) {
          setFullAppHeight(getFullAppHeight(elements.pagesContainerElem, resize.value[0]))
       }
-   }, [needToShowPopup, resize.value, elements.pagesContainerElem])
+   }, [needToShowPopup, resize.value, elements.pagesContainerElem]);
 
 
    useEffect(() => {

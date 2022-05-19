@@ -11,13 +11,16 @@ import { cloudinary } from '../../../API/cloudinary/cloudinary';
 // * initialState
 const initialState: ProfileState = {
    profileInfo: {
-      username: "",
+      firstName: "",
+      lastName: "",
       email: "",
-      location: "",
+      country: "",
+      region: "",
+      city: "",
       avatar: "./image/defaultAvatar.jpg",
       objectId: "",
       education: "",
-      dateOfBirth: null,
+      dateOfBirth: undefined,
    },
    profileMode: "signIn",
    profileInfoMode: "view",
@@ -141,7 +144,7 @@ const profileSlice = createSlice({
          })
          // ? uploadFile
          .addCase(uploadFile.fulfilled, (state, action: PayloadAction<any>) => {
-            state.profileInfo = {...state.profileInfo, avatar: action.payload};
+            state.profileInfo = { ...state.profileInfo, avatar: action.payload };
             state.loadInfo.loading = false
             state.loadInfo.loaded = true
             state.loadInfo.error = undefined
@@ -400,14 +403,15 @@ export const passwordReset = createAsyncThunk(
    "profile/passwordReset",
    async (loginParams: LoginParams, { rejectWithValue }) => {
       try {
-         const response = Backendless.UserService.restorePassword(loginParams.email)
-         return response
+         const response = Backendless.UserService.restorePassword(loginParams.email);
+         return response;
       } catch (err: any) {
          console.log(err);
          return rejectWithValue(err.message)
       }
    }
 )
+
 
 
 // * export slice

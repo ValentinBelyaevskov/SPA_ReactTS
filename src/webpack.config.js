@@ -21,6 +21,8 @@ module.exports = {
          pages: path.resolve(__dirname, '/src/pages'),
          redux: path.resolve(__dirname, '/src/redux'),
          types: path.resolve(__dirname, '/src/types'),
-      }
+      },
+
+      fallback: { process: require.resolve("process/browser") }
    }
 }

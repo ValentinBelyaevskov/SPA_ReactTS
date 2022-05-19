@@ -1,13 +1,12 @@
 import { Popup, usePopupElement } from 'hooks';
 import React, { useRef } from 'react';
 import styles from './Header.module.scss';
-import profilePanelStyles from './ProfilePanel.module.scss';
+import profilePanelStyles from '../ProfilePanel.module.scss';
 import Menu from './Menu';
 import { useElementTouchStartListener } from 'hooks/usePopup/useElementTouchStartListener';
+import { EditMode } from '../ProfilePanel';
 
 
-
-type EditMode = "edit" | "changePassword" | "signOut" | "changeAvatar" | false
 
 type Props = {
    username: string
@@ -22,29 +21,12 @@ const Header = (props: Props) => {
    const popupMenu: Popup = usePopupElement(menu, true);
    const {
       elementTouchStartListener,
-      enableTouchEventsSimulation,
-      setShowElementOnTouchStart,
       elementHoverAndTouchClassName,
       resetElementTouchClassName,
-      setElementHoverClassName,
-      resetElementHoverClassName,
-      resetShowElementOnTouchEvent
-   } = useElementTouchStartListener(popupMenu, styles.touch, styles.hover, ".profilePanelMenuElement");
-
-
-
-   const showMenu = (): void => {
-      popupMenu.showElementWithTimeout(200);
-      setShowElementOnTouchStart(false);
-      setElementHoverClassName();
-   }
-
-   const hideMenu = (): void => {
-      popupMenu.hideElementWithTimeout(200);
-      setShowElementOnTouchStart(true);
-      enableTouchEventsSimulation();
-      resetElementHoverClassName();
-   }
+      resetShowElementOnTouchEvent,
+      showElement,
+      hideElement
+   } = useElementTouchStartListener(styles.touch, styles.hover, ".profilePanelMenuElement", popupMenu, [250, 200]);
 
 
 
@@ -56,8 +38,8 @@ const Header = (props: Props) => {
          <div
             className={`${styles.parametersIcon} ${elementHoverAndTouchClassName} profilePanelMenuElement unselectable`}
             ref={personalParametersIcon}
-            onMouseEnter={showMenu}
-            onMouseLeave={hideMenu}
+            onMouseEnter={showElement}
+            onMouseLeave={hideElement}
             onTouchStart={elementTouchStartListener}
             onTouchEnd={() => resetElementTouchClassName(true)}
          >
@@ -67,11 +49,11 @@ const Header = (props: Props) => {
             popupMenu.needToShowElement
                ? (
                   <Menu
-                     hideMenu={hideMenu}
+                     hideMenu={hideElement}
                      popupMenu={popupMenu}
                      menuRef={menu}
                      setEditMode={props.setEditMode}
-                     showMenu={showMenu}
+                     showMenu={showElement}
                      hideMenuOnTouchStart={resetShowElementOnTouchEvent}
                   />
                )

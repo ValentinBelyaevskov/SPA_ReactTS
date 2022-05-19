@@ -3,11 +3,11 @@ import { Button } from "common";
 import { useAppSelector } from "hooks/redux";
 import { Profile } from "pages/Profile/types/types";
 import { useEffect, useRef, useState, useContext } from 'react';
-import { useCreateInfoConfiguration } from "./hooks/useCreateInfoConfiguration";
+import { useCreateInfoConfiguration } from "../hooks/useCreateInfoConfiguration";
 import Parameters from "./Parameters";
 import styles from './ProfileInfo.module.scss'
-import profilePanelStyles from './ProfilePanel.module.scss'
-import { getLoadInfo } from '../../redux/profileReducer';
+import profilePanelStyles from '../ProfilePanel.module.scss'
+import { getLoadInfo } from '../../../redux/profileReducer';
 import { useHoverAndTouchClassNames } from "hooks/useHoverAndTouchClassNames";
 
 

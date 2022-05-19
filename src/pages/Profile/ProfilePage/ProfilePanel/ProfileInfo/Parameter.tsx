@@ -1,6 +1,6 @@
 import styles from './Parameter.module.scss';
-import { splitStringIntoWords } from '../../../../functions/splitStringIntoWords';
-import { useState, useEffect } from 'react';
+import { splitStringIntoWords } from '../../../../../functions/splitStringIntoWords';
+import { useState } from 'react';
 import React from 'react';
 import NotVisibleParameterValue from './NotVisibleParameterValue';
 import { useHoverAndTouchClassNames } from 'hooks/useHoverAndTouchClassNames';

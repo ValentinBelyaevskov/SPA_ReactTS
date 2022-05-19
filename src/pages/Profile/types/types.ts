@@ -10,14 +10,17 @@ export type ProfileState = {
 }
 
 export type Profile = {
-   username: string
+   firstName: string
+   lastName: string
    email: string
-   location: string
+   country: string
+   region: string
+   city: string
    avatar: string
    objectId: string
    password?: string
    education?: string
-   dateOfBirth?: number | null
+   dateOfBirth?: string
 }
 
 export type ProfileMode = "signIn"
@@ -50,20 +53,21 @@ export type UpdateParams = {
       currentPassword: string
       newPassword: string
       education?: string
-      dateOfBirth?: number | null
+      dateOfBirth?: string
       [prop: string]: string | number | null | undefined
    },
    callback?: () => void
 }
 
 export type UpdatedProfile = {
-   username?: string
+   firstName?: string
+   lastName?: string
    email?: string
    location?: string
    objectId?: string
    profileAvatar?: string
    education?: string
-   dateOfBirth?: number | null
+   dateOfBirth?: string
    [prop: string]: string | number | null | undefined
 }
 

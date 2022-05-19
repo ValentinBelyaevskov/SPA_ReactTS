@@ -1,0 +1,411 @@
+.panelForCreatingAPost {
+   position: relative;
+   padding-top: 25px;
+   width: 100%;
+
+   .gridContainer {
+      position: relative;
+      display: grid;
+      grid-template-columns: 60px minmax(100px, 1fr) 91px;
+      grid-template-rows: 20px 20px minmax(29px, 1fr) minmax(0, auto);
+      grid-template-areas:
+         "avatar  contentIcons  button"
+         "avatar  contentIcons  button"
+         "editor  editor        editor"
+         "images  images        images";
+
+      width: 100%;
+
+      .avatar {
+         grid-area: avatar;
+         box-shadow: 0px 1px 5px 2px rgb(0 0 0 / 10%);
+
+         padding: 0 0 40px 0;
+         width: 40px;
+      }
+
+      [contentEditable="true"] {
+         grid-area: editor;
+         margin-top: 1.3rem;
+
+         font-size: 1.3rem;
+         line-height: 1.6rem;
+
+         &:empty:before {
+            content: attr(placeholder);
+
+            color: rgba(149, 149, 149);
+            font-size: 1.3rem;
+         }
+
+         &:focus {
+            &:empty:before {
+               color: rgba(149, 149, 149, 0.7);
+            }
+         }
+
+         &:hover {
+            cursor: text;
+         }
+      }
+
+      .createAPostButtonContainer {
+         grid-area: button;
+         justify-self: end;
+         align-self: center;
+
+         .createAPostButton {
+            padding: 5px 20px;
+         }
+      }
+
+      .imagesBlock {
+         grid-area: images;
+
+         max-height: 350px;
+         width: 100%;
+
+         div {
+            height: 100%;
+            width: 100%;
+         }
+
+         .imagesContainer {
+            width: 100%;
+            height: 100%;
+
+            &.oneImg {
+            }
+
+            &.twoImgs,
+            &.threeImgs,
+            &.fourImgs,
+            &.fiveOrMoreImgs {
+               display: grid;
+               gap: 5px;
+            }
+
+            &.twoImgs {
+               &.vertical {
+                  grid-template-rows:
+                     minmax(0, calc(50%))
+                     minmax(0, calc(50%));
+               }
+
+               &.horizontal {
+                  grid-template-rows: minmax(0, 100%);
+                  grid-template-columns: 0.5fr 0.5fr;
+               }
+            }
+
+            &.threeImgs {
+               grid-template-columns: 0.8fr 0.2fr;
+               grid-template-rows:
+                  minmax(0, calc(50%))
+                  minmax(0, calc(50%));
+
+               &.horizontal {
+                  .imageContainer {
+                     &:nth-of-type(1) {
+                        grid-column: 1 / 2;
+                        grid-row: 1 / 3;
+                     }
+                  }
+               }
+               &.vertical {
+                  .imageContainer {
+                     &:nth-of-type(1) {
+                        grid-column: 1 / 3;
+                        grid-row: 1 / 2;
+                     }
+                  }
+               }
+            }
+
+            &.fourImgs {
+               &.vertical {
+                  grid-template-rows:
+                     minmax(0, calc(50%))
+                     minmax(0, calc(50%));
+                  grid-template-columns: 1fr 1fr 1fr;
+
+                  .imageContainer {
+                     &:nth-of-type(1) {
+                        grid-column: 1 / 4;
+                        grid-row: 1 / 2;
+                     }
+                  }
+               }
+
+               &.horizontal {
+                  grid-template-rows:
+                     minmax(0, calc(33.333%))
+                     minmax(0, calc(33.333%))
+                     minmax(0, calc(33.333%));
+                  grid-template-columns: 1fr 1fr;
+
+                  .imageContainer {
+                     &:nth-of-type(1) {
+                        grid-column: 1 / 2;
+                        grid-row: 1 / 4;
+                     }
+                  }
+               }
+            }
+
+            &.fiveOrMoreImgs {
+               &.vertical {
+                  grid-template-rows:
+                     minmax(0, calc(33.333%))
+                     minmax(0, calc(33.333%))
+                     minmax(0, calc(33.333%));
+               }
+
+               &.horizontal {
+                  grid-template-rows:
+                     minmax(0, calc(50%))
+                     minmax(0, calc(50%));
+               }
+
+               .subContainer {
+                  display: grid;
+                  grid-template-rows: minmax(0, 100%);
+                  gap: 5px;
+
+                  height: 100%;
+
+                  &.horizontal {
+                     &:nth-of-type(1) {
+                        grid-template-columns: 1fr 1fr;
+                     }
+
+                     &:nth-of-type(2) {
+                        grid-template-columns: 1fr 1fr 1fr;
+                     }
+                  }
+
+                  &.vertical {
+                     &:nth-of-type(2),
+                     &:nth-of-type(3) {
+                        grid-template-columns: 1fr 1fr;
+                        grid-template-rows: minmax(0, calc(100%));
+                     }
+                  }
+               }
+            }
+
+            .imageContainer,
+            &.fiveOrMoreImgs .subContainer .imageContainer {
+               position: relative;
+
+               max-width: 100%;
+               height: 100%;
+               min-height: 17px;
+               min-width: 17px;
+
+               &:hover {
+                  cursor: pointer;
+               }
+
+               .image {
+                  display: block;
+                  position: relative;
+
+                  width: fit-content;
+                  max-width: 100%;
+                  height: 100%;
+                  min-height: 17px;
+                  max-height: 100%;
+                  min-width: 17px;
+
+                  object-fit: cover;
+
+                  box-shadow: 0px 1px 5px 2px rgb(0 0 0 / 10%);
+               }
+
+               .videoContainer {
+                  float: left;
+                  position: relative;
+                  left: 0;
+                  top: 0;
+
+                  .video {
+                     position: absolute;
+                     top: 0;
+                     min-height: 100%;
+                     min-width: 100%;
+                     z-index: 9997;
+
+                     object-fit: cover;
+
+                     background-color: black;
+                  }
+               }
+
+               .playIcon,
+               .hideIcon,
+               .playIconMini {
+                  transition-property: opacity;
+                  transition-duration: 0.1s;
+
+                  background-color: rgba(0, 0, 0, 0.6);
+                  opacity: 0.8;
+
+                  &.hover:hover,
+                  &.touch {
+                     opacity: 1;
+                  }
+               }
+
+               .playIcon,
+               .playIconMini {
+                  z-index: 9998;
+                  position: absolute;
+                  left: 50%;
+                  top: 50%;
+                  transform: translate(-50%, -50%);
+
+                  border-radius: 50%;
+
+                  img {
+                     display: block;
+                  }
+               }
+
+               .playIcon {
+                  width: 44px;
+                  height: 44px;
+
+                  img {
+                     margin-left: 15px;
+                     margin-top: 12px;
+
+                     width: 20px;
+                     height: 20px;
+                  }
+               }
+
+               .playIconMini {
+                  width: 17px;
+                  height: 17px;
+
+                  img {
+                     margin-left: 5px;
+                     margin-top: 4px;
+
+                     width: 9px;
+                     height: 9px;
+                  }
+               }
+
+               .playIconHidden {
+                  display: none;
+               }
+
+               .hideIcon {
+                  z-index: 9998;
+                  position: absolute;
+                  right: 0;
+                  top: 0;
+
+                  width: 17px;
+                  height: 17px;
+
+                  img {
+                     display: block;
+                     margin-left: 3px;
+                     margin-top: 3px;
+
+                     width: 11px;
+                     height: 11px;
+                  }
+               }
+            }
+
+            &.twoImgs,
+            &.threeImgs,
+            &.fourImgs,
+            &.fiveOrMoreImgs .subContainer {
+               .imageContainer .image {
+                  width: 100%;
+               }
+            }
+         }
+      }
+
+      .contentIcons {
+         position: relative;
+         grid-area: contentIcons;
+         align-self: center;
+
+         &:hover {
+            cursor: pointer;
+         }
+
+         .contentIconsPrompt {
+            position: absolute;
+            top: -25px;
+
+            padding: 3px 8px;
+            border-radius: 0.4rem;
+
+            font-size: 1.3rem;
+            line-height: 1;
+
+            background-color: var(--theme-prompt-color);
+            color: white;
+
+            transition-property: opacity;
+            transition-duration: 0.2s;
+            opacity: 0;
+         }
+
+         img {
+            padding: 2px 9px;
+
+            transition-property: opacity;
+            transition-duration: 0.1s;
+
+            &:first-of-type {
+               margin-left: -0.9rem;
+            }
+
+            &.hover:hover,
+            &.touch {
+               opacity: 0.6;
+            }
+         }
+      }
+   }
+}
+
+// media queries
+@media (max-width: 460px) {
+   .panelForCreatingAPost {
+      .gridContainer {
+         grid-template-columns: 66px minmax(100px, 1fr) 91px;
+         grid-template-rows: 23px 23px minmax(31px, 1fr) minmax(0, auto);
+
+         .avatar {
+            padding: 0 0 46px 0;
+            width: 46px;
+         }
+
+         [contentEditable="true"] {
+            margin-top: 1.1rem;
+            font-size: 1.5rem;
+            line-height: 1.8rem;
+
+            &:empty:before {
+               font-size: 1.5rem;
+            }
+         }
+
+         .createAPostButtonContainer {
+            .createAPostButton {
+               padding: 5px 20px;
+            }
+         }
+      }
+   }
+}

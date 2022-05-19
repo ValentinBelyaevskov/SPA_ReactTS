@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 
 
-export const useThrottle = (unthrottledValue: any, setUnthrottledValue: React.Dispatch<React.SetStateAction<any>>, delay: number, defaultValue: any) => {
+
+export const useThrottle = <Value>(unthrottledValue: any, setUnthrottledValue: React.Dispatch<React.SetStateAction<any>>, delay: number, defaultValue: any): Value => {
    const [value, setValue] = useState<any>(defaultValue);
    const [isWaiting, setIsWaiting] = useState<boolean>(false);
 
@@ -16,8 +17,8 @@ export const useThrottle = (unthrottledValue: any, setUnthrottledValue: React.Di
       setTimeout(() => {
          setIsWaiting(false);
          setUnthrottledValue(null);
-      }, delay)
-   }, [isWaiting, unthrottledValue])
+      }, delay);
+   }, [isWaiting, unthrottledValue]);
 
 
 

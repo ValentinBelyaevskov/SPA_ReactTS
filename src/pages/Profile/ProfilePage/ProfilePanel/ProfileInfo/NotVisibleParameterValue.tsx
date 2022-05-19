@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import styles from './Parameter.module.scss'
 import { removeExtraSpaces, shortenTheString } from 'functions';
 import getValueWithoutMeasurer from 'functions/getValueWithoutMeasurer';
-import { useSetParameterSize } from './hooks/useSetParameterSize';
+import { useSetParameterSize } from '../hooks/useSetParameterSize';
 
 
 type Props = {
@@ -122,7 +122,12 @@ const NotVisibleParameterValue = (props: Props) => {
 
 
    useEffect(() => {
-      if ((!valueToTest && valueToTest !== 0) || (!stringSizeWasObtained) || (valueToTest !== props.parameterValue)) return
+      if (
+         (!valueToTest && valueToTest !== 0)
+         || (!stringSizeWasObtained)
+         || (valueToTest !== props.parameterValue)
+         || (!`${props.parameterValue}`.includes(`${valueToTest}`))
+      ) return
 
       const stringWithLineBreak: JSX.Element | string = getStringWithLineBreak(valueToTest, isTheStringLong, true)
       const visibleParameterValue: string = isTheStringLong ?
@@ -130,14 +135,20 @@ const NotVisibleParameterValue = (props: Props) => {
          : `${valueToTest}`;
 
       props.setIsTheValueLong(isTheStringLong);
-      props.setStringWithLineBreak([stringWithLineBreak])
-      props.setVisibleParameterValue(visibleParameterValue)
+      props.setStringWithLineBreak([stringWithLineBreak]);
+      props.setVisibleParameterValue(visibleParameterValue);
 
    }, [stringSizeWasObtained, valueToTest, isTheStringLong, maxParameterLength, props.parameterValue])
 
 
    useEffect(() => {
-      if ((!valueToTest && valueToTest !== 0) || ((wordNumber !== wordsWithLineBreakArr.length + 1) && wordNumber) || (valueToTest === props.parameterValue) || !wordSizeWasObtained) return
+      if (
+         (!valueToTest && valueToTest !== 0)
+         || ((wordNumber !== wordsWithLineBreakArr.length + 1) && wordNumber)
+         || (valueToTest === props.parameterValue)
+         || (!`${props.parameterValue}`.includes(`${valueToTest}`))
+         || !wordSizeWasObtained
+      ) return
 
       const needASpaceAtTheEnd: boolean = wordNumber === wordsArr.length ? false : true
       const wordWithLineBreak: JSX.Element | string = getStringWithLineBreak(valueToTest, isTheWordLong, needASpaceAtTheEnd)
@@ -149,7 +160,7 @@ const NotVisibleParameterValue = (props: Props) => {
 
    useEffect(() => {
       if (valueToTest && valueToTest !== props.parameterValue) {
-         props.setStringWithLineBreak(wordsWithLineBreakArr)
+         props.setStringWithLineBreak(wordsWithLineBreakArr);
       }
    }, [valueToTest, props.parameterValue, wordsWithLineBreakArr])
 

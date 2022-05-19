@@ -5,11 +5,13 @@ import { createAccount, profileActions, getObjectId, getLoadInfo, getProfileMode
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { useFocusOnInput } from 'hooks/useFocusOnInput';
 import { useInputVisibilitySwitch } from 'hooks/useInputVisibilitySwitch';
+import { useHoverAndTouchClassNames } from 'hooks/useHoverAndTouchClassNames';
 
 
 
 type Inputs = {
-   username: string,
+   firstName: string,
+   lastName: string,
    location: string,
    email: string,
    password: string,
@@ -25,13 +27,19 @@ const CreateAccountForm = () => {
    const dispatch = useAppDispatch();
    const passwordVisibility = useInputVisibilitySwitch("./icons/hidePasswordIcon.svg", "./icons/showPasswordIcon.svg");
    const passwordInputFocus = useFocusOnInput();
+   const passwordIconPseudoClassNames = useHoverAndTouchClassNames();
 
 
+
+   const passwordIconTouchStartListener = (e: React.TouchEvent): void => {
+      passwordIconPseudoClassNames.setTouchClassName(styles.touch);
+      passwordInputFocus.innerElementClickListener(e);
+   }
 
    const { register, handleSubmit, clearErrors, formState: { errors, isValid } } = useForm<Inputs>({
       mode: "onBlur",
       defaultValues: {
-         username: "",
+         firstName: "",
          location: "",
          email: "",
          password: "",
@@ -43,7 +51,8 @@ const CreateAccountForm = () => {
       dispatch(createAccount({
          objectId: objectId,
          profileProps: {
-            username: data.username,
+            firstName: data.firstName,
+            lastName: data.lastName,
             location: data.location,
             email: data.email,
             password: data.password,
@@ -75,10 +84,10 @@ const CreateAccountForm = () => {
                <div className={styles.inputContainer} >
                   <input
                      className={styles.input}
-                     type="tex"
+                     type="text"
                      {
                      ...register(
-                        "username",
+                        "firstName",
                         {
                            maxLength: {
                               value: 40,
@@ -92,11 +101,12 @@ const CreateAccountForm = () => {
                         }
                      )
                      }
-                     placeholder={"User name"}
+                     placeholder={"First name"}
                      autoComplete="on"
                   />
-                  <p className={styles.validationError}>{errors.username ? errors.username.message : null}</p>
+                  <p className={styles.validationError}>{errors.firstName ? errors.firstName.message : null}</p>
                </div>
+
 
                <div className={styles.inputContainer} >
                   <input
@@ -104,21 +114,26 @@ const CreateAccountForm = () => {
                      type="text"
                      {
                      ...register(
-                        "location",
+                        "lastName",
                         {
                            maxLength: {
-                              value: 250,
-                              message: "Must be 250 characters or less"
+                              value: 40,
+                              message: "Must be 40 characters or less"
+                           },
+                           minLength: {
+                              value: 4,
+                              message: "Must be 4 characters or more"
                            },
                            required: "Required",
                         }
                      )
                      }
-                     placeholder={"Residence"}
+                     placeholder={"Last name"}
                      autoComplete="on"
                   />
-                  <p className={styles.validationError}>{errors.location ? errors.location.message : null}</p>
+                  <p className={styles.validationError}>{errors.lastName ? errors.lastName.message : null}</p>
                </div>
+
 
                <div className={styles.inputContainer} >
                   <input
@@ -141,6 +156,7 @@ const CreateAccountForm = () => {
                   />
                   <p className={styles.validationError}>{errors.email ? errors.email.message : null}</p>
                </div>
+
 
                <div className={styles.inputContainer} ref={passwordInputFocus.inputFieldContainer}>
                   <input
@@ -166,15 +182,19 @@ const CreateAccountForm = () => {
                      autoComplete="on"
                   />
                   <img
-                     className={styles.passwordVisibilityIcon}
+                     className={`${styles.passwordVisibilityIcon} ${passwordIconPseudoClassNames.className} unselectable`}
                      src={passwordVisibility.icon}
                      alt="show or hide password icon"
                      onClick={passwordVisibility.iconClickListener}
                      onMouseDown={passwordInputFocus.innerElementClickListener}
-                     onTouchStart={passwordInputFocus.innerElementClickListener}
+                     onMouseEnter={() => passwordIconPseudoClassNames.setHoverClassName(styles.hover)}
+                     onMouseLeave={() => passwordIconPseudoClassNames.setHoverClassName("")}
+                     onTouchStart={passwordIconTouchStartListener}
+                     onTouchEnd={() => passwordIconPseudoClassNames.resetTouchClassName(true)}
                   />
                   <p className={styles.validationError}>{errors.password ? errors.password.message : null}</p>
                </div>
+
 
                <div className={styles.rememberMeAndLoginFlex}>
                   <SignInButton

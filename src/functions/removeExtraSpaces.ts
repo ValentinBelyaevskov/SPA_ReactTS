@@ -1,4 +1,6 @@
 export const removeExtraSpaces = (string: string): string => {
+   if (!string) return string
+
    let wordArr: string[] = []
    let i: number = 0;
    string.split("").forEach((item, index, arr) => {

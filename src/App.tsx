@@ -28,6 +28,7 @@ const App = (props: Props) => {
    const dispatch = useAppDispatch();
    const [showPreloader, setShowPreloader] = useState<boolean>(true);
    const [needToShowPopup, setNeedToShowPopup] = useState<boolean>(false);
+   const [popup, setPopup] = useState<JSX.Element | undefined>(undefined);
    const appRef = useRef<HTMLDivElement>(null);
    const headerContainerRef = useRef<HTMLDivElement>(null);
    const sidebarsContainerRef = useRef<HTMLDivElement>(null);
@@ -69,7 +70,7 @@ const App = (props: Props) => {
 
    return (
       <div className={styles.app} ref={appRef} style={appStyle}>
-         <AppContext.Provider value={{ showPreloader, setShowPreloader }}>
+         <AppContext.Provider value={{ showPreloader, setShowPreloader, setPopup }}>
             <PopupContext.Provider value={{ ...popupContext }}>
                <PopupControlsContext.Provider value={{ ...popupControlsContext }}>
                   <ShowPopupContext.Provider value={{ ...showPopupContextValue }}>
@@ -80,10 +81,16 @@ const App = (props: Props) => {
                      </div>
                      <div className={styles.pagesContainer} ref={pagesContainerRef}>
                         <Profile />
-                        <div className={styles.pageBackground}></div>
                      </div>
                      <div className={styles.popupControlsContainer} style={popupControlsContext.popupStyle}>
                         <Controls />
+                     </div>
+                     <div className={styles.appPopup}>
+                        {
+                           needToShowPopup && popup
+                              ? popup
+                              : null
+                        }
                      </div>
                   </ShowPopupContext.Provider>
                </PopupControlsContext.Provider>
@@ -92,6 +99,7 @@ const App = (props: Props) => {
       </div>
    )
 }
+
 
 
 export default App

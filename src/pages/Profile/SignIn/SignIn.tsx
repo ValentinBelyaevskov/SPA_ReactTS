@@ -10,13 +10,13 @@ import { AppContext } from 'App';
 
 
 const SignIn = () => {
-   const signInMode = useAppSelector(getSignInMode)
+   const signInMode = useAppSelector(getSignInMode);
    const setShowPreloader = useContext(AppContext).setShowPreloader!;
 
 
 
    useEffect(() => {
-      setShowPreloader(false)
+      setShowPreloader(false);
    }, [])
 
 

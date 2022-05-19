@@ -17,7 +17,7 @@ export type WindowSize = {
 
 export const useWindowSize = (eventName: EventName, maxWidth?: number, listenerRemovalCondition?: boolean) => {
    const [unthrottledValue, setUnthrottledValue] = useState<Size | null>(null);
-   const value = useThrottle(unthrottledValue, setUnthrottledValue, 200, getValue(eventName));
+   const value = useThrottle<Size>(unthrottledValue, setUnthrottledValue, 200, getValue(eventName));
 
 
 

@@ -3,12 +3,12 @@ import { Crop, PixelCrop } from "react-image-crop";
 
 
 
-export const useGetCroppedImage = () => {
+export const useGetCroppedImage = (imageAspect: number | undefined) => {
    const [croppedImgSrc, setCroppedImgSrc] = useState<string>("");
    const [croppedImage, setCroppedImage] = useState<File | null>(null);
    const [completedCrop, setCompletedCrop] = useState<PixelCrop>();
    const [crop, setCrop] = useState<Crop>();
-   const [aspect, setAspect] = useState<number | undefined>(1 / 1);
+   const [aspect, setAspect] = useState<number | undefined>(imageAspect);
 
 
 
