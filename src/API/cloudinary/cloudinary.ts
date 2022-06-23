@@ -15,10 +15,6 @@ interface Cloud {
 
 type ImageObj = { secure_url: string }
 
-type DestroyResult = {
-   result: string
-}
-
 type DeleteBodyObj = {
    public_id: string
    timestamp: number
@@ -28,7 +24,7 @@ type DeleteBodyObj = {
 }
 
 
-// classes
+
 class Cloudinary implements Cloud {
    readonly apiKey: string = "197264174292373"
    readonly apiSecret: string = "SLK-l7nNhWw4wO1LRrwig2C4Mkw"

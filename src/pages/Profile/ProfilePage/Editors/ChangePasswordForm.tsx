@@ -31,8 +31,8 @@ const ChangePasswordForm = (props: Props) => {
    const popupForm = usePopupForm(endEditingCallback);
    const currentPasswordVisibility = useInputVisibilitySwitch("./icons/hidePasswordIcon.svg", "./icons/showPasswordIcon.svg");
    const newPasswordVisibility = useInputVisibilitySwitch("./icons/hidePasswordIcon.svg", "./icons/showPasswordIcon.svg");
-   const currentPasswordIconPseudoClassNames = useHoverAndTouchClassNames();
-   const newPasswordIconPseudoClassNames = useHoverAndTouchClassNames();
+   const currentPasswordIconPseudoClassNames = useHoverAndTouchClassNames(styles.hover, styles.touch);
+   const newPasswordIconPseudoClassNames = useHoverAndTouchClassNames(styles.hover, styles.touch);
    const firstInputFocus = useFocusOnInput();
    const secondInputFocus = useFocusOnInput();
    const icons: string[] = [
@@ -73,13 +73,23 @@ const ChangePasswordForm = (props: Props) => {
    }
 
    const currentPasswordIconTouchStartListener = (e: React.TouchEvent): void => {
-      currentPasswordIconPseudoClassNames.setTouchClassName(styles.touch);
+      currentPasswordIconPseudoClassNames.touchStartListener();
       firstInputFocus.innerElementClickListener(e);
    }
 
+   const currentPasswordIconClickListener = (): void => {
+      currentPasswordIconPseudoClassNames.clickListener();
+      currentPasswordVisibility.iconClickListener();
+   }
+
    const newPasswordIconTouchStartListener = (e: React.TouchEvent): void => {
-      newPasswordIconPseudoClassNames.setTouchClassName(styles.touch);
+      newPasswordIconPseudoClassNames.touchStartListener();
       secondInputFocus.innerElementClickListener(e);
+   }
+
+   const newPasswordIconClickListener = (): void => {
+      newPasswordIconPseudoClassNames.clickListener();
+      newPasswordVisibility.iconClickListener();
    }
 
 
@@ -88,6 +98,15 @@ const ChangePasswordForm = (props: Props) => {
       <div style={popupForm.editorStyle} onTransitionEnd={popupForm.transitionEndListener} className={`${styles.editor} ${styles.changePasswordEditor}`}>
          {editIconsLoaded ?
             <div className={`${styles.changePasswordFormContainer} ${styles.formContainer}`}>
+               {
+                  loadInfo.loading && (
+                     <div className={styles.preloaderContainer}>
+                        <div className={styles.preloaderSubContainer}>
+                           <img src="./animatedIcons/preloader2.svg" alt="preloader" />
+                        </div>
+                     </div>
+                  )
+               }
                <form className={styles.form} onSubmit={handleSubmit(onSubmit)}>
                   <h2 className={styles.title}>
                      Change password
@@ -120,12 +139,11 @@ const ChangePasswordForm = (props: Props) => {
                            className={`${styles.passwordVisibilityIcon} ${currentPasswordIconPseudoClassNames.className} unselectable`}
                            src={currentPasswordVisibility.icon}
                            alt="show or hide password icon"
-                           onClick={currentPasswordVisibility.iconClickListener}
+                           onClick={currentPasswordIconClickListener}
                            onMouseDown={firstInputFocus.innerElementClickListener}
-                           onMouseEnter={() => currentPasswordIconPseudoClassNames.setHoverClassName(styles.hover)}
-                           onMouseLeave={() => currentPasswordIconPseudoClassNames.setHoverClassName("")}
+                           onMouseEnter={currentPasswordIconPseudoClassNames.mouseEnterListener}
                            onTouchStart={currentPasswordIconTouchStartListener}
-                           onTouchEnd={() => currentPasswordIconPseudoClassNames.resetTouchClassName(true)}
+                           onTouchEnd={currentPasswordIconPseudoClassNames.touchEndListener}
                         />
                         <p className={styles.validationError}>{errors.currentPassword ? errors.currentPassword.message : null}</p>
                      </div>
@@ -157,20 +175,18 @@ const ChangePasswordForm = (props: Props) => {
                            className={`${styles.passwordVisibilityIcon} ${newPasswordIconPseudoClassNames.className} unselectable`}
                            src={newPasswordVisibility.icon}
                            alt="show or hide password icon"
-                           onClick={newPasswordVisibility.iconClickListener}
+                           onClick={newPasswordIconClickListener}
                            onMouseDown={secondInputFocus.innerElementClickListener}
-                           onMouseEnter={() => newPasswordIconPseudoClassNames.setHoverClassName(styles.hover)}
-                           onMouseLeave={() => newPasswordIconPseudoClassNames.setHoverClassName("")}
-                           onTouchStart={newPasswordIconTouchStartListener}
-                           onTouchEnd={() => newPasswordIconPseudoClassNames.resetTouchClassName(true)}
+                           onMouseEnter={newPasswordIconPseudoClassNames.mouseEnterListener}
+                           onTouchStart={currentPasswordIconTouchStartListener}
+                           onTouchEnd={newPasswordIconPseudoClassNames.touchEndListener}
                         />
                      </div>
                      <p className={styles.validationError}>{errors.newPassword ? errors.newPassword.message : null}</p>
 
                      {
-                        loadInfo.loading ? <div className={`${styles.warning} ${styles.loadingWarning}`}>Loading...</div>
-                           : loadInfo.error ? <div className={`${styles.warning} ${styles.errorWarning}`}>{`${loadInfo.error}`}</div>
-                              : null
+                        loadInfo.error ? <div className={`${styles.warning} ${styles.errorWarning}`}>{`${loadInfo.error}`}</div>
+                           : null
                      }
                      <div>
                         <p className={styles.description}>

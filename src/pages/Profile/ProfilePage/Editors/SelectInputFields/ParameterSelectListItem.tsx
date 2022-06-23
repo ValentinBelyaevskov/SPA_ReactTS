@@ -15,8 +15,15 @@ type Props = {
 
 
 const ParameterSelectListItem = (props: Props) => {
-   const listItemHoverAndTouchClassNames = useHoverAndTouchClassNames();
+   const listItemHoverAndTouchClassNames = useHoverAndTouchClassNames(props.styles.hover, props.styles.touch);
    const [makeTimeout, setMakeTimeout] = useState<boolean>(true);
+
+
+
+   const clickListener = (e: React.MouseEvent): void => {
+      props.valuesListItemClickHandler(e);
+      listItemHoverAndTouchClassNames.clickListener();
+   }
 
 
 
@@ -31,11 +38,10 @@ const ParameterSelectListItem = (props: Props) => {
    return (
       <div
          className={`${props.styles.listItem} unselectable ${listItemHoverAndTouchClassNames.className} ${props.fieldName}SelectElement`}
-         onClick={props.valuesListItemClickHandler}
-         onMouseEnter={() => listItemHoverAndTouchClassNames.setHoverClassName(props.styles.hover)}
-         onMouseLeave={() => listItemHoverAndTouchClassNames.setHoverClassName("")}
-         onTouchStart={() => listItemHoverAndTouchClassNames.setTouchClassName(props.styles.touch)}
-         onTouchEnd={() => listItemHoverAndTouchClassNames.resetTouchClassName(makeTimeout)}
+         onClick={clickListener}
+         onMouseEnter={listItemHoverAndTouchClassNames.mouseEnterListener}
+         onTouchStart={listItemHoverAndTouchClassNames.touchStartListener}
+         onTouchEnd={listItemHoverAndTouchClassNames.touchEndListener}
       >
          {props.value}
       </div>

@@ -35,6 +35,7 @@ const CustomImage = (props: ImageProps) => {
             alt="image"
             style={props.imgStyle}
             onLoad={props.onLoad ? props.onLoad : () => { }}
+            onClick={props.onImgClick ? props.onImgClick : () => { }}
          />
       </div>
    )

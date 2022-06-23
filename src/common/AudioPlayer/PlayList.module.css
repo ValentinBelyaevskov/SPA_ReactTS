@@ -1,0 +1,19 @@
+.playListContainer {
+  margin-top: 1.5rem;
+  width: calc(100% + 1.5rem);
+}
+
+.playListContainer .playList {
+  overflow: auto;
+  padding-top: 1.2rem;
+  padding-bottom: 1.2rem;
+  max-height: 200px;
+}
+
+.playListContainer .line {
+  margin-left: -1.5rem;
+  width: calc(100% + 1.5rem);
+  height: 1px;
+  background-color: #cccccc;
+}
+/*# sourceMappingURL=PlayList.module.css.map */

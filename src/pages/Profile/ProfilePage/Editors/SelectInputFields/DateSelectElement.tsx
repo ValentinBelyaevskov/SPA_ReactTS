@@ -1,4 +1,4 @@
-import { useContinuonusEvents } from 'hooks/useContinuonusEvents';
+import { useElementEventHandlers } from 'hooks/useElementEventHandlers';
 import { useHoverAndTouchClassNames } from 'hooks/useHoverAndTouchClassNames';
 import { useState, useEffect, useCallback } from 'react';
 import styles from './DateSelectInputFields.module.scss'
@@ -30,10 +30,11 @@ const DateSelectElement = (props: Props) => {
    const [showAListOfDates, setShowAListOfDates] = useState<boolean>(false);
    const [arrowIcon, setArrowIcon] = useState<ArrowIcon>(icons[1]);
    const [dateValue, setDateValue] = useState<number | string>(props.defaultValue);
-   const touchAndClickEvents = useContinuonusEvents(['touchstart', 'touchmove', 'click'], selectClickListener, [`.${props.fieldName}SelectElement`]);
-   const selectHoverAndTouchClassNames = useHoverAndTouchClassNames();
+   const touchAndClickEvents = useElementEventHandlers(['touchstart', 'touchmove', 'click'], selectClickListener, [`.${props.fieldName}SelectElement`]);
+   const selectHoverAndTouchClassNames = useHoverAndTouchClassNames(styles.hover, styles.touch);
 
    function selectClickListener(): void {
+      selectHoverAndTouchClassNames.clickListener();
       setShowAListOfDates(!showAListOfDates);
    }
 
@@ -64,11 +65,12 @@ const DateSelectElement = (props: Props) => {
          <div
             className={`${styles.select} ${selectHoverAndTouchClassNames.className} unselectable ${props.fieldName}SelectElement`}
             onClick={selectClickListener}
-            onMouseEnter={() => selectHoverAndTouchClassNames.setHoverClassName(styles.hover)}
-            onMouseLeave={() => selectHoverAndTouchClassNames.setHoverClassName("")}
-            onTouchStart={() => selectHoverAndTouchClassNames.setTouchClassName(styles.touch)}
-            onTouchEnd={() => selectHoverAndTouchClassNames.resetTouchClassName(true)}
+            onMouseEnter={selectHoverAndTouchClassNames.mouseEnterListener}
+            onTouchStart={selectHoverAndTouchClassNames.touchStartListener}
+            onTouchEnd={selectHoverAndTouchClassNames.touchEndListener}
             onTouchMove={() => setShowAListOfDates(true)}
+
+            
          >
             {dateValue ? dateValue : props.fieldName.toLowerCase()}
             <img className={styles.listArrow} src={arrowIcon} />

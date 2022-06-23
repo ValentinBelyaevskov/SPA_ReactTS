@@ -1,0 +1,9 @@
+{
+    "version": 3,
+    "mappings": "AAAA,AAAA,WAAW,CAAC;EACT,MAAM,EAAE,IAAI;EACZ,aAAa,EAAE,IAAI;EAEnB,gBAAgB,EAAE,iBAAiB;EACnC,WAAW,EAAE,GAAG,CAAC,KAAK,CAAC,mBAAmB;EAE1C,WAAW,EAAE,KAAK;CACpB;;AAGD,MAAM,EAAE,SAAS,EAAE,KAAK;EACrB,AAAA,WAAW,CAAC;IACT,WAAW,EAAE,KAAK;GACpB",
+    "sources": [
+        "RightPanel.module.scss"
+    ],
+    "names": [],
+    "file": "RightPanel.module.css"
+}

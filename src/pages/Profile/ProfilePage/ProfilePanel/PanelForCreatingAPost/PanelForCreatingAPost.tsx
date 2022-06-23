@@ -1,5 +1,5 @@
-import styles from './PanelForCreatingAPost.module.scss'
-import profilePanelStyles from '../ProfilePanel.module.scss'
+import styles from './PanelForCreatingAPost.module.scss';
+import profilePanelStyles from '../ProfilePanel.module.scss';
 import React, { useRef, useState, useEffect, useContext } from 'react';
 import { Button, RoundAvatar } from 'common';
 import { useAppSelector } from 'hooks/redux';
@@ -8,11 +8,22 @@ import { AppContext, PopupContext } from 'App';
 import AddContentIcon from './AddContentIcon';
 import SelectAndEditAnImageForm from 'common/UploadFormsAndLightbox/SelectAndEditAnImageForm';
 import { useAppDispatch } from '../../../../../hooks/redux';
-import { PostImagesItem, usePostImagesAndVideosBlock } from './hooks/usePostImagesAndVideosBlock';
+import { usePostImagesAndVideosBlock } from './hooks/usePostImagesAndVideosBlock';
 import { Popup, usePopupElement } from 'hooks';
 import VideoUploader from 'common/UploadFormsAndLightbox/VideoUploader';
 import ImagesAndVideosBlockContainer from './ImagesAndVideosBlockContainer';
 import ImageAndVideoLightbox from 'common/UploadFormsAndLightbox/ImageAndVideoLightbox';
+import { IconsThatAreLoaded } from 'common/IconsThatAreLoaded/IconsThatAreLoaded';
+import FileUploader from '../../../../../common/UploadFormsAndLightbox/FileUploader';
+import FilesListItem from './FilesListItem';
+import AudiosListItem from './AudiosListItem';
+import AudioUploader from 'common/UploadFormsAndLightbox/AudioUploader';
+import { useWindowSize } from 'hooks/useWindowSize';
+import { AudioFile } from 'common/AudioPlayer/types/types';
+import { useFilesBlock } from './hooks/useFilesBlock';
+import { useAudioBlock } from './hooks/useAudioBlock';
+import TextEditor from 'common/TextEditor/TextEditor';
+
 
 
 
@@ -34,18 +45,40 @@ type ImagesAndVideosBlockCtxt = {
    setSliderStartIndex?: React.Dispatch<React.SetStateAction<number>>
 }
 
+
+
+
+export type Audios = {
+   [key: number]: AudioFile
+}
+
 export type AddContentButtonNames = "image" | "file" | "audio" | "video";
 
 
 
-const icons: string[] = [
+
+export const icons: string[] = [
    "./icons/image.svg",
    "./icons/files.svg",
    "./icons/music.svg",
    "./icons/video.svg",
+]
+
+const iconsThatAreLoaded: string[] = [
+   "./icons/image.svg",
+   "./icons/files.svg",
+   "./icons/music.svg",
+   "./icons/video.svg",
+   "./icons/hideMiniWhite.svg",
+   "./icons/hideMini.svg",
+   "./icons/playTheme.svg",
+   "./icons/pauseTheme.svg",
+   './icons/playCircleTheme.svg',
+   './icons/pauseCircleTheme.svg',
+   "./animatedIcons/preloader2.svg"
 ];
 
-const addContentButtonNames: AddContentButtonNames[] = [
+export const addContentButtonNames: AddContentButtonNames[] = [
    "image",
    "file",
    "audio",
@@ -56,9 +89,10 @@ export let ImagesAndVideosBlockContext = React.createContext<ImagesAndVideosBloc
 
 
 
+
 const PanelForCreatingAPost = (props: Props) => {
    const dispatch = useAppDispatch();
-   const textEditorRef = useRef<HTMLDivElement>(null);
+   const resize = useWindowSize("resize");
    const profileInfo = useAppSelector(getProfileInfo);
    const [editMode, setEditMode] = useState<EditMode>(undefined);
    const popupContext = useContext(PopupContext);
@@ -69,9 +103,11 @@ const PanelForCreatingAPost = (props: Props) => {
    const [activeContentIcon, setActiveContentIcon] = useState<AddContentButtonNames | undefined>("image");
    const [showVideoAndImageSlider, setShowVideoAndImageSlider] = useState<boolean>(false);
    const [sliderStartIndex, setSliderStartIndex] = useState<number>(0);
+   const [iconsLoaded, setIconsLoaded] = useState<boolean>(false);
+   const [textEditorInnerHTML, setTextEditorInnerHTML] = useState<string | undefined>(undefined);
+
    const {
       imagesAndVideos,
-      setImagesAndVideos,
       imagesAndVideosBlockStyle,
       gridDirection,
       imagesAndVideosContainerStyle,
@@ -79,34 +115,70 @@ const PanelForCreatingAPost = (props: Props) => {
       secondSubContainerStyle,
       thirdSubContainerStyle,
       panelRef,
-      containerWidth
-   } = usePostImagesAndVideosBlock();
+      containerSizes,
+      addImageOrVideoSubmitListener,
+      deleteImageOrVideo
+
+   } = usePostImagesAndVideosBlock(resize);
+
+
+   const {
+      files,
+      filesBlockStyle,
+      addFileSubmitListener,
+      deleteFile
+
+   } = useFilesBlock();
+
+
+   const {
+      audioIds,
+      audios,
+      audiosBlockStyle,
+      audioPlayerState,
+      audioPlayerStateAPI,
+      audioLoadingStatuses,
+      numberOfAudioLoadedStatuses,
+      setShowAudioPlayer,
+      updateLoadingStatusesItem,
+      addAudioSubmitListener,
+      deleteAudio
+
+   } = useAudioBlock(appContext, resize);
+
 
 
 
    const finishWatching = (): void => setShowVideoAndImageSlider(false);
 
+
    const finishEditing = (): void => setEditMode(undefined);
+
 
    const textEditorClickListener = (e: React.MouseEvent): void => {
       setEditMode('textEdit');
    }
 
+
    const imageClickListener = (): void => {
-      if (imagesAndVideos.length < 10) setEditMode('imageEdit');
+      if (!contentIconsPromptText) setEditMode('imageEdit');
    }
+
 
    const filesClickListener = (): void => {
-      setEditMode('fileSelection');
+      if (!contentIconsPromptText) setEditMode('fileSelection');
    }
+
 
    const audioClickListener = (): void => {
-      setEditMode('audioSelection');
+      if (!contentIconsPromptText) setEditMode('audioSelection');
    }
 
+
    const videoClickListener = (): void => {
-      setEditMode('videoSelection');
+      if (!contentIconsPromptText) setEditMode('videoSelection');
    }
+
 
    const addContentButtonClickListeners: AddContentButtonClickListeners = {
       image: imageClickListener,
@@ -115,31 +187,26 @@ const PanelForCreatingAPost = (props: Props) => {
       video: videoClickListener,
    }
 
-   const addImageOrVideoSubmitListener = (file: File | null, callback: () => void, type: "image" | "video", sizes: [number, number] | undefined): void => {
-      if (file) {
-         const imageObj: PostImagesItem = {
-            type,
-            src: URL.createObjectURL(file),
-            file: file,
-            aspect: sizes ? (sizes[1] / sizes[0]) : 1,
-            area: sizes ? sizes[1] * sizes[0] : 0,
-            sizes
-         }
 
-         setImagesAndVideos([...imagesAndVideos, imageObj]);
-      }
-
-      callback();
+   const postButtonClickHandler = () => {
+      
    }
 
-   const deleteImageOrVideo = (index: number): void => {
-      setImagesAndVideos(imagesAndVideos.filter((item, i) => i !== index));
-   }
 
 
 
    useEffect(() => {
-      if (editMode === 'imageEdit' || editMode === 'videoSelection' || showVideoAndImageSlider) {
+      if (imagesAndVideos.length + audioIds.length > 0) {
+         resize.removeEventListener();
+         resize.addEventListener();
+      } else {
+         resize.removeEventListener();
+      }
+   }, [imagesAndVideos.length, files.length, audioIds.length])
+
+
+   useEffect(() => {
+      if ((editMode && editMode !== 'textEdit') || showVideoAndImageSlider) {
          popupContext.setNeedToShowPopup!(true);
       } else {
          popupContext.setNeedToShowPopup!(false);
@@ -148,7 +215,7 @@ const PanelForCreatingAPost = (props: Props) => {
 
 
    useEffect(() => {
-      if (editMode || showVideoAndImageSlider) {
+      if ((editMode || showVideoAndImageSlider) && editMode !== 'textEdit') {
          dispatch(profileActions.setProfileInfoMode("edit"));
       }
 
@@ -169,116 +236,164 @@ const PanelForCreatingAPost = (props: Props) => {
                uploadButtonText="Add image to post"
                popupText='Add image to post'
             />);
-         }
-         else if (editMode === 'videoSelection') {
+         } else if (editMode === 'videoSelection') {
             appContext.setPopup!(<VideoUploader
                finishEditing={finishEditing}
                submitListener={addImageOrVideoSubmitListener}
                uploadButtonText="Add video to post"
                popupText='Add video to post'
-            />)
-         }
-         else {
+            />);
+         } else if (editMode === 'fileSelection') {
+            appContext.setPopup!(<FileUploader
+               finishEditing={finishEditing}
+               submitListener={addFileSubmitListener}
+               uploadButtonText="Add file to post"
+               popupText='Add file to post'
+            />);
+         } else if (editMode === 'audioSelection') {
+            appContext.setPopup!(<AudioUploader
+               finishEditing={finishEditing}
+               submitListener={addAudioSubmitListener}
+               uploadButtonText="Add audio to post"
+               popupText='Add audio to post'
+               setOtherAudioIsPlaying={() => audioPlayerStateAPI.setIsPlaying(false)}
+            />);
+         } else {
             appContext.setPopup!(undefined);
          }
       } else {
-         console.log("showVideoAndImageSlider: ", showVideoAndImageSlider)
-
-         appContext.setPopup!(
-            <ImageAndVideoLightbox
-               itemIndex={sliderStartIndex}
-               contentArr={imagesAndVideos}
-               finishWatching={finishWatching}
-            />
-         )
+         appContext.setPopup!(<ImageAndVideoLightbox
+            itemIndex={sliderStartIndex}
+            contentArr={imagesAndVideos}
+            finishWatching={finishWatching}
+         />);
       }
    }, [editMode, showVideoAndImageSlider, sliderStartIndex, imagesAndVideos.length]);
 
 
    useEffect(() => {
-      if (imagesAndVideos.length === 10) {
-         if (activeContentIcon === 'image' || activeContentIcon === 'video') {
-            setContentIconsPromptText("A post can only have 10 attachments")
-         } else {
-            setContentIconsPromptText(undefined);
-         };
+      if (imagesAndVideos.length + files.length + audioIds.length === 10) {
+         setContentIconsPromptText("A post can only have 10 attachments");
       } else {
          setContentIconsPromptText(undefined);
       };
-   }, [imagesAndVideos.length, activeContentIcon]);
+   }, [imagesAndVideos.length, files.length, audioIds.length, activeContentIcon]);
+
 
 
 
    return (
       <div className={`${styles.panelForCreatingAPost} ${profilePanelStyles.panelForCreatingAPost}`} ref={panelRef}>
-         <div className={styles.gridContainer}>
-            <RoundAvatar
-               src={profileInfo.avatar ? profileInfo.avatar : './image/defaultAvatar.jpg'}
-               additionalClass={styles.avatar}
-            />
-            <div
-               className={styles.textEditor}
-               onClick={textEditorClickListener}
-               ref={textEditorRef}
-               contentEditable={true}
-               placeholder="Anything new?"
-            >
-            </div>
-            <div className={styles.imagesBlock} style={imagesAndVideosBlockStyle}>
-               <ImagesAndVideosBlockContext.Provider value={{ setShowVideoAndImageSlider, setSliderStartIndex }}>
-                  <ImagesAndVideosBlockContainer
-                     config={
-                        {
-                           deleteImageOrVideo,
-                           gridDirection,
-                           imagesAndVideos: imagesAndVideos,
-                           imagesAndVideosContainerStyle,
-                           fiveOrMoreItems: imagesAndVideos.length < 5 ? false : true,
-                           subContainerStyles: {
-                              firstSubContainerStyle,
-                              secondSubContainerStyle,
-                              thirdSubContainerStyle
-                           },
-                           containerWidth
-                        }
-                     }
-                  />
-               </ImagesAndVideosBlockContext.Provider>
-            </div>
-            <div className={styles.contentIcons}>
-               {
-                  popupPrompt.needToShowElement && contentIconsPromptText
-                     ? <div className={styles.contentIconsPrompt} ref={promptRef}>
-                        {contentIconsPromptText}
+         {
+            iconsLoaded ?
+               (
+                  <div className={styles.gridContainer}>
+                     <RoundAvatar
+                        src={profileInfo.avatar ? profileInfo.avatar : './image/defaultAvatar.jpg'}
+                        additionalClass={styles.avatar}
+                     />
+                     <TextEditor
+                        setTextEditorInnerHTML={setTextEditorInnerHTML}
+                        textEditorClickListener={textEditorClickListener}
+                        containerClassName={styles.textEditorContainer}
+                     />
+                     <div className={styles.imagesBlock} style={imagesAndVideosBlockStyle}>
+                        <ImagesAndVideosBlockContext.Provider value={{ setShowVideoAndImageSlider, setSliderStartIndex }}>
+                           <ImagesAndVideosBlockContainer
+                              config={
+                                 {
+                                    deleteImageOrVideo,
+                                    gridDirection,
+                                    imagesAndVideos: imagesAndVideos,
+                                    imagesAndVideosContainerStyle,
+                                    fiveOrMoreItems: imagesAndVideos.length < 5 ? false : true,
+                                    subContainerStyles: {
+                                       firstSubContainerStyle,
+                                       secondSubContainerStyle,
+                                       thirdSubContainerStyle
+                                    },
+                                    containerSizes
+                                 }
+                              }
+                           />
+                        </ImagesAndVideosBlockContext.Provider>
                      </div>
-                     : null
-               }
-               {icons.map((icon, index) => (
-                  <AddContentIcon
-                     key={icon}
-                     icon={icon}
-                     addContentButtonName={addContentButtonNames[index]}
-                     addContentButtonClickListener={addContentButtonClickListeners[addContentButtonNames[index]]}
-                     setActiveContentIcon={setActiveContentIcon}
-                     popupPrompt={popupPrompt}
-                  />
-               ))}
-            </div>
-            <Button
-               params={
-                  {
-                     text: "Post",
-                     clickHandler: () => { },
-                     changeStyleOnHover: true,
-                     containerClassName: styles.createAPostButtonContainer,
-                     buttonClassName: styles.createAPostButton
-                  }
-               }
-            />
-         </div >
+                     <div className={styles.filesBlock} style={filesBlockStyle}>
+                        {
+                           files.map((item, index) =>
+                              <FilesListItem
+                                 key={item.src}
+                                 file={item}
+                                 deleteFile={deleteFile}
+                                 index={index}
+                              />
+                           )
+                        }
+                     </div>
+                     <div className={styles.audiosBlock} style={audiosBlockStyle}>
+                        {
+                           audioIds.map((id, index) =>
+                              <AudiosListItem
+                                 key={id}
+                                 index={index}
+                                 id={id}
+                                 file={audios[id]}
+                                 deleteAudio={deleteAudio}
+                                 activeTrackId={audioPlayerState.activeTrackId}
+                                 setActiveTrackId={audioPlayerStateAPI.setActiveTrackId}
+                                 audioIsPlaying={audioPlayerState.isPlaying}
+                                 setAudioIsPlaying={audioPlayerStateAPI.setIsPlaying}
+                                 setShowAudioPlayer={setShowAudioPlayer}
+                                 setActiveTrack={audioPlayerStateAPI.setActiveTrackId}
+                                 loadingStatus={audioLoadingStatuses[index]}
+                                 updateLoadingStatusesItem={updateLoadingStatusesItem}
+                                 numberOfLoadedStatuses={numberOfAudioLoadedStatuses}
+                              />
+                           )
+                        }
+                     </div>
+                     <div className={`${styles.contentIcons} unselectable`}>
+                        {
+                           popupPrompt.needToShowElement && contentIconsPromptText
+                              ? <div className={styles.contentIconsPrompt} ref={promptRef}>
+                                 {contentIconsPromptText}
+                              </div>
+                              : null
+                        }
+                        {icons.map((icon, index) => (
+                           <AddContentIcon
+                              key={icon}
+                              icon={icon}
+                              addContentButtonName={addContentButtonNames[index]}
+                              addContentButtonClickListener={addContentButtonClickListeners[addContentButtonNames[index]]}
+                              setActiveContentIcon={setActiveContentIcon}
+                              popupPrompt={popupPrompt}
+                           />
+                        ))}
+                     </div>
+                     <Button
+                        params={
+                           {
+                              text: "Post",
+                              clickHandler: postButtonClickHandler,
+                              changeStyleOnHover: true,
+                              containerClassName: styles.createAPostButtonContainer,
+                              buttonClassName: styles.createAPostButton
+                           }
+                        }
+                     />
+                  </div >
+               )
+               : null
+         }
+         <IconsThatAreLoaded
+            icons={iconsThatAreLoaded}
+            setIconsLoaded={setIconsLoaded}
+         />
       </div >
    )
 }
+
 
 
 

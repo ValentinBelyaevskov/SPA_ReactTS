@@ -1,7 +1,7 @@
 import styles from './Controls.module.scss'
 import { useState, useEffect, useContext, useRef } from 'react';
 import ControlsItem from './ControlsItem';
-import { useContinuonusEvents } from 'hooks/useContinuonusEvents';
+import { useElementEventHandlers } from 'hooks/useElementEventHandlers';
 import { usePopupElement } from 'hooks/usePopup/usePopupElement';
 import { IconsThatAreLoaded } from 'common/IconsThatAreLoaded/IconsThatAreLoaded';
 import { PopupControlsContext } from 'App';
@@ -33,7 +33,7 @@ const Controls = (props: Props) => {
    const [controlsListContainerStyle, setControlsListContainerStyle] = useState<ControlsListContainerStyle>({ display: 'none' });
    const controlsBackground: React.RefObject<HTMLDivElement> = useRef<HTMLDivElement>(null);
    const controls: React.RefObject<HTMLDivElement> = useRef<HTMLDivElement>(null);
-   const touchEvents = useContinuonusEvents(["touchmove", "touchstart"], hideControlsOnTouchEvent, [".headerControlsElement"]);
+   const touchEvents = useElementEventHandlers(["touchmove", 'click', "touchstart"], hideControlsOnTouchEvent, [".headerControlsElement"]);
    const popupBackground = usePopupElement(controlsBackground);
 
 
@@ -44,6 +44,7 @@ const Controls = (props: Props) => {
 
 
    const showControls = (): void => {
+      console.log("showControls")
       popupContext.setIcon!('./icons/hide.svg');
       setControlsListContainerStyle({ transform: 'translateX(100%)' });
       touchEvents.addEventListener();
@@ -61,15 +62,15 @@ const Controls = (props: Props) => {
 
    useEffect(() => {
       popupContext.setNeedToShowBackground!(popupBackground.needToShowElement);
-   }, [popupBackground.needToShowElement]);
+   }, [popupBackground.needToShowElement])
 
    // * перенести логику в header что бы при размере для мобильного не было лишних рендеров во время скролла
    useEffect(() => {
-      if ((resize.value[0] > 600) && popupContext.needToShowPopup) {
+      if ((resize.value[0] > 600)) {
          popupContext.setNeedToShowPopup!(false);
          popupBackground.hideElementWithoutAnimation();
       }
-   }, [resize.value[0]]);
+   }, [resize.value[0]])
 
    useEffect(() => {
       if (popupContext.needToShowPopup) {
@@ -80,7 +81,7 @@ const Controls = (props: Props) => {
          resize.removeEventListener();
          hideControls();
       }
-   }, [popupContext.needToShowPopup]);
+   }, [popupContext.needToShowPopup])
 
 
 

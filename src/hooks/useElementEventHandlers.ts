@@ -3,12 +3,12 @@ import { useState, useEffect, useCallback } from 'react';
 
 type ContinuousEvent = Event | undefined;
 
-type EventName = "touchmove" | "touchstart" | "scroll" | "click";
+type EventName = "touchmove" | "touchstart" | "scroll" | "click" | "resize";
 
 type Callback = () => void;
 
 
-export const useContinuonusEvents = (eventNames: EventName[], callback: Callback, elemClassNames?: string[]) => {
+export const useElementEventHandlers = (eventNames: EventName[], callback: Callback, elemClassNames?: string[]) => {
    const [event, setEvent] = useState<ContinuousEvent>(undefined);
    const [eventHappened, setEventHappened] = useState<boolean>(false);
    const [callbackNeedsToBeCalled, setCallbackNeedsToBeCalled] = useState<boolean>(true);

@@ -1,0 +1,203 @@
+.controlsPanel {
+   margin-top: 1rem;
+
+   display: grid;
+   grid-template-columns:
+      minmax(35px, 2.3fr)
+      minmax(37px, 1fr)
+      minmax(43px, 1fr)
+      minmax(39px, 2.5fr)
+      minmax(58px, 1.8fr)
+      minmax(48px, 1.3fr);
+   grid-template-areas: "play prev next soundToggler volume playbackRate";
+
+   align-items: center;
+
+   width: 100%;
+   height: fit-content;
+
+   .play,
+   .prev,
+   .next,
+   .soundToggler,
+   .playbackRate {
+      display: block;
+
+      transition-duration: 0.1s;
+      transition-property: opacity;
+
+      padding: 0.3rem 0.8rem;
+
+      &.hover:hover,
+      &.touch {
+         opacity: 0.7;
+         cursor: pointer;
+      }
+   }
+
+   .prev,
+   .next {
+      padding: 0.25rem 0.8rem;
+      height: 24px;
+   }
+
+   .play {
+      grid-area: play;
+      margin-left: -0.8rem;
+   }
+
+   .prev {
+      grid-area: prev;
+   }
+
+   .next {
+      grid-area: next;
+   }
+
+   .soundToggler {
+      grid-area: soundToggler;
+      justify-self: end;
+      margin-right: 1.5rem;
+   }
+
+   .volume {
+      grid-area: volume;
+   }
+
+   .playbackRate {
+      grid-area: playbackRate;
+      justify-self: end;
+
+      border-radius: 0.4rem;
+      padding: 0.3rem 0.6rem;
+
+      line-height: 1.6rem;
+      font-size: 1.4rem;
+      font-weight: 700;
+
+      background-color: white;
+
+      &.twoX {
+         border: 1px solid var(--theme-color);
+         color: var(--theme-color);
+      }
+
+      &.oneX {
+         border: 1px solid rgb(158, 158, 158);
+         color: rgb(158, 158, 158);
+      }
+   }
+}
+
+// * extra classes
+.controlsPanel.smallWidthPanel {
+   grid-template-columns:
+      minmax(27px, 2fr)
+      minmax(29px, 2fr)
+      minmax(35px, 2fr)
+      minmax(35px, 1fr)
+      minmax(30px, 1fr);
+   grid-template-rows: repeat(2, 3rem);
+   grid-template-areas:
+      "play         null   null   prev   next"
+      "soundToggler volume volume playbackRate playbackRate";
+
+   .play {
+      grid-area: play;
+      margin-left: -0.8rem;
+   }
+
+   .prev {
+      grid-area: prev;
+      justify-self: end;
+   }
+   .next {
+      grid-area: next;
+      justify-self: end;
+      margin-right: -0.8rem;
+   }
+
+   .soundToggler {
+      grid-area: soundToggler;
+      justify-self: start;
+      margin-right: 0;
+      margin-left: -0.8rem;
+   }
+
+   .volume {
+      grid-area: volume;
+   }
+
+   .playbackRate {
+      grid-area: playbackRate;
+
+      padding: 0.3rem 1.2rem;
+   }
+}
+
+.controlsPanel.thumbnail {
+   grid-template-columns:
+      minmax(25px, 1fr)
+      minmax(25px, 0.5fr)
+      minmax(25px, 0.5fr);
+   grid-template-rows: 2.5rem;
+   grid-template-areas: "play prev next";
+
+   margin-top: 0.6rem;
+
+   .prev,
+   .next {
+      justify-self: end;
+   }
+
+   .next {
+      margin-right: 0;
+   }
+
+   .soundToggler,
+   .volume,
+   .playbackRate {
+      display: none;
+   }
+
+   .play,
+   .prev,
+   .next,
+   .soundToggler,
+   .playbackRate {
+      height: 2.1rem;
+   }
+}
+
+// mobile
+.controlsPanel.mobile {
+   margin-top: 2rem;
+}
+
+.controlsPanel.thumbnail.mobile {
+   grid-template-columns:
+      minmax(33px, 1fr)
+      minmax(33px, 0.5fr)
+      minmax(33px, 0.5fr);
+   grid-template-rows: 3rem;
+
+   .play,
+   .prev,
+   .next,
+   .soundToggler,
+   .playbackRate {
+      height: 2.4rem;
+   }
+}
+
+.controlsPanel.smallWidthPanel.mobile {
+   grid-template-rows: repeat(2, 4rem);
+}
+
+@media (max-width: 460px) {
+   .controlsPanel {
+      .soundToggler {
+         margin-right: 0.5rem;
+      }
+   }
+}

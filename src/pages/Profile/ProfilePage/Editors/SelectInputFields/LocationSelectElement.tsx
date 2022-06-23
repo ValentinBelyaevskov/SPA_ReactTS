@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback, useContext } from 'react';
 import { defineLanguage } from 'functions/defineLanguage'
 import ParameterSelectListItem from './ParameterSelectListItem';
 import { TerritoryRequestParameters, useListOfTerritories, ResponceTerritoryObject } from './hooks/useListOfTerritories';
-import { useContinuonusEvents } from 'hooks/useContinuonusEvents';
+import { useElementEventHandlers } from 'hooks/useElementEventHandlers';
 
 
 
@@ -25,7 +25,7 @@ const LocationSelectElement = (props: Props) => {
    const [anInputEventHasOccurred, setAnInputEventHasOccurred] = useState<boolean>(false);
    const [fieldValue, setFieldValue] = useState<string>(getTerritoryTitle(props.territory, context.locationInputLanguage));
    const [disableRegionOrCountryInput, setDisableRegionOrCountryInput] = useState<boolean>(false);
-   const touchAndClickEvents = useContinuonusEvents(['touchstart', 'touchmove', 'click'], () => setFieldValueIsSet(true), [`.${props.fieldName}SelectElement`]);
+   const touchAndClickEvents = useElementEventHandlers(['touchstart', 'touchmove', 'click'], () => setFieldValueIsSet(true), [`.${props.fieldName}SelectElement`]);
    const {
       listOfTerritories,
       showListOfTerritories,

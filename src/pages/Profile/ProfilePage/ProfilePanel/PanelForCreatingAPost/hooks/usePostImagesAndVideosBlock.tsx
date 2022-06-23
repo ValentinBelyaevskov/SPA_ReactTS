@@ -1,6 +1,7 @@
 import { compose } from "functions/compose";
-import { useWindowSize } from "hooks/useWindowSize";
+import { useWindowSize, WindowSize } from "hooks/useWindowSize";
 import { useEffect, useRef, useState } from "react";
+import { isTheFileTypeIsCorrect } from "../functions/isTheFileTypeIsCorrect";
 
 
 
@@ -29,19 +30,46 @@ type GridTemplateFr = {
 
 
 
-export const usePostImagesAndVideosBlock = () => {
+export const usePostImagesAndVideosBlock = (resize: WindowSize) => {
    const [imagesAndVideos, setImagesAndVideos] = useState<PostImagesItem[]>([]);
-   const [imagesAndVideosBlockStyle, setImagesAndVideosBlockStyle] = useState<{ marginTop?: string }>({});
+   const [imagesAndVideosBlockStyle, setImagesAndVideosBlockStyle] = useState<{ marginTop?: string, maxHeight?: string }>({});
    const [gridDirection, setGridDirection] = useState<GridDirection>("horizontal");
    const [imagesAndVideosContainerStyle, setImagesAndVideosContainerStyle] = useState<GridContainerStyle>({});
    const [firstSubContainerStyle, setFirstSubContainerStyle] = useState<GridContainerStyle>({});
    const [secondSubContainerStyle, setSecondSubContainerStyle] = useState<GridContainerStyle>({});
    const [thirdSubContainerStyle, setThirdSubContainerStyle] = useState<GridContainerStyle>({});
    const panelRef = useRef<HTMLDivElement>(null);
-   const [containerWidth, setContainerWidth] = useState<number>(510);
-   const resize = useWindowSize("resize");
+   const [containerSizes, setContainerSizes] = useState<[number, number]>([510, 350]);
+   const [containerAspect, setContainerAspect] = useState<number>(350 / 510);
 
 
+
+
+   const addImageOrVideoSubmitListener = (file: File | null, callback: () => void, type: "image" | "video", sizes: [number, number] | undefined): void => {
+      if (file) {
+         if (!isTheFileTypeIsCorrect(file, type)) {
+            callback();
+            return;
+         };
+
+         const imageObj: PostImagesItem = {
+            type,
+            src: URL.createObjectURL(file),
+            file: file,
+            aspect: sizes ? (sizes[1] / sizes[0]) : 1,
+            area: sizes ? sizes[1] * sizes[0] : 0,
+            sizes
+         }
+
+         setImagesAndVideos([...imagesAndVideos, imageObj]);
+      }
+
+      callback();
+   }
+
+   const deleteImageOrVideo = (index: number): void => {
+      setImagesAndVideos(imagesAndVideos.filter((item, i) => i !== index));
+   }
 
    const getGridTemplateFr = (aspects: number[]): GridTemplateFr => {
       let n: number = aspects.length;
@@ -102,17 +130,34 @@ export const usePostImagesAndVideosBlock = () => {
 
    useEffect(() => {
       if (imagesAndVideos.length) {
-         setImagesAndVideosBlockStyle({ marginTop: "12px" });
+         setImagesAndVideosBlockStyle({ marginTop: "15px" });
       }
    }, [imagesAndVideos.length]);
 
 
    useEffect(() => {
+      if (resize.value[0] > 460) {
+         setContainerAspect(350 / 510);
+      } else {
+         setContainerAspect(550 / 510);
+      }
+   }, [resize.value[0]])
+
+
+   useEffect(() => {
       if (panelRef.current) {
          const panelWidth = panelRef.current.getBoundingClientRect().width;
-         setContainerWidth(panelWidth);
+         setContainerSizes([panelWidth, panelWidth * containerAspect]);
       }
-   }, [panelRef.current, resize.value[0]])
+   }, [panelRef.current, resize.value[0], containerAspect])
+
+
+   useEffect(() => {
+      setImagesAndVideosBlockStyle({
+         ...imagesAndVideosBlockStyle,
+         maxHeight: `${containerSizes[1]}px`
+      })
+   }, [containerSizes[1], imagesAndVideosBlockStyle.marginTop])
 
 
    useEffect(() => {
@@ -122,13 +167,6 @@ export const usePostImagesAndVideosBlock = () => {
       setSecondSubContainerStyle({});
       setThirdSubContainerStyle({});
 
-      if (imagesAndVideos.length) {
-         resize.removeEventListener();
-         resize.addEventListener();
-      } else {
-         resize.removeEventListener();
-      }
-
       if (imagesAndVideos.length === 1) {
          setImagesAndVideosContainerStyle({
             width: "fit-content"
@@ -136,14 +174,13 @@ export const usePostImagesAndVideosBlock = () => {
       }
 
       if (imagesAndVideos.length >= 2) {
-         const maxContainerHeight = containerWidth * 350 / 510;
-         const maxPossibleWidth_1_px = containerWidth * 440 / 510;
-         console.log("maxContainerHeight: ", maxContainerHeight)
+         const maxContainerHeight = containerSizes[1];
+         const maxPossibleWidth_1_px = containerSizes[0] * 440 / 510;
          const aspect_1_hor: number = imagesAndVideos![0].aspect!;
          const aspect_2_hor: number = imagesAndVideos![1].aspect!;
          const aspect_2_ver: number = 1 / aspect_2_hor;
          const aspect_joint_12_hor: number = (aspect_1_hor * aspect_2_hor) / (aspect_1_hor + aspect_2_hor);
-         const height_1_px: number = aspect_1_hor * containerWidth;
+         const height_1_px: number = aspect_1_hor * containerSizes[0];
          const possibleWidth_1_px: number = maxContainerHeight / aspect_1_hor;
          let aspect_3_hor: number;
          let aspect_4_hor: number;
@@ -177,11 +214,11 @@ export const usePostImagesAndVideosBlock = () => {
          if (imagesAndVideos.length === 2) {
             if (aspect_joint_12_hor < 0.23 && aspect_1_hor < 0.75 && aspect_2_hor < 0.75) {
                setGridDirection('vertical');
-               rows = getGridTemplatePerPx([aspect_1_hor * containerWidth, aspect_2_hor * containerWidth], maxContainerHeight);
+               rows = getGridTemplatePerPx([aspect_1_hor * containerSizes[0], aspect_2_hor * containerSizes[0]], maxContainerHeight);
             } else {
                setGridDirection('horizontal');
                cols = cols_joint_12_hor.gridTemplateColumns;
-               rows = getGridTemplatePerPx([cols_joint_12_hor.jointAspect * containerWidth], maxContainerHeight);
+               rows = getGridTemplatePerPx([cols_joint_12_hor.jointAspect * containerSizes[0]], maxContainerHeight);
             }
 
             //                   *
@@ -212,17 +249,17 @@ export const usePostImagesAndVideosBlock = () => {
                   if (possibleWidth_1_px < maxPossibleWidth_1_px) {
                      height_2_joint_23_ver_px = aspect_2_joint_23_ver * possibleWidth_1_px * aspect_1_hor;
                      height_3_joint_23_ver_px = aspect_3_joint_23_ver * possibleWidth_1_px * aspect_1_hor;
-                     cols = `${possibleWidth_1_px / containerWidth}fr ${1 - (possibleWidth_1_px / containerWidth)}fr`;
+                     cols = `${possibleWidth_1_px / containerSizes[0]}fr ${1 - (possibleWidth_1_px / containerSizes[0])}fr`;
                      rows = getGridTemplatePerPx([height_2_joint_23_ver_px, height_3_joint_23_ver_px], maxContainerHeight);
                   } else {
-                     height_2_joint_23_ver_px = aspect_2_joint_23_ver * 0.8 * (containerWidth - 5) * aspect_1_hor;
-                     height_3_joint_23_ver_px = aspect_3_joint_23_ver * 0.8 * (containerWidth - 5) * aspect_1_hor;
+                     height_2_joint_23_ver_px = aspect_2_joint_23_ver * 0.8 * (containerSizes[0] - 5) * aspect_1_hor;
+                     height_3_joint_23_ver_px = aspect_3_joint_23_ver * 0.8 * (containerSizes[0] - 5) * aspect_1_hor;
                      cols = `0.8fr 0.2fr`;
                      rows = getGridTemplatePerPx([height_2_joint_23_ver_px, height_3_joint_23_ver_px], maxContainerHeight);
                   }
 
                } else if (direction === 'vertical') {
-                  const height_joint_23_hor_px = cols_joint_23_hor.jointAspect * containerWidth;
+                  const height_joint_23_hor_px = cols_joint_23_hor.jointAspect * containerSizes[0];
 
                   cols = cols_joint_23_hor.gridTemplateColumns;
                   rows = getGridTemplatePerPx([height_1_px, height_joint_23_hor_px], maxContainerHeight);
@@ -256,15 +293,15 @@ export const usePostImagesAndVideosBlock = () => {
                      const heights_joint_24_ver = cols_joint_24_ver.sizes as number[];
 
                      if (possibleWidth_1_px < maxPossibleWidth_1_px) {
-                        cols = `${possibleWidth_1_px / containerWidth}fr ${1 - (possibleWidth_1_px / containerWidth)}fr`;
+                        cols = `${possibleWidth_1_px / containerSizes[0]}fr ${1 - (possibleWidth_1_px / containerSizes[0])}fr`;
                         rows = getGridTemplatePerPx(heights_joint_24_ver.map(item => item * height_1_px), maxContainerHeight);
                      } else {
                         cols = `0.8fr 0.2fr`;
-                        rows = getGridTemplatePerPx(heights_joint_24_ver.map(item => item * 0.8 * (containerWidth - 5) * aspect_1_hor), maxContainerHeight);
+                        rows = getGridTemplatePerPx(heights_joint_24_ver.map(item => item * 0.8 * (containerSizes[0] - 5) * aspect_1_hor), maxContainerHeight);
                      }
 
                   } else if (direction === 'vertical') {
-                     const height_joint_234_hor_px = cols_joint_24_hor.jointAspect * containerWidth;
+                     const height_joint_234_hor_px = cols_joint_24_hor.jointAspect * containerSizes[0];
 
                      cols = cols_joint_23_hor.gridTemplateColumns;
                      rows = getGridTemplatePerPx([height_1_px, height_joint_234_hor_px], maxContainerHeight);
@@ -301,13 +338,13 @@ export const usePostImagesAndVideosBlock = () => {
                         setSecondSubContainerStyle({ gridTemplateColumns: cols_joint_23_hor.gridTemplateColumns });
                         setThirdSubContainerStyle({ gridTemplateColumns: cols_joint_45_hor.gridTemplateColumns });
 
-                        rows = getGridTemplatePerPx([height_1_px, aspect_joint_23_hor * containerWidth, aspect_joint_45_hor * containerWidth], maxContainerHeight);
+                        rows = getGridTemplatePerPx([height_1_px, aspect_joint_23_hor * containerSizes[0], aspect_joint_45_hor * containerSizes[0]], maxContainerHeight);
 
                      } else if (direction === 'horizontal') {
                         setFirstSubContainerStyle({ gridTemplateColumns: cols_joint_12_hor.gridTemplateColumns });
                         setSecondSubContainerStyle({ gridTemplateColumns: cols_joint_35_hor.gridTemplateColumns });
 
-                        rows = getGridTemplatePerPx([aspect_joint_12_hor * containerWidth, aspect_joint_35_hor * containerWidth], maxContainerHeight);
+                        rows = getGridTemplatePerPx([aspect_joint_12_hor * containerSizes[0], aspect_joint_35_hor * containerSizes[0]], maxContainerHeight);
                      }
 
 
@@ -339,13 +376,13 @@ export const usePostImagesAndVideosBlock = () => {
                            setSecondSubContainerStyle({ gridTemplateColumns: cols_joint_23_hor.gridTemplateColumns });
                            setThirdSubContainerStyle({ gridTemplateColumns: cols_joint_46_hor.gridTemplateColumns });
 
-                           rows = getGridTemplatePerPx([height_1_px, aspect_joint_23_hor * containerWidth, aspect_joint_46_hor * containerWidth], maxContainerHeight);
+                           rows = getGridTemplatePerPx([height_1_px, aspect_joint_23_hor * containerSizes[0], aspect_joint_46_hor * containerSizes[0]], maxContainerHeight);
 
                         } else if (direction === 'horizontal') {
                            setFirstSubContainerStyle({ gridTemplateColumns: cols_joint_12_hor.gridTemplateColumns });
                            setSecondSubContainerStyle({ gridTemplateColumns: cols_joint_36_hor.gridTemplateColumns });
 
-                           rows = getGridTemplatePerPx([aspect_joint_12_hor * containerWidth, aspect_joint_36_hor * containerWidth], maxContainerHeight);
+                           rows = getGridTemplatePerPx([aspect_joint_12_hor * containerSizes[0], aspect_joint_36_hor * containerSizes[0]], maxContainerHeight);
                         }
 
 
@@ -378,13 +415,13 @@ export const usePostImagesAndVideosBlock = () => {
                               setSecondSubContainerStyle({ gridTemplateColumns: cols_joint_24_hor.gridTemplateColumns });
                               setThirdSubContainerStyle({ gridTemplateColumns: cols_joint_57_hor.gridTemplateColumns });
 
-                              rows = getGridTemplatePerPx([height_1_px, aspect_joint_24_hor * containerWidth, aspect_joint_57_hor * containerWidth], maxContainerHeight);
+                              rows = getGridTemplatePerPx([height_1_px, aspect_joint_24_hor * containerSizes[0], aspect_joint_57_hor * containerSizes[0]], maxContainerHeight);
 
                            } else if (direction === 'horizontal') {
                               setFirstSubContainerStyle({ gridTemplateColumns: cols_joint_12_hor.gridTemplateColumns });
                               setSecondSubContainerStyle({ gridTemplateColumns: cols_joint_37_hor.gridTemplateColumns });
 
-                              rows = getGridTemplatePerPx([aspect_joint_12_hor * containerWidth, aspect_joint_37_hor * containerWidth], maxContainerHeight);
+                              rows = getGridTemplatePerPx([aspect_joint_12_hor * containerSizes[0], aspect_joint_37_hor * containerSizes[0]], maxContainerHeight);
                            }
 
 
@@ -417,14 +454,14 @@ export const usePostImagesAndVideosBlock = () => {
                                  setSecondSubContainerStyle({ gridTemplateColumns: cols_joint_24_hor.gridTemplateColumns });
                                  setThirdSubContainerStyle({ gridTemplateColumns: cols_joint_58_hor.gridTemplateColumns });
 
-                                 rows = getGridTemplatePerPx([height_1_px, aspect_joint_24_hor * containerWidth, aspect_joint_58_hor * containerWidth], maxContainerHeight);
+                                 rows = getGridTemplatePerPx([height_1_px, aspect_joint_24_hor * containerSizes[0], aspect_joint_58_hor * containerSizes[0]], maxContainerHeight);
 
                               } else if (direction === 'horizontal') {
                                  setFirstSubContainerStyle({ gridTemplateColumns: cols_joint_12_hor.gridTemplateColumns });
                                  setSecondSubContainerStyle({ gridTemplateColumns: cols_joint_35_hor.gridTemplateColumns });
                                  setThirdSubContainerStyle({ gridTemplateColumns: cols_joint_68_hor.gridTemplateColumns });
 
-                                 rows = getGridTemplatePerPx([aspect_joint_12_hor * containerWidth, aspect_joint_35_hor * containerWidth, aspect_joint_68_hor * containerWidth], maxContainerHeight);
+                                 rows = getGridTemplatePerPx([aspect_joint_12_hor * containerSizes[0], aspect_joint_35_hor * containerSizes[0], aspect_joint_68_hor * containerSizes[0]], maxContainerHeight);
                               }
 
 
@@ -457,14 +494,14 @@ export const usePostImagesAndVideosBlock = () => {
                                     setSecondSubContainerStyle({ gridTemplateColumns: cols_joint_25_hor.gridTemplateColumns });
                                     setThirdSubContainerStyle({ gridTemplateColumns: cols_joint_69_hor.gridTemplateColumns });
 
-                                    rows = getGridTemplatePerPx([height_1_px, aspect_joint_25_hor * containerWidth, aspect_joint_69_hor * containerWidth], maxContainerHeight);
+                                    rows = getGridTemplatePerPx([height_1_px, aspect_joint_25_hor * containerSizes[0], aspect_joint_69_hor * containerSizes[0]], maxContainerHeight);
 
                                  } else if (direction === 'horizontal') {
                                     setFirstSubContainerStyle({ gridTemplateColumns: cols_joint_12_hor.gridTemplateColumns });
                                     setSecondSubContainerStyle({ gridTemplateColumns: cols_joint_35_hor.gridTemplateColumns });
                                     setThirdSubContainerStyle({ gridTemplateColumns: cols_joint_69_hor.gridTemplateColumns });
 
-                                    rows = getGridTemplatePerPx([aspect_joint_12_hor * containerWidth, aspect_joint_35_hor * containerWidth, aspect_joint_69_hor * containerWidth], maxContainerHeight);
+                                    rows = getGridTemplatePerPx([aspect_joint_12_hor * containerSizes[0], aspect_joint_35_hor * containerSizes[0], aspect_joint_69_hor * containerSizes[0]], maxContainerHeight);
                                  }
 
 
@@ -501,14 +538,14 @@ export const usePostImagesAndVideosBlock = () => {
                                     setSecondSubContainerStyle({ gridTemplateColumns: cols_joint_25_hor!.gridTemplateColumns });
                                     setThirdSubContainerStyle({ gridTemplateColumns: cols_joint_610_hor.gridTemplateColumns });
 
-                                    rows = getGridTemplatePerPx([height_1_px, aspect_joint_25_hor! * containerWidth, aspect_joint_610_hor * containerWidth], maxContainerHeight);
+                                    rows = getGridTemplatePerPx([height_1_px, aspect_joint_25_hor! * containerSizes[0], aspect_joint_610_hor * containerSizes[0]], maxContainerHeight);
 
                                  } else if (direction === 'horizontal') {
                                     setFirstSubContainerStyle({ gridTemplateColumns: cols_joint_12_hor.gridTemplateColumns });
                                     setSecondSubContainerStyle({ gridTemplateColumns: cols_joint_36_hor.gridTemplateColumns });
                                     setThirdSubContainerStyle({ gridTemplateColumns: cols_joint_710_hor.gridTemplateColumns });
 
-                                    rows = getGridTemplatePerPx([aspect_joint_12_hor * containerWidth, aspect_joint_36_hor * containerWidth, aspect_joint_710_hor * containerWidth], maxContainerHeight);
+                                    rows = getGridTemplatePerPx([aspect_joint_12_hor * containerSizes[0], aspect_joint_36_hor * containerSizes[0], aspect_joint_710_hor * containerSizes[0]], maxContainerHeight);
                                  }
                               }
                            }
@@ -524,13 +561,12 @@ export const usePostImagesAndVideosBlock = () => {
             gridTemplateColumns: cols!
          });
       }
-   }, [imagesAndVideos.length, gridDirection, containerWidth]);
+   }, [imagesAndVideos.length, gridDirection, containerSizes[0]]);
 
 
 
    return {
       imagesAndVideos,
-      setImagesAndVideos,
       imagesAndVideosBlockStyle,
       gridDirection,
       imagesAndVideosContainerStyle,
@@ -538,6 +574,8 @@ export const usePostImagesAndVideosBlock = () => {
       secondSubContainerStyle,
       thirdSubContainerStyle,
       panelRef,
-      containerWidth,
+      containerSizes,
+      addImageOrVideoSubmitListener,
+      deleteImageOrVideo
    }
 }

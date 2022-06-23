@@ -2,8 +2,8 @@ import styles from './Parameter.module.scss';
 import { splitStringIntoWords } from '../../../../../functions/splitStringIntoWords';
 import { useState } from 'react';
 import React from 'react';
-import NotVisibleParameterValue from './NotVisibleParameterValue';
 import { useHoverAndTouchClassNames } from 'hooks/useHoverAndTouchClassNames';
+import NotVisibleParameterValue from 'common/NotVisibleParameterValue/NotVisibleParameterValue';
 
 
 
@@ -22,7 +22,8 @@ const Parameter = (props: Props) => {
    const [visibleParameterValue, setVisibleParameterValue] = useState<string | undefined | number | null>(props.parameterValue);
    const [stringWithLineBreak, setStringWithLineBreak] = useState<(JSX.Element | string)[]>([]);
    const [isTheValueLong, setIsTheValueLong] = useState<boolean | undefined>(undefined);
-   const fullInfoPseudoClassNames = useHoverAndTouchClassNames();
+   const fullInfoPseudoClassNames = useHoverAndTouchClassNames(styles.hover, styles.touch);
+
 
 
 
@@ -36,12 +37,21 @@ const Parameter = (props: Props) => {
 
    const mouseEnterListener = (): void => {
       highlightButton(props.showFullInfo);
-      fullInfoPseudoClassNames.setHoverClassName(styles.hover);
+      fullInfoPseudoClassNames.mouseEnterListener();
    }
 
    const mouseLeaveListener = (): void => {
       doNotHighlightButton();
-      fullInfoPseudoClassNames.setHoverClassName("");
+   }
+
+   const touchStartListener = (): void => {
+      setNewFullInfoOnTouchTimeout();
+      highlightButton(props.showFullInfo);
+      fullInfoPseudoClassNames.touchStartListener();
+   }
+
+   const touchEndListener = (): void => {
+      fullInfoPseudoClassNames.touchEndListener();
    }
 
    const setNewFullInfoOnTouchTimeout = () => {
@@ -54,15 +64,6 @@ const Parameter = (props: Props) => {
       props.setHideFullInfoOnTouchTimeout(timeout);
    }
 
-   const touchStartListener = (): void => {
-      setNewFullInfoOnTouchTimeout();
-      highlightButton(props.showFullInfo);
-      fullInfoPseudoClassNames.setTouchClassName(styles.touch);
-   }
-
-   const touchEndListener = (): void => {
-      fullInfoPseudoClassNames.resetTouchClassName(true);
-   }
 
 
 
@@ -77,6 +78,7 @@ const Parameter = (props: Props) => {
                (
                   <div
                      className={`${styles.parameterValue} ${props.showFullInfo ? "" : `${styles.selectedValue} ${fullInfoPseudoClassNames.className} unselectable`}`}
+                     onClick={fullInfoPseudoClassNames.clickListener}
                      onMouseEnter={mouseEnterListener}
                      onMouseLeave={mouseLeaveListener}
                      onTouchStart={touchStartListener}
@@ -96,6 +98,16 @@ const Parameter = (props: Props) => {
             setIsTheValueLong={setIsTheValueLong}
             setStringWithLineBreak={setStringWithLineBreak}
             setVisibleParameterValue={setVisibleParameterValue}
+            className={styles.notVisibleValue}
+            configForAdaptability={[
+               [570, undefined, 215, 17],
+               [500, 570, 164, 13],
+               [461, 500, 125, 10],
+               [400, 460, 225, 16],
+               [340, 400, 171, 11],
+               [300, 340, 145, 9],
+               [undefined, 300, 105, 6],
+            ]}
          />
       </div>
    )

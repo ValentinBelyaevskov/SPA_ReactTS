@@ -12,6 +12,7 @@ import { useHoverAndTouchClassNames } from "hooks/useHoverAndTouchClassNames";
 
 
 
+
 interface Props {
    finishEditing: () => void
    submitListener: (croppedImage: File | null, callback: () => void, type: "image", croppedImageSizes?: [number, number]) => void
@@ -23,9 +24,11 @@ interface Props {
    popupText: string
 }
 
+
 type Inputs = {
-   fileList: { 0: File }
+   fileList: File[]
 }
+
 
 
 
@@ -34,7 +37,8 @@ const SelectAndEditAnImageForm = (props: Props) => {
    const [image, setImage] = useState<HTMLImageElement | null>(null);
    const [imageFile, setImageFile] = useState<File | null>(null);
    const [editorWithPreviewClassName, setEditorWithPreviewClassName] = useState<string | undefined>(undefined);
-   const fileLabelButtonHoverAndTouchClassNames = useHoverAndTouchClassNames();
+   const fileLabelButtonHoverAndTouchClassNames = useHoverAndTouchClassNames(styles.hover, styles.touch);
+   const [errorString, setErrorString] = useState<"The file must be an image" | undefined>(undefined);
    const popupForm = usePopupForm(props.finishEditing);
    const {
       aspect,
@@ -51,8 +55,14 @@ const SelectAndEditAnImageForm = (props: Props) => {
 
 
 
-   const setImageSrc = (): void => {
+
+   const setImageSrcOnChange = (): void => {
       const inputFile: File = watch("fileList")[0];
+
+      if (inputFile && !isTheFileAnImage(inputFile)) {
+         setErrorString('The file must be an image');
+         return
+      };
 
       if (inputFile) {
          setImgSrc(URL.createObjectURL(inputFile));
@@ -73,13 +83,21 @@ const SelectAndEditAnImageForm = (props: Props) => {
       popupForm.setClickedButtonName(e);
    }
 
+   const isTheFileAnImage = (imageFile: File) => imageFile.type.slice(0, 5) === "image" ? true : false;
+
+
 
 
    const { register, handleSubmit, watch } = useForm<Inputs>({
       mode: "onBlur",
+      defaultValues: {
+         fileList: undefined,
+      }
    })
 
    const onSubmit: SubmitHandler<Inputs> = () => {
+      if (imageFile && !isTheFileAnImage(imageFile)) return;
+
       const callback = (): void => {
          popupForm.hideEditorStyle();
          URL.revokeObjectURL(imgSrc);
@@ -95,6 +113,7 @@ const SelectAndEditAnImageForm = (props: Props) => {
 
 
 
+
    useEffect(() => {
       if (image && completedCrop) {
          const logCroppedImage = async () => {
@@ -106,12 +125,26 @@ const SelectAndEditAnImageForm = (props: Props) => {
       }
    }, [completedCrop, image])
 
+
    useEffect(() => {
-      if (image) {
-         const sizes = image.getBoundingClientRect();
-         setCroppedImageSizes([sizes.width, sizes.height]);
+      if (imageFile && !isTheFileAnImage(imageFile)) {
+         setErrorString('The file must be an image');
+      } else {
+         setErrorString(undefined);
       }
-   }, [image])
+   }, [imageFile])
+
+
+   useEffect(() => {
+      if (imgSrc && !completedCrop) {
+         const img: HTMLImageElement = document.createElement("img");
+         img.src = imgSrc;
+         img.onload = () => {
+            setCroppedImageSizes([img.width, img.height]);
+         }
+      }
+   }, [imgSrc, completedCrop])
+
 
 
 
@@ -126,10 +159,10 @@ const SelectAndEditAnImageForm = (props: Props) => {
                   <label
                      className={`${styles.fileLabel} ${fileLabelButtonHoverAndTouchClassNames.className}`}
                      htmlFor="file"
-                     onMouseEnter={() => fileLabelButtonHoverAndTouchClassNames.setHoverClassName(styles.hover)}
-                     onMouseLeave={() => fileLabelButtonHoverAndTouchClassNames.setHoverClassName("")}
-                     onTouchStart={() => fileLabelButtonHoverAndTouchClassNames.setTouchClassName(styles.touch)}
-                     onTouchEnd={() => fileLabelButtonHoverAndTouchClassNames.resetTouchClassName(true)}
+                     onClick={fileLabelButtonHoverAndTouchClassNames.clickListener}
+                     onMouseEnter={fileLabelButtonHoverAndTouchClassNames.mouseEnterListener}
+                     onTouchStart={fileLabelButtonHoverAndTouchClassNames.touchStartListener}
+                     onTouchEnd={fileLabelButtonHoverAndTouchClassNames.touchEndListener}
                   >
                      Select a file
                   </label>
@@ -137,8 +170,10 @@ const SelectAndEditAnImageForm = (props: Props) => {
                      className={styles.input}
                      type="file"
                      id="file"
-                     {...register("fileList", { onChange: setImageSrc })}
+                     accept="image/*"
+                     {...register("fileList", { onChange: setImageSrcOnChange })}
                   />
+                  <p className={styles.validationError}>{errorString ? errorString : null}</p>
                   {
                      imgSrc && (
                         <ReactCrop
@@ -159,6 +194,9 @@ const SelectAndEditAnImageForm = (props: Props) => {
                               : null)
                         : null
                   }
+                  {
+
+                  }
                </div>
                <div className={styles.buttons}>
                   <Button
@@ -175,7 +213,7 @@ const SelectAndEditAnImageForm = (props: Props) => {
                                  && completedCrop.height
                               )
                                  || (
-                                    imageFile && props.uploadUncroppedImage
+                                    imageFile && props.uploadUncroppedImage && isTheFileAnImage(imageFile)
                                  )
                                  ? false
                                  : true,
@@ -202,6 +240,7 @@ const SelectAndEditAnImageForm = (props: Props) => {
       </div>
    )
 }
+
 
 
 

@@ -1,0 +1,322 @@
+.form {
+  margin: 0 auto;
+  max-width: 350px;
+  padding-top: 18px;
+  padding-bottom: 30px;
+}
+
+.form .error,
+.form .prompt {
+  font-size: 1.4rem;
+  line-height: 2rem;
+  margin: 0 0 15px 0;
+}
+
+.form .error,
+.form .redPrompt {
+  color: red;
+}
+
+.form .prompt {
+  line-height: 22px;
+  color: var(--theme-color);
+  font-weight: 500;
+}
+
+.form .title {
+  margin: 0px 25px 15px 25px;
+  text-align: center;
+  font-size: 1.8rem;
+  font-weight: 500;
+}
+
+.form .resetPasswordInfo {
+  margin-top: 20px;
+}
+
+.form .inputFields .inputContainer:not(:first-of-type) {
+  position: relative;
+  margin-top: 17px;
+}
+
+.form .inputFields .rememberMeAndLoginFlex,
+.form .inputFields .rememberMeAndLoginAsGuestFlex {
+  width: 100%;
+  margin-top: 13px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+}
+
+.form .inputFields .input {
+  display: block;
+  padding: 5px 15px;
+  border: solid 1px lightgray;
+  border-radius: 4px;
+  color: #3a3a3a;
+  font-weight: 400;
+  font-size: 1.2rem;
+  width: 100%;
+}
+
+.form .inputFields .input::-webkit-input-placeholder {
+  color: #9c9c9c;
+}
+
+.form .inputFields .input:-ms-input-placeholder {
+  color: #9c9c9c;
+}
+
+.form .inputFields .input::-ms-input-placeholder {
+  color: #9c9c9c;
+}
+
+.form .inputFields .input::placeholder {
+  color: #9c9c9c;
+}
+
+.form .inputFields .input:focus {
+  border: solid 1px var(--theme-prompt-color);
+  outline: solid 1px var(--theme-prompt-color);
+}
+
+.form .inputFields .passwordInput {
+  padding: 5px 40px 5px 15px;
+}
+
+.form .inputFields .passwordVisibilityIcon {
+  position: absolute;
+  top: 2px;
+  right: 7px;
+  height: 23px;
+  opacity: 1;
+  -webkit-transition-property: opacity;
+  transition-property: opacity;
+  -webkit-transition-duration: 0.1s;
+          transition-duration: 0.1s;
+}
+
+.form .inputFields .passwordVisibilityIcon.hover:hover, .form .inputFields .passwordVisibilityIcon.touch {
+  cursor: pointer;
+  opacity: 0.6;
+}
+
+.form .inputFields .validationError {
+  margin-top: 8px;
+  margin-left: 15px;
+  font-size: 1.3rem;
+  color: red;
+}
+
+.form .inputFields .checkbox {
+  display: none;
+}
+
+.form .inputFields .checkbox:checked + .checkboxLabel:before {
+  background-image: url("../../../../../public/image/checked.svg");
+  background-size: 12px 15px;
+  background-position-x: center;
+  background-position-y: center;
+  background-repeat: no-repeat;
+}
+
+.form .inputFields .rememberMeIcon {
+  display: none;
+}
+
+.form .inputFields .checkboxLabel {
+  line-height: 20px;
+  font-size: 14px;
+  -webkit-transition-property: color;
+  transition-property: color;
+  -webkit-transition-duration: 0.1s;
+          transition-duration: 0.1s;
+}
+
+.form .inputFields .checkboxLabel:before {
+  content: "";
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 10px;
+  width: 18px;
+  height: 18px;
+  border: solid 2px var(--theme-color);
+  border-radius: 5px;
+  -webkit-transition-property: border;
+  transition-property: border;
+  -webkit-transition-duration: 0.1s;
+          transition-duration: 0.1s;
+}
+
+.form .inputFields .checkboxLabel.hover:hover, .form .inputFields .checkboxLabel.touch {
+  cursor: pointer;
+  color: rgba(0, 0, 0, 0.65);
+}
+
+.form .inputFields .checkboxLabel.hover:hover:before, .form .inputFields .checkboxLabel.touch:before {
+  border: solid 2px var(--theme-transperent-color);
+}
+
+.form .createAccount .createAccountSubtitle {
+  font-size: 14px;
+  line-height: 22px;
+  margin: 0;
+  margin-top: 10px;
+}
+
+.form .createAccount .createAccountButtons,
+.form .createAccount .loginButtons,
+.form .createAccount .loginAsGuestButtons {
+  margin-top: 10px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  width: 100%;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+}
+
+.form .createAccount .createAccountButtons .buttonContainer:not(:last-of-type),
+.form .createAccount .loginButtons .buttonContainer:not(:last-of-type),
+.form .createAccount .loginAsGuestButtons .buttonContainer:not(:last-of-type) {
+  margin-right: 15px;
+}
+
+@media (max-width: 750px) {
+  .form {
+    height: calc(100vh - 4.6rem);
+  }
+}
+
+@media (max-height: 433px) {
+  .form.createAccount {
+    height: -webkit-fit-content;
+    height: -moz-fit-content;
+    height: fit-content;
+  }
+}
+
+@media (max-height: 387px) {
+  .form.login {
+    height: -webkit-fit-content;
+    height: -moz-fit-content;
+    height: fit-content;
+  }
+}
+
+@media (max-height: 255px) {
+  .form.loginAsGuest {
+    height: -webkit-fit-content;
+    height: -moz-fit-content;
+    height: fit-content;
+  }
+}
+
+@media (max-width: 460px) {
+  .form {
+    padding-top: 20px;
+    height: calc(100vh - 5.3rem);
+  }
+  .form .title {
+    font-size: 1.8rem;
+    margin: 0px 25px 20px 25px;
+  }
+  .form .inputFields .input {
+    font-size: 1.4rem;
+    padding: 5px 15px;
+  }
+  .form .inputFields .rememberMeAndLoginFlex,
+  .form .inputFields .rememberMeAndLoginAsGuestFlex {
+    margin-top: 20px;
+  }
+  .form .createAccount .createAccountSubtitle,
+  .form .createAccount .createAccountButtons,
+  .form .createAccount .loginButtons,
+  .form .createAccount .loginAsGuestButtons {
+    margin-top: 20px;
+  }
+}
+
+@media (max-height: 477px) {
+  .form.createAccount {
+    height: -webkit-fit-content;
+    height: -moz-fit-content;
+    height: fit-content;
+  }
+}
+
+@media (max-height: 431px) {
+  .form.login {
+    height: -webkit-fit-content;
+    height: -moz-fit-content;
+    height: fit-content;
+  }
+}
+
+@media (max-height: 299px) {
+  .form.loginAsGuest {
+    height: -webkit-fit-content;
+    height: -moz-fit-content;
+    height: fit-content;
+  }
+}
+
+@media (max-width: 350px) {
+  .form .createAccount .loginButtons {
+    display: block;
+  }
+  .form .createAccount .loginButtons > div {
+    width: 100%;
+  }
+  .form .createAccount .loginButtons > div button {
+    width: 100%;
+  }
+  .form .createAccount .loginButtons > div:last-child {
+    margin-top: 2rem;
+  }
+}
+
+@media (max-width: 320px) {
+  .form .inputFields .rememberMeAndLoginAsGuestFlex {
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: reverse;
+        -ms-flex-direction: column-reverse;
+            flex-direction: column-reverse;
+  }
+  .form .inputFields .rememberMeAndLoginAsGuestFlex > div {
+    width: 100%;
+  }
+  .form .inputFields .rememberMeAndLoginAsGuestFlex > div:first-child {
+    width: -webkit-fit-content;
+    width: -moz-fit-content;
+    width: fit-content;
+    margin: 2rem auto 0 auto;
+  }
+  .form .inputFields .rememberMeAndLoginAsGuestFlex > div button {
+    width: 100%;
+  }
+  .form .createAccount .createAccountButtons,
+  .form .createAccount .loginAsGuestButtons {
+    display: block;
+  }
+  .form .createAccount .createAccountButtons > div,
+  .form .createAccount .loginAsGuestButtons > div {
+    width: 100%;
+  }
+  .form .createAccount .createAccountButtons > div button,
+  .form .createAccount .loginAsGuestButtons > div button {
+    width: 100%;
+  }
+  .form .createAccount .createAccountButtons > div:last-child,
+  .form .createAccount .loginAsGuestButtons > div:last-child {
+    margin-top: 2rem;
+  }
+}
+/*# sourceMappingURL=Forms.module.css.map */

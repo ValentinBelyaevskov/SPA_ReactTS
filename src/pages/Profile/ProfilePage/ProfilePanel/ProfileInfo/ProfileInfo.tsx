@@ -20,7 +20,6 @@ type ShowMoreText = "Show more information" | "Hide more information";
 
 type ShowMoreButtonStyle = {
    transitionDuration?: "0s" | "0.1s" | "0.2s"
-   outline?: "1px solid #cccccc" | "1px solid rgba(0, 0, 0, 0)"
 }
 
 
@@ -30,39 +29,35 @@ const ProfileInfo = (props: Props) => {
    const [showMore, setShowMore] = useState<boolean>(false);
    const [showButtonMoreClassName, setShowButtonMoreClassName] = useState<string>(`${styles.showMoreHighlighted} ${styles.showMoreButton}`);
    const [showMoreButtonText, setShowMoreButtonText] = useState<ShowMoreText>("Show more information");
-   const [highlightShowMoreButton, setHighlightShowMoreButton] = useState<boolean>(false)
+   const [highlightShowMoreButton, setHighlightShowMoreButton] = useState<boolean>(false);
+   const [showInformationBlocks, setshowInformationBlocks] = useState<boolean>(false);
    const showMoreButtonRef = useRef<HTMLButtonElement>(null);
-   const [showMoreButtonStyle, setShowMoreButtonStyle] = useState<ShowMoreButtonStyle>({ transitionDuration: "0s" });
+   const [showMoreButtonStyle, setShowMoreButtonStyle] = useState<ShowMoreButtonStyle>({});
    const [showFullInfo, setShowFullInfo] = useState<boolean>(false);
    const profileInfoRef = useRef<HTMLDivElement>(null);
    const setShowPreloader = useContext(AppContext).setShowPreloader!;
    const [hideFullInfoOnTouchTimeout, setHideFullInfoOnTouchTimeout] = useState<NodeJS.Timeout | null>(null);
-   const showMorePseudoClassNames = useHoverAndTouchClassNames();
+   const showMorePseudoClassNames = useHoverAndTouchClassNames(styles.hover, styles.touch);
+
    const {
       informationBlocks,
       profileInfoClassname,
       showProfileInfoClassname,
       hideProfileInfoClassname,
       setProfileInfoClassname,
+
    } = useCreateInfoConfiguration(props.profileInfo, loadInfo.loaded, styles);
 
 
 
    const showMoreClickListener = () => {
+      showMorePseudoClassNames.clickListener();
+
       if (showMore) {
          setShowMore(false);
       } else {
          setShowMore(true);
       }
-   }
-
-   const showMoreMouseUpHandler = (): void => {
-      setShowMoreButtonStyle({
-         transitionDuration: "0s",
-      });
-      setTimeout(() => {
-         setShowMoreButtonStyle({});
-      }, 100);
    }
 
 
@@ -80,9 +75,6 @@ const ProfileInfo = (props: Props) => {
 
    useEffect(() => {
       if (highlightShowMoreButton) {
-         setShowMoreButtonStyle({
-            transitionDuration: "0.2s",
-         });
          setTimeout(() => {
             setShowButtonMoreClassName(`${styles.showMoreTemporarilyHighlighted} ${styles.showMoreButton}`);
          }, 0);
@@ -92,37 +84,44 @@ const ProfileInfo = (props: Props) => {
             setShowButtonMoreClassName(`${styles.showMoreButton}`);
          };
 
-         setShowMoreButtonStyle({
-            transitionDuration: "0.1s",
-         });
          setTimeout(() => {
             setShowButtonMoreClassName(`${styles.showMoreButton}`);
-         }, 0);
+         }, 0)
 
          showMoreButtonRef.current.addEventListener("transitionend", transitionEndListener, { once: true });
       }
-   }, [highlightShowMoreButton, showButtonMoreClassName, showMoreButtonStyle.outline, showMoreButtonRef.current])
+   }, [highlightShowMoreButton, showButtonMoreClassName, showMoreButtonRef.current])
 
 
    useEffect(() => {
       if (showMore) {
-         setProfileInfoClassname(showProfileInfoClassname)
-         setShowMoreButtonText("Hide more information")
-         setShowButtonMoreClassName(`${styles.showMoreHighlighted} ${styles.showMoreButton}`)
+         setProfileInfoClassname(showProfileInfoClassname);
+         setShowMoreButtonText("Hide more information");
+         setShowButtonMoreClassName(`${styles.showMoreHighlighted} ${styles.showMoreButton}`);
       } else {
-         setProfileInfoClassname(hideProfileInfoClassname)
-         setShowMoreButtonText("Show more information")
-         setShowButtonMoreClassName(`${styles.showMoreButton}`)
+         setProfileInfoClassname(hideProfileInfoClassname);
+         setShowMoreButtonText("Show more information");
+         setShowButtonMoreClassName(`${styles.showMoreButton} ${styles.showMoreWithoutTransition}`);
+         setTimeout(() => setShowButtonMoreClassName(styles.showMoreButton), 100);
       }
    }, [showMore, showProfileInfoClassname, hideProfileInfoClassname])
+
+
+   useEffect(() => {
+      if (informationBlocks) {
+         setshowInformationBlocks(false);
+         setTimeout(() => setshowInformationBlocks(true));
+      }
+   }, [informationBlocks])
+
 
 
 
    return (
       <div className={`${profileInfoClassname} ${profilePanelStyles.profileInfo}`} ref={profileInfoRef}>
          {
-            informationBlocks ?
-               informationBlocks.map((block) => (
+            showInformationBlocks ?
+               informationBlocks!.map((block) => (
                   (block.length === 1 && block[0].length > 1)
                      || (block.length > 1 && block[0].length === 1) ?
                      <Parameters
@@ -145,13 +144,12 @@ const ProfileInfo = (props: Props) => {
                   containerClassName: styles.showMoreButtonContainer,
                   buttonClassName: `${showButtonMoreClassName} ${showMorePseudoClassNames.className}`,
                   buttonStyle: showMoreButtonStyle,
+                  containerStyle: showMoreButtonStyle,
                   buttonRef: showMoreButtonRef,
-                  mouseUpHandler: showMoreMouseUpHandler,
                   changeStyleOnHover: false,
-                  mouseEnterHandler: () => showMorePseudoClassNames.setHoverClassName(styles.hover),
-                  mouseLeaveHandler: () => showMorePseudoClassNames.setHoverClassName(""),
-                  touchStartHandler: () => showMorePseudoClassNames.setTouchClassName(styles.touch),
-                  touchEndHandler: () => showMorePseudoClassNames.resetTouchClassName(true),
+                  mouseEnterHandler: showMorePseudoClassNames.mouseEnterListener,
+                  touchStartHandler: showMorePseudoClassNames.touchStartListener,
+                  touchEndHandler: showMorePseudoClassNames.touchEndListener,
                }
             }
          />

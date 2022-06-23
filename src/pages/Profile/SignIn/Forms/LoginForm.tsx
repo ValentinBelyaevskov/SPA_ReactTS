@@ -31,14 +31,19 @@ const LoginForm = () => {
    const [resetPasswordWasClicked, setResetPasswordWasClicked] = useState<ResetPasswordWasClicked>(false);
    const passwordVisibility = useInputVisibilitySwitch("./icons/hidePasswordIcon.svg", "./icons/showPasswordIcon.svg");
    const passwordInputFocus = useFocusOnInput();
-   const passwordIconPseudoClassNames = useHoverAndTouchClassNames();
-   const rememberMePseudoClassNames = useHoverAndTouchClassNames();
+   const passwordIconPseudoClassNames = useHoverAndTouchClassNames(styles.hover, styles.touch);
+   const rememberMePseudoClassNames = useHoverAndTouchClassNames(styles.hover, styles.touch);
 
 
 
    const passwordIconTouchStartListener = (e: React.TouchEvent): void => {
-      passwordIconPseudoClassNames.setTouchClassName(styles.touch);
+      passwordIconPseudoClassNames.touchStartListener();
       passwordInputFocus.innerElementClickListener(e);
+   }
+
+   const passwordIconClickListener = () => {
+      passwordIconPseudoClassNames.clickListener();
+      passwordVisibility.iconClickListener();
    }
 
    const { register, handleSubmit, clearErrors, formState: { errors, isValid } } = useForm<Inputs>({
@@ -160,12 +165,11 @@ const LoginForm = () => {
                      className={`${styles.passwordVisibilityIcon} ${passwordIconPseudoClassNames.className} unselectable`}
                      src={passwordVisibility.icon}
                      alt="show or hide password icon"
-                     onClick={passwordVisibility.iconClickListener}
+                     onClick={passwordIconClickListener}
                      onMouseDown={passwordInputFocus.innerElementClickListener}
-                     onMouseEnter={() => passwordIconPseudoClassNames.setHoverClassName(styles.hover)}
-                     onMouseLeave={() => passwordIconPseudoClassNames.setHoverClassName("")}
+                     onMouseEnter={passwordIconPseudoClassNames.mouseEnterListener}
                      onTouchStart={passwordIconTouchStartListener}
-                     onTouchEnd={() => passwordIconPseudoClassNames.resetTouchClassName(true)}
+                     onTouchEnd={passwordIconPseudoClassNames.touchEndListener}
                   />
                   <p className={styles.validationError}>{errors.password ? errors.password.message : null}</p>
                </div>
@@ -199,10 +203,10 @@ const LoginForm = () => {
                      <label
                         htmlFor="rememberMe"
                         className={`${styles.checkboxLabel} ${rememberMePseudoClassNames.className} unselectable`}
-                        onMouseEnter={() => rememberMePseudoClassNames.setHoverClassName(styles.hover)}
-                        onMouseLeave={() => rememberMePseudoClassNames.setHoverClassName("")}
-                        onTouchStart={() => rememberMePseudoClassNames.setTouchClassName(styles.touch)}
-                        onTouchEnd={() => rememberMePseudoClassNames.resetTouchClassName(true)}
+                        onClick={rememberMePseudoClassNames.clickListener}
+                        onMouseEnter={rememberMePseudoClassNames.mouseEnterListener}
+                        onTouchStart={rememberMePseudoClassNames.touchStartListener}
+                        onTouchEnd={rememberMePseudoClassNames.touchEndListener}
                      >
                         remember me
                      </label>

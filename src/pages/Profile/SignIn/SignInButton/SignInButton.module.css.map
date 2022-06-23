@@ -1,0 +1,9 @@
+{
+    "version": 3,
+    "mappings": "AAAA,AAAA,iBAAiB,CAAC;EACf,WAAW,EAAE,IAAI;EACjB,YAAY,EAAE,CAAC;CACjB;;AAED,AAAA,SAAS,CAAC;EACP,MAAM,EAAE,UAAU;CACpB;;AAED,AAAA,cAAc,CAAC;EACZ,MAAM,EAAE,aAAa;CACvB",
+    "sources": [
+        "SignInButton.module.scss"
+    ],
+    "names": [],
+    "file": "SignInButton.module.css"
+}

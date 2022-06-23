@@ -19,10 +19,12 @@ const Header = (props: Props) => {
    const personalParametersIcon: React.RefObject<HTMLDivElement> = useRef<HTMLDivElement>(null);
    const menu: React.RefObject<HTMLDivElement> = useRef<HTMLDivElement>(null);
    const popupMenu: Popup = usePopupElement(menu, true);
+
    const {
       elementTouchStartListener,
       elementHoverAndTouchClassName,
-      resetElementTouchClassName,
+      elementClickListener,
+      elementTouchEndListener,
       resetShowElementOnTouchEvent,
       showElement,
       hideElement
@@ -38,10 +40,11 @@ const Header = (props: Props) => {
          <div
             className={`${styles.parametersIcon} ${elementHoverAndTouchClassName} profilePanelMenuElement unselectable`}
             ref={personalParametersIcon}
+            onClick={elementClickListener}
             onMouseEnter={showElement}
             onMouseLeave={hideElement}
             onTouchStart={elementTouchStartListener}
-            onTouchEnd={() => resetElementTouchClassName(true)}
+            onTouchEnd={elementTouchEndListener}
          >
             <img src="./icons/other.svg" alt="Set personalParameters icon" />
          </div>

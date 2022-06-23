@@ -1,6 +1,6 @@
 import { CustomImage } from "common"
 import { useHoverAndTouchClassNames } from "hooks/useHoverAndTouchClassNames"
-import styles from './PanelForCreatingAPost.module.scss'
+import styles from './ImagesAndVideosBlockContainer.module.scss'
 import { useEffect, useState, useRef } from 'react';
 import { GridDirection } from "./hooks/usePostImagesAndVideosBlock";
 import { ImagesAndVideosBlockContext } from './PanelForCreatingAPost';
@@ -15,7 +15,7 @@ type Props = {
    type: "image" | "video"
    sizes: [number, number]
    arrLength: number
-   containerWidth: number
+   containerSizes: [number, number]
    gridDirection: GridDirection
 }
 
@@ -34,8 +34,8 @@ type ImageContainerStyle = {
 const PostImage = (props: Props) => {
    const contentRef = useRef<HTMLDivElement>(null);
    const [playIconClassName, setPlayIconClassName] = useState<string>(styles.playIcon);
-   const hideIconHoverAndTouchClassNames = useHoverAndTouchClassNames();
-   const playIconHoverAndTouchClassNames = useHoverAndTouchClassNames();
+   const hideIconHoverAndTouchClassNames = useHoverAndTouchClassNames(styles.hover, styles.touch);
+   const playIconHoverAndTouchClassNames = useHoverAndTouchClassNames(styles.hover, styles.touch);
    const iframeRef = useRef<HTMLIFrameElement>(null);
    const [iframeStyle, setIframeStyle] = useState<IframeStyle>({});
    const [imageContainerStyle, setImageContainerStyle] = useState<ImageContainerStyle>({});
@@ -44,24 +44,25 @@ const PostImage = (props: Props) => {
 
 
    const imageAndVideoClickHandler = (): void => {
+      playIconHoverAndTouchClassNames.clickListener();
       imagesAndVideosBlockContext.setShowVideoAndImageSlider!(true);
       imagesAndVideosBlockContext.setSliderStartIndex!(props.index);
    }
 
    const deleteImageOrVideo = (): void => {
+      hideIconHoverAndTouchClassNames.clickListener();
       props.deleteImageOrVideo(props.index);
    }
 
    const getHideIcon = (): JSX.Element => (
       <div
          className={`${styles.hideIcon} ${hideIconHoverAndTouchClassNames.className} unselectable`}
-         onMouseEnter={() => hideIconHoverAndTouchClassNames.setHoverClassName(styles.hover)}
-         onMouseLeave={() => hideIconHoverAndTouchClassNames.setHoverClassName("")}
-         onTouchStart={() => hideIconHoverAndTouchClassNames.setTouchClassName(styles.touch)}
-         onTouchEnd={() => hideIconHoverAndTouchClassNames.resetTouchClassName(true)}
          onClick={deleteImageOrVideo}
+         onMouseEnter={hideIconHoverAndTouchClassNames.mouseEnterListener}
+         onTouchStart={hideIconHoverAndTouchClassNames.touchStartListener}
+         onTouchEnd={hideIconHoverAndTouchClassNames.touchEndListener}
       >
-         <img src="./icons/hideMini.svg" />
+         <img src="./icons/hideMiniWhite.svg" />
       </div>
    );
 
@@ -84,7 +85,7 @@ const PostImage = (props: Props) => {
             }, 0)
          }
       }, 0);
-   }, [props.arrLength, contentRef.current, props.containerWidth])
+   }, [props.arrLength, contentRef.current, props.containerSizes[0]])
 
 
    useEffect(() => {
@@ -94,8 +95,11 @@ const PostImage = (props: Props) => {
             let videoHeight: number = props.sizes[1];
             let videoAspect = videoHeight / videoWidth;
             let containerAspect = 350 / 510;
-            let containerWidth = props.containerWidth;
+
+
+            let containerWidth = props.containerSizes[0];
             let containerHeight = containerWidth * containerAspect;
+
 
             if ((videoHeight > containerHeight) && (videoAspect > containerAspect)) {
                setIframeStyle({
@@ -121,7 +125,7 @@ const PostImage = (props: Props) => {
             })
          }
       }
-   }, [props.sizes, props.index, iframeRef.current, contentRef.current, props.containerWidth, props.arrLength, props.gridDirection])
+   }, [props.sizes, props.index, iframeRef.current, contentRef.current, props.containerSizes[0], props.arrLength, props.gridDirection])
 
 
 
@@ -133,7 +137,7 @@ const PostImage = (props: Props) => {
             additionalClass={`${styles.imageContainer} unselectable`}
             additionalImageClass={styles.image}
             jsx={getHideIcon()}
-            onClick={imageAndVideoClickHandler}
+            onImgClick={imageAndVideoClickHandler}
          />
          : <div className={`${styles.imageContainer} unselectable`} ref={contentRef} style={imageContainerStyle}>
             <div className={styles.videoContainer} style={iframeStyle} onClick={imageAndVideoClickHandler}>
@@ -148,12 +152,12 @@ const PostImage = (props: Props) => {
             {getHideIcon()}
             <div
                className={`${playIconClassName} ${playIconHoverAndTouchClassNames.className} unselectable`}
-               onMouseEnter={() => playIconHoverAndTouchClassNames.setHoverClassName(styles.hover)}
-               onMouseLeave={() => playIconHoverAndTouchClassNames.setHoverClassName("")}
-               onTouchStart={() => playIconHoverAndTouchClassNames.setTouchClassName(styles.touch)}
-               onTouchEnd={() => playIconHoverAndTouchClassNames.resetTouchClassName(true)}
+               onClick={imageAndVideoClickHandler}
+               onMouseEnter={playIconHoverAndTouchClassNames.mouseEnterListener}
+               onTouchStart={playIconHoverAndTouchClassNames.touchStartListener}
+               onTouchEnd={playIconHoverAndTouchClassNames.touchEndListener}
             >
-               <img src="./icons/play.svg" />
+               <img src="./icons/play.svg" onClick={imageAndVideoClickHandler} />
             </div>
          </div>
    )

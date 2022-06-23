@@ -1,0 +1,60 @@
+.controlsListItem {
+  padding: 7px 10px;
+  font-size: 1.5rem;
+  font-weight: 300;
+  line-height: 2rem;
+}
+
+.controlsListItem .buttonIcon {
+  margin-right: 9px;
+  margin-top: 2px;
+}
+
+.controlsListItem.hover:hover, .controlsListItem.touch {
+  cursor: pointer;
+  border-radius: 5px;
+  background-color: #eeeeee;
+}
+
+@media (max-width: 950px) {
+  .controlsListItem {
+    display: inline-block;
+    padding: 5px 12px;
+  }
+  .controlsListItem .buttonIcon {
+    margin: 2px 8px 0 8px;
+    width: 18px;
+  }
+  .controlsListItem .buttonName {
+    display: none;
+  }
+}
+
+@media (max-width: 750px) {
+  .controlsListItem {
+    padding: 5px 9px;
+  }
+}
+
+@media (max-width: 600px) {
+  .controlsListItem {
+    display: block;
+    padding: 12px 16px 12px 8px;
+    font-size: 1.7rem;
+  }
+  .controlsListItem .buttonName {
+    display: inline;
+  }
+}
+
+@media (max-width: 460px) {
+  .controlsListItem {
+    padding: 15px 20px 15px 12px;
+    font-size: 1.8rem;
+  }
+  .controlsListItem .buttonIcon {
+    margin: 0px 10px 0 8px;
+    width: 20px;
+  }
+}
+/*# sourceMappingURL=ControlsItem.module.css.map */

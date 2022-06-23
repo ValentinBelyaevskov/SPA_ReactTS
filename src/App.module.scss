@@ -23,9 +23,7 @@ $gtc_max-width_915: 550px 1fr;
       display: grid;
       grid-template-columns: $gtc_min-width_915;
 
-      //             *
       width: 100vw;
-      //             *
    }
 
    .headerContainer {
@@ -78,8 +76,13 @@ $gtc_max-width_915: 550px 1fr;
       display: none;
    }
 
-   .appPopup {
+   .audioPlayerContainer {
       z-index: 3;
+      display: none;
+   }
+
+   .appPopup {
+      z-index: 4;
       position: absolute;
       top: 0;
       left: 0;
@@ -105,12 +108,57 @@ $gtc_max-width_915: 550px 1fr;
       }
 
       .pagesContainer {
+         &.withAudioPlayer {
+            padding-bottom: 35px;
+         }
+
          .page {
             grid-column: 1 / 2;
          }
 
          .pageBackground {
             grid-column: 1 / 2;
+         }
+      }
+
+      .audioPlayerContainer {
+         display: block;
+         position: fixed;
+         margin: 0;
+
+         bottom: 0;
+         width: 100vw;
+
+         background-color: white;
+         box-shadow: 0px -1px 2px 1px rgb(0 0 0 / 14%);
+
+         .smallWidthAudioPlayerWrapper {
+            display: flex;
+            align-items: center;
+
+            position: static;
+            margin: 0 auto;
+
+            width: calc(100% - 40px);
+
+            .audioPlayerWrapper {
+               position: relative;
+               margin: 0 auto;
+
+               width: 350px;
+               height: 100%;
+            }
+
+            .hideIcon {
+               height: 12px;
+               margin-right: 10px;
+
+               &.hover:hover,
+               &.touch {
+                  opacity: 0.6;
+                  cursor: pointer;
+               }
+            }
          }
       }
    }
@@ -129,13 +177,13 @@ $gtc_max-width_915: 550px 1fr;
          display: block;
       }
 
-      //                *
-      // .headerContainer,
-      // .sidebarsContainer,
-      // .pagesContainer {
-      //    padding-right: 20px;
-      // }
-      //                *
+      .audioPlayerContainer {
+         .smallWidthAudioPlayerWrapper {
+            .hideIcon {
+               margin-right: 0;
+            }
+         }
+      }
    }
 }
 
@@ -157,6 +205,16 @@ $gtc_max-width_915: 550px 1fr;
    }
 }
 
+@media (max-width: 550px) {
+   .app .audioPlayerContainer .smallWidthAudioPlayerWrapper {
+      position: relative;
+
+      .audioPlayerWrapper {
+         position: static;
+      }
+   }
+}
+
 @media (max-width: 460px) {
    .app {
       padding-top: $header-height_460;
@@ -174,6 +232,26 @@ $gtc_max-width_915: 550px 1fr;
             position: absolute;
             top: -53px;
             height: 73px;
+         }
+      }
+
+      .audioPlayerContainer {
+         .smallWidthAudioPlayerWrapper {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            .audioPlayerWrapper {
+               margin: 0;
+               margin-left: -1rem;
+
+               width: 90%;
+            }
+
+            .hideIcon {
+               height: 18px;
+               margin-left: 1.5rem;
+            }
          }
       }
    }

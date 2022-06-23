@@ -15,7 +15,7 @@ const LoginAsGuestForm = () => {
    // hooks
    const dispatch = useAppDispatch();
    const loadInfo = useAppSelector(getLoadInfo);
-   const rememberMePseudoClassNames = useHoverAndTouchClassNames();
+   const rememberMePseudoClassNames = useHoverAndTouchClassNames(styles.hover, styles.touch);
 
 
    // handle form
@@ -59,10 +59,10 @@ const LoginAsGuestForm = () => {
                      />
                      <label
                         className={`${styles.checkboxLabel} ${rememberMePseudoClassNames.className} unselectable`}
-                        onMouseEnter={() => rememberMePseudoClassNames.setHoverClassName(styles.hover)}
-                        onMouseLeave={() => rememberMePseudoClassNames.setHoverClassName("")}
-                        onTouchStart={() => rememberMePseudoClassNames.setTouchClassName(styles.touch)}
-                        onTouchEnd={() => rememberMePseudoClassNames.resetTouchClassName(true)}
+                        onClick={rememberMePseudoClassNames.clickListener}
+                        onMouseEnter={rememberMePseudoClassNames.mouseEnterListener}
+                        onTouchStart={rememberMePseudoClassNames.touchStartListener}
+                        onTouchEnd={rememberMePseudoClassNames.touchEndListener}
                         htmlFor="rememberMe"
                      >
                         remember me

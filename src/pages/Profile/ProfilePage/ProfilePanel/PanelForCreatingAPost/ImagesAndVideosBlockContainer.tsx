@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { GridContainerStyle, GridDirection, PostImagesItem } from "./hooks/usePostImagesAndVideosBlock"
 import ImagesAndVideosBlockSubContainer from "./ImagesAndVideosBlockSubContainer"
-import styles from './PanelForCreatingAPost.module.scss'
+import styles from './ImagesAndVideosBlockContainer.module.scss'
 import PostImage from "./PostImage"
 
 
@@ -19,7 +19,7 @@ type Config = {
    imagesAndVideosContainerStyle: GridContainerStyle
    fiveOrMoreItems: boolean
    subContainerStyles: SubContainerStyles
-   containerWidth: number
+   containerSizes: [number, number]
 }
 
 type Props = {
@@ -79,7 +79,7 @@ const ImagesAndVideosBlockContainer = (props: Props) => {
                         <ImagesAndVideosBlockSubContainer
                            key={index}
                            imagesAndVideos={item}
-                           previosArrLength={index? imagesBlockArr[index - 1].length: index}
+                           previosArrLength={index ? imagesBlockArr[index - 1].length : index}
                            arrLength={config.imagesAndVideos.length}
                            deleteImageOrVideo={config.deleteImageOrVideo}
                            gridDirection={config.gridDirection}
@@ -90,7 +90,7 @@ const ImagesAndVideosBlockContainer = (props: Props) => {
                                     ? subContainerStyles.secondSubContainerStyle
                                     : subContainerStyles.thirdSubContainerStyle
                            }
-                           containerWidth={config.containerWidth}
+                           containerSizes={config.containerSizes}
                         />
                      ))
                   }
@@ -104,7 +104,7 @@ const ImagesAndVideosBlockContainer = (props: Props) => {
                      deleteImageOrVideo={props.config.deleteImageOrVideo}
                      type={item.type}
                      arrLength={props.config.imagesAndVideos.length}
-                     containerWidth={config.containerWidth}
+                     containerSizes={config.containerSizes}
                      gridDirection={config.gridDirection}
                   />
                ))

@@ -1,0 +1,78 @@
+.slider {
+  position: relative;
+  width: 100%;
+}
+
+.slider::before {
+  content: "";
+  display: block;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  -webkit-transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%);
+  width: 100%;
+  height: 3px;
+  border-radius: 3px;
+  background-color: #dadada;
+  pointer-events: none;
+}
+
+.slider .range {
+  display: block;
+  margin: 0 auto;
+  width: 100%;
+  height: 10px;
+  border-radius: 10px;
+  background-color: white;
+  opacity: 1;
+  -webkit-appearance: none;
+}
+
+.slider .range:hover {
+  cursor: pointer;
+}
+
+.slider .range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: var(--theme-color);
+}
+
+.slider .thumb {
+  position: absolute;
+  z-index: 3;
+  top: 50%;
+  -webkit-transform: translate(0%, -50%);
+          transform: translate(0%, -50%);
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: #ffffff;
+  background-color: var(--theme-color);
+  pointer-events: none;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+}
+
+.slider .progressBarCover {
+  position: absolute;
+  z-index: 1;
+  top: 50%;
+  -webkit-transform: translateY(-50%);
+          transform: translateY(-50%);
+  width: 50%;
+  height: 3px;
+  border-radius: 3px;
+  background-color: var(--theme-color);
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+  pointer-events: none;
+}
+/*# sourceMappingURL=Slider.module.css.map */

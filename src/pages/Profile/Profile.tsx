@@ -12,13 +12,6 @@ import { AppContext } from 'App';
 
 
 
-type ProfilePageStyle = {
-   zIndex: "",
-   marginTop: "",
-} | {}
-
-
-
 const Profile = () => {
    const icons = [
       "./icons/other.svg",

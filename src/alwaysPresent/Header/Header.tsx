@@ -10,6 +10,7 @@ import { IconsThatAreLoaded } from 'common/IconsThatAreLoaded/IconsThatAreLoaded
 import { PopupControlsContext } from 'App';
 import { useDropdownHeader } from 'hooks/Header/useDropdownHeader';
 import { useHoverAndTouchClassNames } from 'hooks/useHoverAndTouchClassNames';
+import GeneralPlayerInterface from 'common/GeneralPlayerInterfaces/GeneralPlayerInterface';
 
 
 
@@ -37,11 +38,12 @@ const Header = (props: Props) => {
    const [searchFormLoaded, setSearchFormLoaded] = useState<boolean>(false);
    const [avatarLoaded, setAvatarLoaded] = useState<boolean>(false);
    const [headerStyle, setHeaderStyle] = useState<HeaderElementStyle>({ display: 'none' });
-   const burgerIconHoverAndTouchClassNames = useHoverAndTouchClassNames();
+   const burgerIconHoverAndTouchClassNames = useHoverAndTouchClassNames(styles.hover, styles.touch);
 
 
 
    const burgerClickListener = () => {
+      burgerIconHoverAndTouchClassNames.clickListener();
       if (loadInfo.loaded && (profileMode === 'loggedIn')) popupContext.popupSwitcherlickListener!(popupContext.needToShowPopup!)
    }
 
@@ -73,16 +75,18 @@ const Header = (props: Props) => {
             <div className={styles.searchForm}>
                <SearchForm setSearchFormLoaded={setSearchFormLoaded} />
             </div>
+            {
+               <GeneralPlayerInterface styles={styles} />
+            }
             <div className={styles.controls}>
                <Controls />
             </div>
             <div
                className={`${styles.burgerIcon} ${burgerIconHoverAndTouchClassNames.className} headerControlsElement unselectable`}
                onClick={burgerClickListener}
-               onMouseEnter={() => burgerIconHoverAndTouchClassNames.setHoverClassName(styles.hover)}
-               onMouseLeave={() => burgerIconHoverAndTouchClassNames.setHoverClassName("")}
-               onTouchStart={() => burgerIconHoverAndTouchClassNames.setTouchClassName(styles.touch)}
-               onTouchEnd={() => burgerIconHoverAndTouchClassNames.resetTouchClassName(true)}
+               onMouseEnter={burgerIconHoverAndTouchClassNames.mouseEnterListener}
+               onTouchStart={burgerIconHoverAndTouchClassNames.touchStartListener}
+               onTouchEnd={burgerIconHoverAndTouchClassNames.touchEndListener}
             >
                <img src={popupContext.icon} alt="burger menu icon" />
             </div>

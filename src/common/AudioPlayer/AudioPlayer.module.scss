@@ -1,0 +1,47 @@
+.audioPlayer {
+   width: 100%;
+
+   padding: 1.2rem 1.5rem;
+   height: fit-content;
+   border-radius: 0.6rem;
+
+   background-color: white;
+
+   transition-property: background-color;
+   transition-duration: 0.1s;
+   
+   &:hover {
+      cursor: pointer;
+   }
+
+   &.boxShadow {
+      box-shadow: 0px 1px 5px 1px rgb(0 0 0 / 15%);
+   }
+
+   .durationContainer {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.5rem;
+
+      width: 100%;
+
+      .currentTime,
+      .duration {
+         font-size: 1.2rem;
+      }
+   }
+
+   .tickerAndControlsContainer.thumbnail {
+      display: flex;
+      align-items: center;
+      flex-direction: row-reverse;
+
+      div {
+         &:last-of-type {
+            flex: 0 0 80px;
+
+            margin: 0;
+         }
+      }
+   }
+}

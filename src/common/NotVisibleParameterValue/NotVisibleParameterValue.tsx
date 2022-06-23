@@ -1,8 +1,9 @@
-import { useEffect, useRef, useState } from 'react'
-import styles from './Parameter.module.scss'
+import { useEffect, useRef, useState } from 'react';
+import styles from './NotVisibleParameterValue.module.scss';
 import { removeExtraSpaces, shortenTheString } from 'functions';
-import getValueWithoutMeasurer from 'functions/getValueWithoutMeasurer';
-import { useSetParameterSize } from '../hooks/useSetParameterSize';
+import getValueWithoutMeasure from 'functions/getValueWithoutMeasure';
+import { ConfigForAdaptability, useSetParameterSize } from './useSetParameterSize';
+
 
 
 type Props = {
@@ -10,7 +11,11 @@ type Props = {
    setIsTheValueLong: React.Dispatch<React.SetStateAction<boolean | undefined>>
    setVisibleParameterValue: React.Dispatch<React.SetStateAction<string | number | null | undefined>>
    setStringWithLineBreak: React.Dispatch<React.SetStateAction<(JSX.Element | string)[]>>
+   configForAdaptability: ConfigForAdaptability
+   className: string
+   renderBreackPoint?: number
 }
+
 
 
 const NotVisibleParameterValue = (props: Props) => {
@@ -24,7 +29,8 @@ const NotVisibleParameterValue = (props: Props) => {
    const [wordNumber, setWordNumber] = useState<number>(0);
    const [stringSizeWasObtained, setStringSizeWasObtained] = useState<boolean>(false);
    const [wordSizeWasObtained, setWordSizeWasObtained] = useState<boolean>(false);
-   const { maxParameterWidth, maxParameterLength } = useSetParameterSize();
+   const { maxParameterWidth, maxParameterLength, moreOrLessThanTheBreakpoint } = useSetParameterSize(props.configForAdaptability, props.renderBreackPoint);
+
 
 
 
@@ -36,28 +42,35 @@ const NotVisibleParameterValue = (props: Props) => {
 
 
 
+
    useEffect(() => {
       setWordsArr(removeExtraSpaces(`${props.parameterValue}`).split(" "));
    }, [props.parameterValue])
 
 
    useEffect(() => {
-      setStringSizeWasObtained(false);
-      setIsTheStringLong(false);
-      setWordSizeWasObtained(false);
-      setIsTheWordLong(false);
-      setWordsWithLineBreakArr([]);
-      setWordNumber(0);
-      setValueToTest(undefined);
-      setShowNotVisibleValue(false);
-   }, [maxParameterWidth, maxParameterLength, props.parameterValue])
+      if (
+         (moreOrLessThanTheBreakpoint !== undefined && props.renderBreackPoint)
+         || !props.renderBreackPoint
+      ) {
+
+         setStringSizeWasObtained(false);
+         setIsTheStringLong(false);
+         setWordSizeWasObtained(false);
+         setIsTheWordLong(false);
+         setWordsWithLineBreakArr([]);
+         setWordNumber(0);
+         setValueToTest(undefined);
+         setShowNotVisibleValue(false);
+      }
+   }, [maxParameterWidth, maxParameterLength, moreOrLessThanTheBreakpoint, props.renderBreackPoint])
 
 
    useEffect(() => {
       if (!stringSizeWasObtained) {
          setValueToTest(props.parameterValue);
       }
-   }, [stringSizeWasObtained, props.parameterValue, maxParameterWidth, maxParameterLength])
+   }, [stringSizeWasObtained, props.parameterValue, maxParameterWidth, maxParameterLength, moreOrLessThanTheBreakpoint])
 
 
    useEffect(() => {
@@ -95,30 +108,34 @@ const NotVisibleParameterValue = (props: Props) => {
 
    useEffect(() => {
       if (!notVisibleValue.current || !showNotVisibleValue || !valueToTest) return;
-      const valueToTestWidth: number = +getValueWithoutMeasurer(getComputedStyle(notVisibleValue.current!).width);
+      const valueToTestWidth: number = +getValueWithoutMeasure(getComputedStyle(notVisibleValue.current!).width);
+      const valueToTestLength: number = valueToTest !== undefined ?
+         `${valueToTest}`.length
+         : 0
 
+      if (valueToTestLength > 0 && valueToTestWidth === 0) return
 
       if (valueToTestWidth > maxParameterWidth) {
          if (!stringSizeWasObtained) {
-            setIsTheStringLong(true)
-            setStringSizeWasObtained(true)
+            setIsTheStringLong(true);
+            setStringSizeWasObtained(true);
          } else if (!wordSizeWasObtained) {
-            setIsTheWordLong(true)
-            setWordSizeWasObtained(true)
+            setIsTheWordLong(true);
+            setWordSizeWasObtained(true);
          }
       } else {
          if (!stringSizeWasObtained) {
-            setIsTheStringLong(false)
-            setStringSizeWasObtained(true)
+            setIsTheStringLong(false);
+            setStringSizeWasObtained(true);
          } else if (!wordSizeWasObtained) {
-            setIsTheWordLong(false)
-            setWordSizeWasObtained(true)
+            setIsTheWordLong(false);
+            setWordSizeWasObtained(true);
          }
       }
 
       setShowNotVisibleValue(false)
 
-   }, [stringSizeWasObtained, wordSizeWasObtained, valueToTest, showNotVisibleValue, notVisibleValue.current, maxParameterWidth, wordNumber])
+   }, [stringSizeWasObtained, wordSizeWasObtained, valueToTest, showNotVisibleValue, notVisibleValue.current, maxParameterWidth, moreOrLessThanTheBreakpoint, wordNumber])
 
 
    useEffect(() => {
@@ -155,6 +172,12 @@ const NotVisibleParameterValue = (props: Props) => {
 
       setWordsWithLineBreakArr([...wordsWithLineBreakArr, wordWithLineBreak])
 
+      if (isTheStringLong) {
+         if (wordNumber === wordsArr.length) {
+
+         }
+      }
+
    }, [valueToTest, props.parameterValue, isTheWordLong, wordSizeWasObtained, wordsWithLineBreakArr, wordsArr, wordNumber])
 
 
@@ -166,10 +189,11 @@ const NotVisibleParameterValue = (props: Props) => {
 
 
 
+
    return (
       <>
          {showNotVisibleValue
-            ? (<div className={styles.notVisibleValue} ref={notVisibleValue}>
+            ? (<div className={`${props.className} ${styles.valueToTest}`} ref={notVisibleValue}>
                {valueToTest}
             </div>)
             : null}

@@ -62,10 +62,6 @@ export const useGetCroppedImage = (imageAspect: number | undefined) => {
    }
 
 
-   useEffect(() => {
-      console.log("completedCrop: ", completedCrop)
-   }, [completedCrop])
-
 
 
    return {

@@ -1,0 +1,82 @@
+.trackNameTickerContainer {
+   position: relative;
+   overflow: hidden;
+
+   width: 100%;
+   height: fit-content;
+
+   .notVisibleTrackNameTicker {
+      opacity: 0;
+      position: absolute;
+      left: 0;
+      top: 0;
+   }
+
+   .trackNameTicker,
+   .notVisibleTrackNameTicker {
+      display: flex;
+      flex-wrap: nowrap;
+      margin-bottom: 1rem;
+      margin-left: -3px;
+      transform: translateX(3px);
+      overflow: hidden;
+
+      width: fit-content;
+
+      animation-timing-function: linear;
+
+      .first,
+      .second {
+         font-size: 1.3rem;
+         line-height: 1.6rem;
+
+         white-space: nowrap;
+      }
+
+      .first {
+         margin-right: 0.6rem;
+      }
+   }
+}
+
+.trackNameTickerContainer.thumbnail {
+   margin-left: 1.2rem;
+
+   border-radius: 0.5rem;
+   height: fit-content;
+   padding: 0.1rem 0.8rem;
+
+   transition-property: background-color;
+   transition-duration: 0.1s;
+   background-color: #eeeeee;
+
+   &.hover:hover,
+   &.touch {
+      background-color: #e0e0e0;
+   }
+
+   .tickerNameWrapper {
+      overflow: hidden;
+
+      .trackNameTicker,
+      .notVisibleTrackNameTicker {
+         margin-top: 0;
+         margin-bottom: 0;
+      }
+   }
+}
+
+// mobile
+.trackNameTickerContainer.mobile {
+   .trackNameTicker,
+   .notVisibleTrackNameTicker {
+      .first,
+      .second {
+         font-size: 1.4rem;
+      }
+   }
+}
+
+.trackNameTickerContainer.thumbnail.mobile {
+   padding: 0.1rem 0.8rem;
+}

@@ -1,0 +1,9 @@
+{
+    "version": 3,
+    "mappings": "AAAA,AAAA,UAAU,CAAC;EACR,MAAM,EAAE,IAAI;EACZ,YAAY,EAAE,IAAI;EAElB,gBAAgB,EAAE,iBAAiB;EACnC,YAAY,EAAE,GAAG,CAAC,KAAK,CAAC,mBAAmB;EAE3C,WAAW,EAAE,KAAK;CACpB;;AAID,MAAM,EAAE,SAAS,EAAE,KAAK;EACrB,AAAA,UAAU,CAAC;IACR,OAAO,EAAE,IAAI;GACf",
+    "sources": [
+        "LeftPanel.module.scss"
+    ],
+    "names": [],
+    "file": "LeftPanel.module.css"
+}

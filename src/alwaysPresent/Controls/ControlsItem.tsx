@@ -9,16 +9,16 @@ type Props = {
 
 
 const ControlsItem = (props: Props) => {
-   const itemHoverAndTouchClassNames = useHoverAndTouchClassNames();
+   const itemHoverAndTouchClassNames = useHoverAndTouchClassNames(styles.hover, styles.touch);
 
 
    return (
       <li
          className={`${styles.controlsListItem} ${itemHoverAndTouchClassNames.className} unselectable`}
-         onMouseEnter={() => itemHoverAndTouchClassNames.setHoverClassName(styles.hover)}
-         onMouseLeave={() => itemHoverAndTouchClassNames.setHoverClassName("")}
-         onTouchStart={() => itemHoverAndTouchClassNames.setTouchClassName(styles.touch)}
-         onTouchEnd={() => itemHoverAndTouchClassNames.resetTouchClassName(true)}
+         onClick={itemHoverAndTouchClassNames.clickListener}
+         onMouseEnter={itemHoverAndTouchClassNames.mouseEnterListener}
+         onTouchStart={itemHoverAndTouchClassNames.touchStartListener}
+         onTouchEnd={itemHoverAndTouchClassNames.touchEndListener}
       >
          <img
             className={styles.buttonIcon}

@@ -1,0 +1,140 @@
+.signIn {
+  position: relative;
+}
+
+.signIn .form {
+  width: 350px;
+  position: absolute;
+  margin-left: 50%;
+  -webkit-transform: translateX(-50%);
+          transform: translateX(-50%);
+  padding-bottom: 30px;
+}
+
+.signIn .title {
+  margin: 0px 25px 25px 25px;
+  text-align: center;
+  font-size: 20px;
+}
+
+.signIn .inputFields .inputContainer:not(:first-of-type) {
+  margin-top: 17px;
+}
+
+.signIn .inputFields .rememberMeAndLoginFlex {
+  width: 100%;
+  margin-top: 17px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+}
+
+.signIn .inputFields .input {
+  display: block;
+  padding: 8px 15px;
+  border: solid 1px lightgray;
+  border-radius: 5px;
+  color: #3a3a3a;
+  font-weight: 500;
+  width: calc(100% - (15px * 2));
+}
+
+.signIn .inputFields .input::-webkit-input-placeholder {
+  color: #9c9c9c;
+}
+
+.signIn .inputFields .input:-ms-input-placeholder {
+  color: #9c9c9c;
+}
+
+.signIn .inputFields .input::-ms-input-placeholder {
+  color: #9c9c9c;
+}
+
+.signIn .inputFields .input::placeholder {
+  color: #9c9c9c;
+}
+
+.signIn .inputFields .input:focus {
+  outline: solid 2px rgba(0, 102, 255, 0.61);
+}
+
+.signIn .inputFields .validationError {
+  margin-top: 8px;
+  margin-left: 15px;
+  font-size: 13px;
+  color: red;
+}
+
+.signIn .inputFields .checkbox {
+  display: none;
+}
+
+.signIn .inputFields .checkbox:checked + .checkboxLabel:before {
+  background-image: url("../../../../public/image/checked.svg");
+  background-size: 14px 15px;
+  background-position-x: center;
+  background-position-y: center;
+  background-repeat: no-repeat;
+}
+
+.signIn .inputFields .checkboxLabel {
+  line-height: 20px;
+  -webkit-transition-property: color;
+  transition-property: color;
+  -webkit-transition-duration: 0.1s;
+          transition-duration: 0.1s;
+}
+
+.signIn .inputFields .checkboxLabel:before {
+  content: "";
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: solid 2px rgba(0, 60, 255, 0.6);
+  border-radius: 5px;
+  margin-right: 10px;
+  vertical-align: middle;
+  -webkit-transition-property: border;
+  transition-property: border;
+  -webkit-transition-duration: 0.1s;
+          transition-duration: 0.1s;
+}
+
+.signIn .inputFields .checkboxLabel.hover:hover, .signIn .inputFields .checkboxLabel.touch {
+  cursor: pointer;
+  color: rgba(0, 0, 0, 0.65);
+}
+
+.signIn .inputFields .checkboxLabel.hover:hover:before, .signIn .inputFields .checkboxLabel.touch:before {
+  border: solid 2px rgba(0, 60, 255, 0.9);
+}
+
+.signIn .createAccount .createAccountSubtitle {
+  font-size: 14px;
+  line-height: 22px;
+  margin: 0;
+  margin-top: 20px;
+}
+
+.signIn .createAccount .createAccountButtons {
+  margin-top: 15px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  width: 100%;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+}
+
+.signIn .createAccount .createAccountButtons .buttonContainer:not(:last-of-type) {
+  margin-right: 15px;
+}
+/*# sourceMappingURL=SignIn.module.css.map */

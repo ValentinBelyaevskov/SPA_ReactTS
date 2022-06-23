@@ -7,6 +7,7 @@ import CustomImage from "common/Image/CustomImage";
 
 
 
+
 export type ContentArrItem = {
    type: "image" | "video"
    src?: string,
@@ -31,25 +32,31 @@ type ContentStyle = {
 
 
 
+
 const ImageAndVideoLightbox = (props: Props) => {
    const [contentStyle, setContentStyle] = useState<ContentStyle>({});
    const [itemIndex, setItemIndex] = useState<number>(props.itemIndex);
-   const [sizes, setSizes] = useState<[number, number]>([0, 0]);
    const resize = useWindowSize("resize");
    const popupForm = usePopupForm(props.finishWatching);
-   const closeButtonHoverAndTouchClassNames = useHoverAndTouchClassNames();
-   const leftArrowHoverAndTouchClassNames = useHoverAndTouchClassNames();
-   const rightArrowHoverAndTouchClassNames = useHoverAndTouchClassNames();
+   const closeButtonHoverAndTouchClassNames = useHoverAndTouchClassNames(styles.hover, styles.touch);
+   const leftArrowHoverAndTouchClassNames = useHoverAndTouchClassNames(styles.hover, styles.touch);
+   const rightArrowHoverAndTouchClassNames = useHoverAndTouchClassNames(styles.hover, styles.touch);
+   const [indexString, setIndexString] = useState<string>(`${itemIndex} / ${props.contentArr.length}`);
+   const [moveUpClassName, setMoveUpClassName] = useState<string | undefined>(undefined);
+
 
 
 
    const closeButtonClickHandler = (e: React.MouseEvent): void => {
+      closeButtonHoverAndTouchClassNames.clickListener();
       popupForm.hideEditorStyle();
       popupForm.setClickedButtonName(e);
       resize.removeEventListener();
    }
 
    const arrowRightClickHandler = (): void => {
+      rightArrowHoverAndTouchClassNames.clickListener();
+
       if (itemIndex < props.contentArr.length - 1) {
          setItemIndex(itemIndex + 1);
       } else {
@@ -58,6 +65,8 @@ const ImageAndVideoLightbox = (props: Props) => {
    }
 
    const arrowLeftClickHandler = (): void => {
+      leftArrowHoverAndTouchClassNames.clickListener();
+
       if (itemIndex > 0) {
          setItemIndex(itemIndex - 1);
       } else {
@@ -65,31 +74,16 @@ const ImageAndVideoLightbox = (props: Props) => {
       }
    }
 
-   const getArrows = (): JSX.Element => (
-      <div className={styles.rowsContainer}>
-         <img
-            className={`${styles.arrowLeft} ${leftArrowHoverAndTouchClassNames.className} unselectable`}
-            src="./icons/arrowLeft.svg"
-            alt="left arr"
-            onClick={arrowRightClickHandler}
-            onMouseEnter={() => leftArrowHoverAndTouchClassNames.setHoverClassName(styles.hover)}
-            onMouseLeave={() => leftArrowHoverAndTouchClassNames.setHoverClassName("")}
-            onTouchStart={() => leftArrowHoverAndTouchClassNames.setTouchClassName(styles.touch)}
-            onTouchEnd={() => leftArrowHoverAndTouchClassNames.resetTouchClassName(true)}
-         />
-         <img
-            className={`${styles.arrowRight} ${rightArrowHoverAndTouchClassNames.className} unselectable`}
-            src="./icons/arrowRight.svg"
-            alt="left arr"
-            onClick={arrowLeftClickHandler}
-            onMouseEnter={() => rightArrowHoverAndTouchClassNames.setHoverClassName(styles.hover)}
-            onMouseLeave={() => rightArrowHoverAndTouchClassNames.setHoverClassName("")}
-            onTouchStart={() => rightArrowHoverAndTouchClassNames.setTouchClassName(styles.touch)}
-            onTouchEnd={() => rightArrowHoverAndTouchClassNames.resetTouchClassName(true)}
-         />
-      </div>
-   )
 
+
+
+   useEffect(() => {
+      if (props.contentArr.length > 1) {
+         setMoveUpClassName(styles.moveUp);
+      } else {
+         setMoveUpClassName("");
+      }
+   }, [props.contentArr.length])
 
 
    useEffect(() => {
@@ -99,19 +93,34 @@ const ImageAndVideoLightbox = (props: Props) => {
 
 
    useEffect(() => {
-      const media: ContentArrItem = props.contentArr[itemIndex]
+      // console.log(props.contentArr, itemIndex)
+
+      const media: ContentArrItem = props.contentArr[itemIndex];
       const mediaSizes: [number, number] = media.sizes!;
       const mediaWidth: number = mediaSizes![0];
       const mediaHeight: number = mediaSizes![1];
       const mediaAspect: number = media.aspect!;
       const windowWidth: number = resize.value[0];
       const windowHeight: number = resize.value[1];
-      const containerHeight: number = windowHeight - 60;
-      const containerWidth: number = windowWidth > 850 ? 850 : windowWidth - 140;
+      const containerHeight: number = windowHeight - 115;
+      const containerWidth: number = windowWidth > 1000
+         ? (
+            props.contentArr.length > 1
+               ? 850
+               : 950
+         )
+         : (
+            props.contentArr.length > 1
+               ? windowWidth - (resize.value[0] > 550
+                  ? 140
+                  : 115
+               )
+               : windowWidth - 60
+         );
       const containerAspect: number = containerHeight / containerWidth;
 
+
       if ((mediaHeight > containerHeight) && (mediaAspect > containerAspect)) {
-         console.log(1)
          setContentStyle({
             height: `${containerHeight}px`,
             width: `${containerHeight / mediaAspect}px`,
@@ -119,7 +128,6 @@ const ImageAndVideoLightbox = (props: Props) => {
             top: `${(windowHeight - containerHeight) / 2}px`
          })
       } else if ((mediaWidth > containerWidth) && (mediaAspect < containerAspect)) {
-         console.log(2)
          setContentStyle({
             height: `${containerWidth * mediaAspect}px`,
             width: `${containerWidth}px`,
@@ -127,7 +135,6 @@ const ImageAndVideoLightbox = (props: Props) => {
             top: `${(windowHeight - (containerWidth * mediaAspect)) / 2}px`
          })
       } else {
-         console.log(3)
          setContentStyle({
             height: `${mediaHeight}px`,
             width: `${mediaWidth}px`,
@@ -135,29 +142,64 @@ const ImageAndVideoLightbox = (props: Props) => {
             top: `${(windowHeight - mediaHeight) / 2}px`
          })
       }
-   }, [itemIndex, resize.value[0], resize.value[1]])
+   }, [itemIndex, resize.value[0], resize.value[1], props.contentArr.length])
+
+
+   useEffect(() => {
+      setIndexString(`${itemIndex + 1} / ${props.contentArr.length}`)
+   }, [props.contentArr.length, itemIndex])
+
 
 
 
    return (
       <div className={styles.lightbox} style={popupForm.editorStyle} onTransitionEnd={popupForm.transitionEndListener}>
          <div
-            className={`${styles.hideIcon} ${closeButtonHoverAndTouchClassNames.className} headerControlsElement unselectable`}
+            className={`${styles.hideIcon} ${closeButtonHoverAndTouchClassNames.className}  headerControlsElement unselectable`}
             onClick={closeButtonClickHandler}
-            onMouseEnter={() => closeButtonHoverAndTouchClassNames.setHoverClassName(styles.hover)}
-            onMouseLeave={() => closeButtonHoverAndTouchClassNames.setHoverClassName("")}
-            onTouchStart={() => closeButtonHoverAndTouchClassNames.setTouchClassName(styles.touch)}
-            onTouchEnd={() => closeButtonHoverAndTouchClassNames.resetTouchClassName(true)}
+            onMouseEnter={closeButtonHoverAndTouchClassNames.mouseEnterListener}
+            onTouchStart={closeButtonHoverAndTouchClassNames.touchStartListener}
+            onTouchEnd={closeButtonHoverAndTouchClassNames.touchEndListener}
          >
             <img src="./icons/hideWhite.svg" alt="hide icon" />
          </div>
-         {getArrows()}
+         {
+            props.contentArr.length > 1
+               ? (
+                  <>
+                     <div className={styles.index}>
+                        {indexString}
+                     </div>
+                     <div className={styles.rowsContainer}>
+                        <img
+                           className={`${styles.arrowLeft} ${moveUpClassName} ${leftArrowHoverAndTouchClassNames.className} unselectable`}
+                           src="./icons/arrowLeft.svg"
+                           alt="left arr"
+                           onClick={arrowLeftClickHandler}
+                           onMouseEnter={leftArrowHoverAndTouchClassNames.mouseEnterListener}
+                           onTouchStart={leftArrowHoverAndTouchClassNames.touchStartListener}
+                           onTouchEnd={leftArrowHoverAndTouchClassNames.touchEndListener}
+                        />
+                        <img
+                           className={`${styles.arrowRight} ${rightArrowHoverAndTouchClassNames.className} unselectable`}
+                           src="./icons/arrowRight.svg"
+                           alt="left arr"
+                           onClick={arrowRightClickHandler}
+                           onMouseEnter={rightArrowHoverAndTouchClassNames.mouseEnterListener}
+                           onTouchStart={rightArrowHoverAndTouchClassNames.touchStartListener}
+                           onTouchEnd={rightArrowHoverAndTouchClassNames.touchEndListener}
+                        />
+                     </div>
+                  </>
+               )
+               : null
+         }
          {
             props.contentArr[itemIndex] && props.contentArr[itemIndex].type === "video"
                ? (
                   <div className={styles.videoContainer} style={contentStyle}>
                      <video
-                        className={styles.video}
+                        className={`${styles.video} ${moveUpClassName}`}
                         width={contentStyle.width}
                         height={contentStyle.height}
                         controls
@@ -170,7 +212,7 @@ const ImageAndVideoLightbox = (props: Props) => {
                      <CustomImage
                         additionalClass={styles.imageContainer}
                         wrapperStyle={contentStyle}
-                        additionalImageClass={styles.image}
+                        additionalImageClass={`${styles.image} ${moveUpClassName} `}
                         src={props.contentArr[itemIndex].src}
                      />
                   )

@@ -27,13 +27,18 @@ const CreateAccountForm = () => {
    const dispatch = useAppDispatch();
    const passwordVisibility = useInputVisibilitySwitch("./icons/hidePasswordIcon.svg", "./icons/showPasswordIcon.svg");
    const passwordInputFocus = useFocusOnInput();
-   const passwordIconPseudoClassNames = useHoverAndTouchClassNames();
+   const passwordIconPseudoClassNames = useHoverAndTouchClassNames(styles.hover, styles.touch);
 
 
 
    const passwordIconTouchStartListener = (e: React.TouchEvent): void => {
-      passwordIconPseudoClassNames.setTouchClassName(styles.touch);
+      passwordIconPseudoClassNames.touchStartListener();
       passwordInputFocus.innerElementClickListener(e);
+   }
+
+   const passwordIconClickListener = () => {
+      passwordIconPseudoClassNames.clickListener()
+      passwordVisibility.iconClickListener()
    }
 
    const { register, handleSubmit, clearErrors, formState: { errors, isValid } } = useForm<Inputs>({
@@ -185,12 +190,11 @@ const CreateAccountForm = () => {
                      className={`${styles.passwordVisibilityIcon} ${passwordIconPseudoClassNames.className} unselectable`}
                      src={passwordVisibility.icon}
                      alt="show or hide password icon"
-                     onClick={passwordVisibility.iconClickListener}
+                     onClick={passwordIconClickListener}
                      onMouseDown={passwordInputFocus.innerElementClickListener}
-                     onMouseEnter={() => passwordIconPseudoClassNames.setHoverClassName(styles.hover)}
-                     onMouseLeave={() => passwordIconPseudoClassNames.setHoverClassName("")}
+                     onMouseEnter={passwordIconPseudoClassNames.mouseEnterListener}
                      onTouchStart={passwordIconTouchStartListener}
-                     onTouchEnd={() => passwordIconPseudoClassNames.resetTouchClassName(true)}
+                     onTouchEnd={passwordIconPseudoClassNames.touchEndListener}
                   />
                   <p className={styles.validationError}>{errors.password ? errors.password.message : null}</p>
                </div>
@@ -215,7 +219,7 @@ const CreateAccountForm = () => {
                      clickHandler={() => {
                         dispatch(profileActions.setSignInMode("login"))
                         clearErrors();
-                        profileActions.setErrors({ error: undefined, errorType: undefined })
+                        dispatch(profileActions.setErrors({ error: undefined, errorType: undefined }))
                      }}
                   />
                   <SignInButton
@@ -228,7 +232,7 @@ const CreateAccountForm = () => {
                            dispatch(profileActions.setSignInMode("loginAsGuest"));
                            clearErrors();
                         }
-                        profileActions.setErrors({ error: undefined, errorType: undefined })
+                        dispatch(profileActions.setErrors({ error: undefined, errorType: undefined }))
                      }}
                   />
                </div>

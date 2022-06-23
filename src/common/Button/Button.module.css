@@ -1,0 +1,46 @@
+.buttonContainer {
+  margin: 0;
+  width: -webkit-fit-content;
+  width: -moz-fit-content;
+  width: fit-content;
+}
+
+.buttonContainer .blueButton {
+  background-color: var(--theme-color);
+}
+
+.buttonContainer .blueButton.hover:hover, .buttonContainer .blueButton.touch {
+  background-color: var(--theme-hover-color);
+}
+
+.buttonContainer .redButton {
+  background-color: rgba(255, 0, 0, 0.692);
+}
+
+.buttonContainer .redButton.hover:hover, .buttonContainer .redButton.touch {
+  background-color: rgba(212, 0, 0, 0.692);
+}
+
+.buttonContainer .button {
+  border-radius: 5px;
+  padding: 5px 10px;
+  -webkit-transition-property: background-color;
+  transition-property: background-color;
+  -webkit-transition-duration: 0.1s;
+          transition-duration: 0.1s;
+  color: #8a2fff;
+  color: #892fffc9;
+  color: var(--main-color);
+  font-family: inherit;
+  font-weight: 500;
+  font-size: 15px;
+}
+
+.buttonContainer .button:hover {
+  cursor: pointer;
+}
+
+.buttonContainer .button:disabled {
+  opacity: 0.6;
+}
+/*# sourceMappingURL=Button.module.css.map */

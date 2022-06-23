@@ -1,0 +1,259 @@
+.controlsPanel {
+  margin-top: 1rem;
+  display: -ms-grid;
+  display: grid;
+  -ms-grid-columns: minmax(35px, 2.3fr) minmax(37px, 1fr) minmax(43px, 1fr) minmax(39px, 2.5fr) minmax(58px, 1.8fr) minmax(48px, 1.3fr);
+      grid-template-columns: minmax(35px, 2.3fr) minmax(37px, 1fr) minmax(43px, 1fr) minmax(39px, 2.5fr) minmax(58px, 1.8fr) minmax(48px, 1.3fr);
+      grid-template-areas: "play prev next soundToggler volume playbackRate";
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  width: 100%;
+  height: -webkit-fit-content;
+  height: -moz-fit-content;
+  height: fit-content;
+}
+
+.controlsPanel .play,
+.controlsPanel .prev,
+.controlsPanel .next,
+.controlsPanel .soundToggler,
+.controlsPanel .playbackRate {
+  display: block;
+  -webkit-transition-duration: 0.1s;
+          transition-duration: 0.1s;
+  -webkit-transition-property: opacity;
+  transition-property: opacity;
+  padding: 0.3rem 0.8rem;
+}
+
+.controlsPanel .play.hover:hover, .controlsPanel .play.touch,
+.controlsPanel .prev.hover:hover,
+.controlsPanel .prev.touch,
+.controlsPanel .next.hover:hover,
+.controlsPanel .next.touch,
+.controlsPanel .soundToggler.hover:hover,
+.controlsPanel .soundToggler.touch,
+.controlsPanel .playbackRate.hover:hover,
+.controlsPanel .playbackRate.touch {
+  opacity: 0.7;
+  cursor: pointer;
+}
+
+.controlsPanel .play {
+  -ms-grid-row: 1;
+  -ms-grid-column: 1;
+  grid-area: play;
+  margin-left: -0.8rem;
+}
+
+.controlsPanel .prev {
+  -ms-grid-row: 1;
+  -ms-grid-column: 2;
+  grid-area: prev;
+}
+
+.controlsPanel .next {
+  -ms-grid-row: 1;
+  -ms-grid-column: 3;
+  grid-area: next;
+}
+
+.controlsPanel .soundToggler {
+  -ms-grid-row: 2;
+  -ms-grid-column: 1;
+  grid-area: soundToggler;
+      justify-self: end;
+  margin-right: 1.5rem;
+}
+
+.controlsPanel .volume {
+  -ms-grid-row: 2;
+  -ms-grid-column: 2;
+  -ms-grid-column-span: 2;
+  grid-area: volume;
+}
+
+.controlsPanel .playbackRate {
+  -ms-grid-row: 2;
+  -ms-grid-column: 4;
+  -ms-grid-column-span: 2;
+  grid-area: playbackRate;
+      justify-self: end;
+  border-radius: 0.4rem;
+  padding: 0.3rem 0.6rem;
+  line-height: 1;
+  font-size: 1.3rem;
+  font-weight: 700;
+  background-color: white;
+}
+
+.controlsPanel .playbackRate.twoX {
+  border: 1px solid var(--theme-color);
+  color: var(--theme-color);
+}
+
+.controlsPanel .playbackRate.oneX {
+  border: 1px solid #9e9e9e;
+  color: #9e9e9e;
+}
+
+.controlsPanel.smallWidthPanel {
+  -ms-grid-columns: minmax(27px, 2fr) minmax(29px, 2fr) minmax(35px, 2fr) minmax(35px, 1fr) minmax(30px, 1fr);
+      grid-template-columns: minmax(27px, 2fr) minmax(29px, 2fr) minmax(35px, 2fr) minmax(35px, 1fr) minmax(30px, 1fr);
+  -ms-grid-rows: (3rem)[2];
+      grid-template-rows: repeat(2, 3rem);
+      grid-template-areas: "play         null   null   prev   next" "soundToggler volume volume playbackRate playbackRate";
+}
+
+.controlsPanel.smallWidthPanel .play {
+  -ms-grid-row: 1;
+  -ms-grid-column: 1;
+  grid-area: play;
+  margin-left: -0.8rem;
+}
+
+.controlsPanel.smallWidthPanel .prev {
+  -ms-grid-row: 1;
+  -ms-grid-column: 2;
+  grid-area: prev;
+      justify-self: end;
+}
+
+.controlsPanel.smallWidthPanel .next {
+  -ms-grid-row: 1;
+  -ms-grid-column: 3;
+  grid-area: next;
+      justify-self: end;
+  margin-right: -0.8rem;
+}
+
+.controlsPanel.smallWidthPanel .soundToggler {
+  -ms-grid-row: 2;
+  -ms-grid-column: 1;
+  grid-area: soundToggler;
+  -ms-grid-column-align: start;
+      justify-self: start;
+  margin-right: 0;
+  margin-left: -0.8rem;
+}
+
+.controlsPanel.smallWidthPanel .volume {
+  -ms-grid-row: 2;
+  -ms-grid-column: 2;
+  -ms-grid-column-span: 2;
+  grid-area: volume;
+}
+
+.controlsPanel.smallWidthPanel .playbackRate {
+  -ms-grid-row: 2;
+  -ms-grid-column: 4;
+  -ms-grid-column-span: 2;
+  grid-area: playbackRate;
+  padding: 0.3rem 1.2rem;
+}
+
+@media (max-width: 460px) {
+  .controlsPanel .soundToggler {
+    margin-right: 0.5rem;
+  }
+}
+
+@media (max-width: 360px) {
+  .controlsPanel {
+    -ms-grid-columns: minmax(27px, 2fr) minmax(29px, 2fr) minmax(35px, 2fr) minmax(35px, 1fr) minmax(30px, 1fr);
+        grid-template-columns: minmax(27px, 2fr) minmax(29px, 2fr) minmax(35px, 2fr) minmax(35px, 1fr) minmax(30px, 1fr);
+    -ms-grid-rows: (3rem)[2];
+        grid-template-rows: repeat(2, 3rem);
+        grid-template-areas: "play         null   null   prev   next" "soundToggler volume volume playbackRate playbackRate";
+  }
+  .controlsPanel .play {
+    -ms-grid-row: 1;
+    -ms-grid-column: 1;
+    grid-area: play;
+    margin-left: -0.8rem;
+  }
+  .controlsPanel .prev {
+    -ms-grid-row: 1;
+    -ms-grid-column: 2;
+    grid-area: prev;
+        justify-self: end;
+  }
+  .controlsPanel .next {
+    -ms-grid-row: 1;
+    -ms-grid-column: 3;
+    grid-area: next;
+        justify-self: end;
+    margin-right: -0.8rem;
+  }
+  .controlsPanel .soundToggler {
+    -ms-grid-row: 2;
+    -ms-grid-column: 1;
+    grid-area: soundToggler;
+    -ms-grid-column-align: start;
+        justify-self: start;
+    margin-right: 0;
+    margin-left: -0.8rem;
+  }
+  .controlsPanel .volume {
+    -ms-grid-row: 2;
+    -ms-grid-column: 2;
+    -ms-grid-column-span: 2;
+    grid-area: volume;
+  }
+  .controlsPanel .playbackRate {
+    -ms-grid-row: 2;
+    -ms-grid-column: 4;
+    -ms-grid-column-span: 2;
+    grid-area: playbackRate;
+    padding: 0.3rem 1.2rem;
+  }
+}
+
+.controlsPanel.thumbnail {
+  -ms-grid-columns: minmax(25px, 1fr) minmax(25px, 0.5fr) minmax(25px, 0.5fr);
+      grid-template-columns: minmax(25px, 1fr) minmax(25px, 0.5fr) minmax(25px, 0.5fr);
+  -ms-grid-rows: 2.5rem;
+      grid-template-rows: 2.5rem;
+      grid-template-areas: "play prev next";
+  margin-top: 0.6rem;
+}
+
+.controlsPanel.thumbnail .prev,
+.controlsPanel.thumbnail .next {
+  -ms-grid-column-align: end;
+      justify-self: end;
+}
+
+.controlsPanel.thumbnail .next {
+  margin-right: 0;
+}
+
+.controlsPanel.thumbnail .soundToggler,
+.controlsPanel.thumbnail .volume,
+.controlsPanel.thumbnail .playbackRate {
+  display: none;
+}
+
+.controlsPanel.thumbnail .play,
+.controlsPanel.thumbnail .prev,
+.controlsPanel.thumbnail .next,
+.controlsPanel.thumbnail .soundToggler,
+.controlsPanel.thumbnail .playbackRate {
+  height: 2.1rem;
+}
+
+.controlsPanel.thumbnailPlaylist {
+  margin-top: 0.7rem;
+  -ms-grid-columns: minmax(35px, 2.8fr) minmax(37px, 0.6fr) minmax(43px, 0.6fr) minmax(39px, 3fr) minmax(58px, 1.8fr) minmax(48px, 1.3fr);
+      grid-template-columns: minmax(35px, 2.8fr) minmax(37px, 0.6fr) minmax(43px, 0.6fr) minmax(39px, 3fr) minmax(58px, 1.8fr) minmax(48px, 1.3fr);
+}
+
+.controlsPanel.thumbnailPlaylist .play,
+.controlsPanel.thumbnailPlaylist .prev,
+.controlsPanel.thumbnailPlaylist .next,
+.controlsPanel.thumbnailPlaylist .soundToggler,
+.controlsPanel.thumbnailPlaylist .playbackRate {
+  height: 2.2rem;
+}
+/*# sourceMappingURL=ControlsPanel.module.css.map */

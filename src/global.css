@@ -1,0 +1,54 @@
+html {
+  font-size: 10px;
+}
+
+body {
+  background-color: var(--global-bcg-color);
+}
+
+body,
+form {
+  margin: 0;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  font-family: var(--ff);
+}
+
+.unselectable {
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  -webkit-touch-callout: none;
+  /* iOS Safari */
+  -webkit-user-select: none;
+  /* Chrome/Safari/Opera */
+  /* Konqueror */
+  -moz-user-select: none;
+  /* Firefox */
+  -ms-user-select: none;
+  /* Internet Explorer/Edge */
+  user-select: none;
+  /* Non-prefixed version, currently
+                                  not supported by any browser */
+}
+
+.page {
+  position: relative;
+  z-index: 2;
+  -ms-grid-column: 2;
+  -ms-grid-column-span: 1;
+  grid-column: 2/3;
+  background-color: var(--global-bcg-color);
+}
+
+.pagePart {
+  background-color: var(--main-color);
+  padding: var(--content-padding);
+}
+
+@media (max-width: 950px) {
+  .page {
+    -ms-grid-column: 1;
+    -ms-grid-column-span: 1;
+    grid-column: 1 / 2;
+  }
+}
+/*# sourceMappingURL=global.css.map */

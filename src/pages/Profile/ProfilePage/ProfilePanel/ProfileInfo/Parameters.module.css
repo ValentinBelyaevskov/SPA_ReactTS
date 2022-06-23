@@ -1,0 +1,40 @@
+.parameters {
+  position: relative;
+}
+
+.parameters .parametersTitleContainer {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  margin-bottom: 9px;
+}
+
+.parameters .parametersTitleContainer hr {
+  -webkit-box-flex: 1;
+      -ms-flex: 1 1 5%;
+          flex: 1 1 5%;
+  margin-top: 2px;
+  height: 1px;
+  border: none;
+  background-color: #cccccc;
+}
+
+.parameters .parametersTitleContainer .parametersTitle {
+  color: var(--theme-color);
+  font-size: 1.3rem;
+  font-weight: 500;
+  padding-right: 10px;
+}
+
+@media (max-width: 460px) {
+  .parameters .parametersTitleContainer {
+    margin-bottom: 15px;
+  }
+  .parameters .parametersTitleContainer .parametersTitle {
+    font-size: 1.5rem;
+  }
+}
+/*# sourceMappingURL=Parameters.module.css.map */

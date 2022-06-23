@@ -1,0 +1,9 @@
+{
+    "version": 3,
+    "mappings": "AAAA,AAAA,gBAAgB,CAAC;EACd,KAAK,EAAE,KAAK;EACZ,MAAM,EAAE,aAAa;CACvB;;AAID,MAAM,EAAE,SAAS,EAAE,MAAM;EACtB,AAAA,gBAAgB,CAAC;IACd,KAAK,EAAE,KAAK;GACd",
+    "sources": [
+        "Recommendations.module.scss"
+    ],
+    "names": [],
+    "file": "Recommendations.module.css"
+}

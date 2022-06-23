@@ -34,14 +34,16 @@ const ProfilePanel = () => {
    const [editIconsLoaded, setEditIconsLoaded] = useState<boolean>(false);
    const avatarPromptRef = useRef<HTMLDivElement>(null);
    const popupAvatarPrompt: Popup = usePopupElement(avatarPromptRef, false);
+
    const {
       elementTouchStartListener,
       enableTouchEventsSimulation,
       setShowElementOnTouchStart,
       elementHoverAndTouchClassName,
-      setElementHoverClassName,
+      elementClickListener,
+      elementMouseEnterListener,
       resetElementHoverClassName,
-      resetElementTouchClassName,
+      elementTouchEndListener,
       resetShowElementOnTouchEvent
    } = useElementTouchStartListener(styles.touch, styles.hover, ".showPopupAvatarPromptElement", popupAvatarPrompt, [0, 0]);
    const [showChangeAvatarButton, setShowChangeAvatarButton] = useState<boolean>(false);
@@ -80,7 +82,7 @@ const ProfilePanel = () => {
    const showPopupAvatarPrompt = (): void => {
       popupAvatarPrompt.showElementWithTimeout(0);
       setShowElementOnTouchStart(false);
-      setElementHoverClassName();
+      elementMouseEnterListener();
    }
 
    const hidePopupAvatarPrompt = (): void => {
@@ -167,10 +169,11 @@ const ProfilePanel = () => {
                additionalClass={`${styles.avatar} ${elementHoverAndTouchClassName} showPopupAvatarPromptElement unselectable`}
                additionalImageClass={`showPopupAvatarPromptElement unselectable`}
                src={profileInfo.avatar ? profileInfo.avatar : "./image/defaultAvatar.jpg"}
+               onClick={elementClickListener}
                onMouseEnter={showPopupAvatarPrompt}
                onMouseLeave={hidePopupAvatarPrompt}
                onTouchStart={elementTouchStartListener}
-               onTouchEnd={() => resetElementTouchClassName(true)}
+               onTouchEnd={() => elementTouchEndListener()}
                jsx={popupAvatarPrompt.needToShowElement ? AvatarPrompt() : undefined}
             />
             <Header

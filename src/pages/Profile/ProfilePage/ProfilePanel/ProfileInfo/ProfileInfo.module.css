@@ -1,0 +1,312 @@
+.profileInfo {
+  display: -ms-grid;
+  display: grid;
+  -ms-grid-rows: (auto)[4];
+      grid-template-rows: repeat(4, auto);
+  width: 100%;
+}
+
+.profileInfo.fullHeight {
+  padding-top: 0rem;
+}
+
+.profileInfo.notFullHeight {
+  padding-top: 1.2rem;
+}
+
+.profileInfo.notFullHeight.gridV6 {
+  padding-top: 2.4rem;
+}
+
+.profileInfo.gridV1 {
+      grid-template-areas: "personalInfo"
+ "infoBlock-1"
+ "showMore"
+ "profileInfo"
+ "infoBlock-2"
+ "infoBlock-3";
+}
+
+.profileInfo.gridV2 {
+      grid-template-areas: "personalInfo"
+ "profileInfo"
+ "showMore"
+ "infoBlock-2"
+ "infoBlock-3";
+}
+
+.profileInfo.gridV3 {
+      grid-template-areas: "personalInfo"
+ "infoBlock-1"
+ "profileInfo"
+ "showMore"
+ "infoBlock-2"
+ "infoBlock-3";
+}
+
+.profileInfo.gridV4 {
+      grid-template-areas: "personalInfo"
+ "profileInfo"
+ "infoBlock-2"
+ "showMore"
+ "infoBlock-3";
+}
+
+.profileInfo.gridV5 {
+      grid-template-areas: "personalInfo"
+ "profileInfo"
+ "infoBlock-2"
+ "showMore"
+ "infoBlock-3";
+}
+
+.profileInfo.gridV6 {
+      grid-template-areas: "profileInfo"
+ "infoBlock-1"
+ "infoBlock-2";
+  -ms-grid-rows: (fit-content)[3];
+      grid-template-rows: repeat(3, -webkit-fit-content);
+      grid-template-rows: repeat(3, fit-content);
+}
+
+.hideMoreInfo {
+  overflow: hidden;
+}
+
+.hideMoreInfo.fullHeight {
+  height: 154px;
+}
+
+.hideMoreInfo.notFullHeight {
+  height: 140px;
+}
+
+.hideMoreInfo.notFullHeight.gridV6 {
+  height: 122px;
+}
+
+.profileInfo .personalInformation {
+  -ms-grid-row: 1;
+  -ms-grid-column: 1;
+  grid-area: personalInfo;
+  position: relative;
+}
+
+.profileInfo .showMoreButtonContainer {
+  -ms-grid-row: 4;
+  -ms-grid-column: 1;
+  grid-area: showMore;
+  margin: 2px 0 4px 0;
+  width: 100%;
+}
+
+.profileInfo .showMoreButtonContainer .showMoreButton {
+  padding: 4px 10px;
+}
+
+.profileInfo .infoBlock:nth-of-type(2) {
+  -ms-grid-row: 2;
+  -ms-grid-column: 1;
+  grid-area: infoBlock-1;
+}
+
+.profileInfo .infoBlock:nth-of-type(4) {
+  -ms-grid-row: 3;
+  -ms-grid-column: 1;
+  grid-area: infoBlock-2;
+}
+
+.profileInfo .infoBlock:nth-of-type(5) {
+  -ms-grid-row: 5;
+  -ms-grid-column: 1;
+  grid-area: infoBlock-3;
+}
+
+.profileInfo .profileInformation {
+  -ms-grid-row: 1;
+  -ms-grid-column: 1;
+  grid-area: profileInfo;
+}
+
+.profileInfo.fullHeight .infoBlock:nth-of-type(2) {
+  margin-bottom: 0.2rem;
+  -ms-grid-row: 2;
+  -ms-grid-column: 1;
+  grid-area: infoBlock-1;
+}
+
+.profileInfo.fullHeight .profileInformation {
+  margin-top: 1rem;
+}
+
+.profileInfo.notFullHeight .infoBlock:nth-of-type(2) {
+  margin-bottom: 0.8rem;
+  -ms-grid-row: 2;
+  -ms-grid-column: 1;
+  grid-area: infoBlock-1;
+}
+
+.profileInfo.notFullHeight .profileInformation {
+  margin-top: 1.6rem;
+}
+
+.profileInfo.gridV4 .showMoreButtonContainer {
+  margin-top: 4px;
+}
+
+.profileInfo.gridV6 .showMoreButtonContainer {
+  display: none;
+}
+
+.profileInfo.gridV6 .infoBlock:nth-of-type(2) {
+  margin-bottom: 0rem;
+  -ms-grid-row: 2;
+  -ms-grid-column: 1;
+  grid-area: infoBlock-1;
+}
+
+.profileInfo.gridV6 .profileInformation {
+  margin-top: 0rem;
+}
+
+.profileInfo .showMoreButtonContainer {
+  margin-right: 0;
+  margin-left: auto;
+  width: 100%;
+}
+
+.profileInfo .showMoreButtonContainer .showMoreButton,
+.profileInfo .showMoreButtonContainer .showMoreWithoutTransition {
+  width: calc(100% - 2px);
+  margin-left: 1px;
+  padding: 1px 10px;
+  font-size: 1.3rem;
+  color: rgba(0, 0, 0, 0.45);
+  background-color: var(--main-color);
+  -webkit-transition-property: outline-color, opacity, color;
+  transition-property: outline-color, opacity, color;
+  -webkit-transition-duration: 0.1s;
+          transition-duration: 0.1s;
+  -webkit-transform: translateZ(0);
+          transform: translateZ(0);
+}
+
+.profileInfo .showMoreButtonContainer .showMoreButton::before,
+.profileInfo .showMoreButtonContainer .showMoreWithoutTransition::before {
+  content: "";
+  position: absolute;
+  left: -1px;
+  top: -1px;
+  width: calc(100% + 2px);
+  height: 19px;
+  border: 1px solid #cccccc;
+  border-radius: 0.6rem;
+  -webkit-transition-duration: 0.1s;
+          transition-duration: 0.1s;
+  -webkit-transition-property: opacity;
+  transition-property: opacity;
+  opacity: 0;
+}
+
+.profileInfo .showMoreButtonContainer .showMoreButton.hover:hover, .profileInfo .showMoreButtonContainer .showMoreButton.touch,
+.profileInfo .showMoreButtonContainer .showMoreWithoutTransition.hover:hover,
+.profileInfo .showMoreButtonContainer .showMoreWithoutTransition.touch {
+  opacity: 0.75;
+}
+
+.profileInfo .showMoreButtonContainer .showMoreButton.hover:hover::before, .profileInfo .showMoreButtonContainer .showMoreButton.touch::before,
+.profileInfo .showMoreButtonContainer .showMoreWithoutTransition.hover:hover::before,
+.profileInfo .showMoreButtonContainer .showMoreWithoutTransition.touch::before {
+  opacity: 1;
+}
+
+.profileInfo .showMoreButtonContainer .showMoreWithoutTransition::before {
+  -webkit-transition-duration: 0s;
+          transition-duration: 0s;
+}
+
+.profileInfo .showMoreButtonContainer .showMoreHighlighted::before,
+.profileInfo .showMoreButtonContainer .showMoreTemporarilyHighlighted::before {
+  content: "";
+  position: absolute;
+  left: -1px;
+  top: -1px;
+  width: calc(100% + 2px);
+  height: 19px;
+  border: 1px solid #cccccc;
+  border-radius: 0.6rem;
+  -webkit-transition-duration: 0.1s;
+          transition-duration: 0.1s;
+  -webkit-transition-property: opacity;
+  transition-property: opacity;
+  opacity: 1;
+}
+
+.profileInfo .showMoreButtonContainer .showMoreHighlighted.hover:hover, .profileInfo .showMoreButtonContainer .showMoreHighlighted.touch,
+.profileInfo .showMoreButtonContainer .showMoreTemporarilyHighlighted.hover:hover,
+.profileInfo .showMoreButtonContainer .showMoreTemporarilyHighlighted.touch {
+  opacity: 0.75;
+}
+
+@media (max-width: 460px) {
+  .hideMoreInfo.fullHeight {
+    height: 224px;
+  }
+  .hideMoreInfo.notFullHeight {
+    height: 195px;
+  }
+  .hideMoreInfo.notFullHeight.gridV6 {
+    height: 144px;
+  }
+  .profileInfo.fullHeight {
+    padding-top: 2.4rem;
+  }
+  .profileInfo.notFullHeight {
+    padding-top: 2.4rem;
+  }
+  .profileInfo.notFullHeight.gridV6 {
+    padding-top: 2.4rem;
+  }
+  .profileInfo .showMoreButtonContainer {
+    -ms-flex-item-align: center;
+        -ms-grid-row-align: center;
+        align-self: center;
+    margin: 1rem 0;
+    outline: none;
+  }
+  .profileInfo .showMoreButtonContainer .showMoreButton,
+  .profileInfo .showMoreButtonContainer .showMoreHighlighted {
+    width: 100%;
+    padding: 5px 10px;
+    margin-left: 0;
+    color: var(--main-color);highlight
+    font-size: 1.5rem;
+    background-color: var(--theme-color);
+    outline: none;
+    -webkit-transition-property: background-color;
+    transition-property: background-color;
+  }
+  .profileInfo .showMoreButtonContainer .showMoreButton::before,
+  .profileInfo .showMoreButtonContainer .showMoreHighlighted::before {
+    content: none;
+  }
+  .profileInfo .showMoreButtonContainer .showMoreButton.hover:hover, .profileInfo .showMoreButtonContainer .showMoreButton.touch,
+  .profileInfo .showMoreButtonContainer .showMoreHighlighted.hover:hover,
+  .profileInfo .showMoreButtonContainer .showMoreHighlighted.touch {
+    background-color: var(--theme-hover-color);
+    opacity: 1;
+    outline: none;
+  }
+  .profileInfo .showMoreButtonContainer .showMoreButton.hover:hover::before, .profileInfo .showMoreButtonContainer .showMoreButton.touch::before,
+  .profileInfo .showMoreButtonContainer .showMoreHighlighted.hover:hover::before,
+  .profileInfo .showMoreButtonContainer .showMoreHighlighted.touch::before {
+    content: none;
+  }
+  .profileInfo .showMoreButtonContainer .showMoreTemporarilyHighlighted {
+    background-color: var(--theme-hightlight-color);
+  }
+  .profileInfo .showMoreButtonContainer .showMoreTemporarilyHighlighted::before {
+    content: none;
+  }
+}
+/*# sourceMappingURL=ProfileInfo.module.css.map */

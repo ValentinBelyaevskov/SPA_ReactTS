@@ -9,12 +9,9 @@ export const usePopupControlsContext = () => {
    const [needToShowPopup, setNeedToShowPopup] = useState<boolean>(false);
    const [needToShowBackground, setNeedToShowBackground] = useState<boolean>(false)
    const popupSwitcherlickListener = (needToShowPopup: boolean): void => {
-      if (needToShowPopup) {
-         setNeedToShowPopup(false);
-      } else {
-         setNeedToShowPopup(true);
-      }
+      setNeedToShowPopup(!needToShowPopup);
    }
+
 
 
 
@@ -33,6 +30,7 @@ export const usePopupControlsContext = () => {
 
 
 
+
    useEffect(() => {
       if (popupLoaded) {
          setPopupStyle({});
@@ -40,6 +38,7 @@ export const usePopupControlsContext = () => {
          setPopupStyle({ display: 'none' });
       }
    }, [popupLoaded]);
+
 
 
 

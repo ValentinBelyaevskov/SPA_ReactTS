@@ -35,12 +35,12 @@ type Style = {
 
 
 const Button = (props: Props) => {
-   const buttonHoverAndTouchClassNames = useHoverAndTouchClassNames();
+   const buttonHoverAndTouchClassNames = useHoverAndTouchClassNames(styles.hover, styles.touch);
    const [makeTimeout, setMakeTimeout] = useState<boolean>(true)
 
 
    const onMouseEnter = (e: React.MouseEvent) => {
-      buttonHoverAndTouchClassNames.setHoverClassName(styles.hover);
+      buttonHoverAndTouchClassNames.mouseEnterListener();
 
       props.params.mouseEnterHandler ?
          props.params.mouseEnterHandler(e)
@@ -48,15 +48,13 @@ const Button = (props: Props) => {
    }
 
    const onMouseLeave = (e: React.MouseEvent) => {
-      buttonHoverAndTouchClassNames.setHoverClassName("");
-
       props.params.mouseLeaveHandler ?
          props.params.mouseLeaveHandler(e)
          : (() => { })()
    }
 
    const onTouchStart = (e: React.TouchEvent) => {
-      buttonHoverAndTouchClassNames.setTouchClassName(styles.touch)
+      buttonHoverAndTouchClassNames.touchStartListener();
 
       props.params.touchStartHandler ?
          props.params.touchStartHandler(e)
@@ -64,18 +62,25 @@ const Button = (props: Props) => {
    }
 
    const onTouchEnd = (e: React.TouchEvent) => {
-      buttonHoverAndTouchClassNames.resetTouchClassName(makeTimeout)
+      buttonHoverAndTouchClassNames.touchEndListener();
 
       props.params.touchEndHandler ?
          props.params.touchEndHandler(e)
          : (() => { })()
    }
 
+   const onClick = (e: React.MouseEvent) => {
+      props.params.clickHandler(e);
+      buttonHoverAndTouchClassNames.clickListener();
+   }
+
+
 
 
    useEffect(() => {
       return () => setMakeTimeout(false)
    }, [])
+
 
 
 
@@ -87,7 +92,7 @@ const Button = (props: Props) => {
          <button
             className={`${styles.button} ${props.params.changeStyleOnHover ? buttonHoverAndTouchClassNames.className : null} ${props.params.buttonClassName} ${props.params.color === "red" ? styles.redButton : styles.blueButton}`}
             style={props.params.buttonStyle}
-            onClick={props.params.clickHandler}
+            onClick={onClick}
             onMouseDown={props.params.mouseDownHandler}
             onMouseUp={props.params.mouseUpHandler}
             onMouseEnter={onMouseEnter}

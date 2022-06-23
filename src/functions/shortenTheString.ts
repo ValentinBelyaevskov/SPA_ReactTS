@@ -1,3 +1,3 @@
-export const shortenTheString = (message: string, length: number) => (
-   message.length > length ? `${message.split("").slice(0, length).join("")}...` : message
+export const shortenTheString = (string: string, length: number) => (
+   string.length > length ? `${string.split("").slice(0, length).join("")}...` : string
 )

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { AppStyle } from "types/types";
-import getValueWithoutMeasurer from '../../functions/getValueWithoutMeasurer';
+import getValueWithoutMeasure from '../../functions/getValueWithoutMeasure';
 import { useWindowSize } from 'hooks/useWindowSize';
 import { useSetAppPaddinRight } from './useSetAppPaddinRight';
 
@@ -10,6 +10,7 @@ type Elements = {
    pagesContainerElem: HTMLDivElement,
    headerContainerElem: HTMLDivElement,
    sidebarsContainerElem: HTMLDivElement,
+   audioPlayerContainerElem: HTMLDivElement
 }
 
 
@@ -47,9 +48,9 @@ export const useAppScrollSetting = (needToShowPopup: boolean, needToShowBackgrou
    const getFullAppHeight = (appElement: HTMLDivElement, windowWidth: number): number => {
       const headerHeight: number = windowWidth <= 460 ?
          53
-         : 48;
+         : 46;
 
-      return +getValueWithoutMeasurer(getComputedStyle(appElement).height) + headerHeight
+      return +getValueWithoutMeasure(getComputedStyle(appElement).height) + headerHeight
    }
 
    const getWindowHeight = (windowHeight: number): number => (

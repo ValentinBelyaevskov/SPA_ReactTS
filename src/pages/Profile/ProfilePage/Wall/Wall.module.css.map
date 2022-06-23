@@ -1,0 +1,9 @@
+{
+    "version": 3,
+    "mappings": "AAAA,AAAA,KAAK,CAAC;EACH,UAAU,EAAE,IAAI;EAEhB,WAAW,EAAE,IAAI;EACjB,cAAc,EAAE,IAAI;EAEpB,SAAS,EAAE,IAAI;CAMjB;;AAZD,AAQG,KARE,CAQF,QAAQ,CAAC;EACN,SAAS,EAAE,KAAK;EAChB,MAAM,EAAE,MAAM;CAChB",
+    "sources": [
+        "Wall.module.scss"
+    ],
+    "names": [],
+    "file": "Wall.module.css"
+}

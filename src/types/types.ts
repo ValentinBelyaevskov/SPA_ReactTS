@@ -1,4 +1,7 @@
+import { ConfigForAdaptability } from 'common/NotVisibleParameterValue/useSetParameterSize';
 import React from 'react';
+
+
 export type LoadInfo = {
    loaded: boolean
    loading: boolean
@@ -63,5 +66,6 @@ export type AppCtxt = {
    pagePartRef?: React.RefObject<HTMLDivElement>
    showPreloader?: boolean
    setShowPreloader?: React.Dispatch<React.SetStateAction<boolean>>
+   setShowAudioPlayer?: React.Dispatch<React.SetStateAction<boolean>>
    setPopup?: React.Dispatch<React.SetStateAction<JSX.Element | undefined>>
 }

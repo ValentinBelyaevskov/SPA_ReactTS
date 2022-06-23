@@ -174,7 +174,8 @@
       margin-left: auto;
       width: 100%;
 
-      .showMoreButton {
+      .showMoreButton,
+      .showMoreWithoutTransition {
          width: calc(100% - 2px);
          margin-left: 1px;
          padding: 1px 10px;
@@ -184,9 +185,8 @@
 
          background-color: var(--main-color);
          transition-property: outline-color, opacity, color;
-         transition-duration: 0.1s;
+         transition-duration: 0.2s;
          transform: translateZ(0);
-         outline: 1px solid rgba(0, 0, 0, 0);
 
          &::before {
             content: "";
@@ -201,7 +201,7 @@
             border: 1px solid #cccccc;
             border-radius: 0.6rem;
 
-            transition-duration: 0.1s;
+            transition-duration: 0.2s;
             transition-property: opacity;
             opacity: 0;
          }
@@ -214,6 +214,10 @@
                opacity: 1;
             }
          }
+      }
+
+      .showMoreWithoutTransition::before {
+         transition-duration: 0s;
       }
 
       .showMoreHighlighted,
@@ -231,7 +235,7 @@
             border: 1px solid #cccccc;
             border-radius: 0.6rem;
 
-            transition-duration: 0.1s;
+            transition-duration: 0.2s;
             transition-property: opacity;
             opacity: 1;
          }
@@ -308,7 +312,7 @@
          }
 
          .showMoreTemporarilyHighlighted {
-            background-color: var(--theme-hightlight-color);
+            background-color: var(--theme-highlight-color);
 
             &::before {
                content: none;

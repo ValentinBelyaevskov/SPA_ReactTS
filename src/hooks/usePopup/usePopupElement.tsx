@@ -17,7 +17,7 @@ export const usePopupElement = (elementRef: React.RefObject<HTMLDivElement>, exp
    const [needToShowElement, setNeedToShowElement] = useState<boolean>(false);
    const [contentLoaded, setContentLoaded] = useState<boolean>(false);
    const [isThereAnHiddingEndListener, setIsThereAnHiddingEndListener] = useState<boolean>(false);
-   const [thereIsAZeroHideTimeout, setThereIsAZeroHideTimeout] = useState<boolean>(false);
+   const [isThereAnZeroHideTimeout, setIsThereAnZeroHideTimeout] = useState<boolean>(false);
    const [theElementWillBeHidden, setTheElementWillBeHidden] = useState<boolean>(false);
    const [hiddingTimeotValue, setHiddingTimeoutValue] = useState<null | NodeJS.Timeout>(null);
    const [showElementTimeoutValue, setShowElementTimeoutValue] = useState<null | NodeJS.Timeout>(null);
@@ -71,18 +71,18 @@ export const usePopupElement = (elementRef: React.RefObject<HTMLDivElement>, exp
       setShowElementTimeoutValue(null);
    }
 
-   const hiddingEndListener = useCallback((e: TransitionEvent): void => {
+   const hiddingEndListener = (e: TransitionEvent): void => {
       if (e.target !== e.currentTarget) return;
       setNeedToShowElement(false);
       setContentLoaded(false);
       setIsThereAnHiddingEndListener(false);
-   }, [])
+   }
 
    const showElement = (callbackToSetShowStatus: (status: boolean) => void): void => {
       callbackToSetShowStatus(true);
       setTheElementWillBeHidden(false);
       setIsThereAnHiddingEndListener(false);
-      setThereIsAZeroHideTimeout(false);
+      setIsThereAnZeroHideTimeout(false);
       setShowElementTimeoutValueFalse();
    }
 
@@ -106,12 +106,12 @@ export const usePopupElement = (elementRef: React.RefObject<HTMLDivElement>, exp
 
    const hideElementWithTimeout = (timeValue: number): void => {
       if (
-         ((!timeValue && thereIsAZeroHideTimeout)
+         ((!timeValue && isThereAnZeroHideTimeout)
             || (timeValue && theElementWillBeHidden))
          && !showElementTimeoutValue
       ) return;
 
-      if (!timeValue) setThereIsAZeroHideTimeout(true);
+      if (!timeValue) setIsThereAnZeroHideTimeout(true);
       setTheElementWillBeHidden(true);
 
       const time = needToShowElement ? timeValue : 0

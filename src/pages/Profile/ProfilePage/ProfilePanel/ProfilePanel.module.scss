@@ -1,5 +1,4 @@
 .profilePanel {
-   padding-top: 16px;
    padding-bottom: 20px;
    background-color: var(--main-color);
 
@@ -17,7 +16,7 @@
    .panelGridContainer {
       display: grid;
       grid-template-columns: 179px 1fr;
-      grid-template-rows: 37px 1fr;
+      grid-template-rows: 50px 1fr;
       grid-template-areas:
          "header        header"
          "avatar        info"
@@ -41,7 +40,7 @@
          grid-area: header;
          position: relative;
 
-         height: 22px;
+         height: 100%;
          width: 100%;
       }
 
@@ -52,7 +51,7 @@
 
       .panelForCreatingAPost {
          grid-area: creatingAPost;
-         
+
          width: 100%;
       }
    }
@@ -118,8 +117,6 @@
 // media queries
 @media (max-width: 460px) {
    .profilePanel {
-      padding-top: 18px;
-
       .panelGridContainer {
          .avatar {
             .avatarInscriptionContainer {
@@ -139,7 +136,7 @@
    .profilePanel {
       .panelGridContainer {
          grid-template-columns: minmax(50px, 1fr) minmax(30px, 1fr);
-         grid-template-rows: 38px 250px minmax(160px, 1fr);
+         grid-template-rows: 50px 250px minmax(160px, 1fr);
          grid-template-areas:
             "header        header"
             "avatar        avatar"
@@ -161,7 +158,7 @@
 @media (max-width: 320px) {
    .profilePanel {
       .panelGridContainer {
-         grid-template-rows: 38px 240px minmax(160px, 1fr);
+         grid-template-rows: 50px 240px minmax(160px, 1fr);
 
          .avatar {
             width: 240px;

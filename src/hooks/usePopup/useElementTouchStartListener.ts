@@ -1,15 +1,15 @@
 import { useState } from 'react';
-import { useContinuonusEvents } from '../useContinuonusEvents';
+import { useElementEventHandlers } from '../useElementEventHandlers';
 import { useHoverAndTouchClassNames } from '../useHoverAndTouchClassNames';
 import { Popup } from './usePopupElement';
 
 
 
 export const useElementTouchStartListener = (touchClassname: string, hoverClassname: string, touchExceptionClassname: string, popupObject: Popup, showAndHideTimeouts: [number, number]) => {
-   const elementHoverAndTouchClassNames = useHoverAndTouchClassNames();
+   const elementHoverAndTouchClassNames = useHoverAndTouchClassNames(hoverClassname, touchClassname);
    const [showElementOnTouchStart, setShowElementOnTouchStart] = useState<boolean>(true);
    const [hideElementOnTouchTimeout, setHideElementOnTouchTimeout] = useState<NodeJS.Timeout | null>(null);
-   const touchEvents = useContinuonusEvents(['touchstart', 'touchmove'], resetShowElementOnTouchEvent, [touchExceptionClassname]);
+   const touchEvents = useElementEventHandlers(['touchstart', 'touchmove'], resetShowElementOnTouchEvent, [touchExceptionClassname]);
 
 
 
@@ -44,7 +44,7 @@ export const useElementTouchStartListener = (touchClassname: string, hoverClassn
    }
 
    const elementTouchStartListener = (): void => {
-      elementHoverAndTouchClassNames.setTouchClassName(touchClassname);
+      elementHoverAndTouchClassNames.touchStartListener();
 
       if (showElementOnTouchStart) {
          showElementOnTouch();
@@ -57,14 +57,14 @@ export const useElementTouchStartListener = (touchClassname: string, hoverClassn
    const showElement = (): void => {
       popupObject.showElementWithTimeout(showAndHideTimeouts[0]);
       setShowElementOnTouchStart(false);
-      elementHoverAndTouchClassNames.setHoverClassName(hoverClassname);
+      elementHoverAndTouchClassNames.mouseEnterListener();
    }
 
    const hideElement = (): void => {
       popupObject.hideElementWithTimeout(showAndHideTimeouts[1]);
       setShowElementOnTouchStart(true);
-      touchEvents.enableEventSimulation()
-      elementHoverAndTouchClassNames.setHoverClassName("")
+      touchEvents.enableEventSimulation();
+      elementHoverAndTouchClassNames.resetHoverClassName()
    }
 
 
@@ -74,9 +74,10 @@ export const useElementTouchStartListener = (touchClassname: string, hoverClassn
       enableTouchEventsSimulation: touchEvents.enableEventSimulation,
       setShowElementOnTouchStart,
       elementHoverAndTouchClassName: `${elementHoverAndTouchClassNames.className} ${touchExceptionClassname.slice(1)}`,
-      setElementHoverClassName: () => elementHoverAndTouchClassNames.setHoverClassName(hoverClassname),
-      resetElementHoverClassName: () => elementHoverAndTouchClassNames.setHoverClassName(""),
-      resetElementTouchClassName: (makeTimeot: boolean) => elementHoverAndTouchClassNames.resetTouchClassName(makeTimeot),
+      elementClickListener: elementHoverAndTouchClassNames.clickListener,
+      elementMouseEnterListener: elementHoverAndTouchClassNames.mouseEnterListener,
+      resetElementHoverClassName: () => elementHoverAndTouchClassNames.resetHoverClassName(),
+      elementTouchEndListener: elementHoverAndTouchClassNames.touchEndListener,
       resetShowElementOnTouchEvent,
       showElement,
       hideElement

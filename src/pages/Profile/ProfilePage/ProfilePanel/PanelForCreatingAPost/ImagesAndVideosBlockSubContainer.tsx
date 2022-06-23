@@ -1,5 +1,5 @@
 import { GridContainerStyle, GridDirection, PostImagesItem } from "./hooks/usePostImagesAndVideosBlock"
-import styles from './PanelForCreatingAPost.module.scss'
+import styles from './ImagesAndVideosBlockContainer.module.scss'
 import PostImage from "./PostImage"
 
 
@@ -9,7 +9,7 @@ type Props = {
    deleteImageOrVideo: (index: number) => void
    gridDirection: GridDirection
    subContainerStyle: GridContainerStyle
-   containerWidth: number
+   containerSizes: [number, number]
    arrLength: number
    previosArrLength: number
 }
@@ -32,7 +32,7 @@ const ImagesAndVideosBlockSubContainer = (props: Props) => {
                   deleteImageOrVideo={props.deleteImageOrVideo}
                   type={item.type}
                   arrLength={props.arrLength}
-                  containerWidth={props.containerWidth}
+                  containerSizes={props.containerSizes}
                   gridDirection={props.gridDirection}
                />
             ))

@@ -1,0 +1,147 @@
+.audiosListItem {
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+
+   width: calc(100% - 1.5rem);
+   padding: 0.5rem;
+
+   animation: audiosListOpacity 0.3s linear;
+
+   &.active {
+      border-radius: 0.6rem;
+
+      background-color: #eeeeee;
+   }
+
+   .audioNameContainer {
+      display: flex;
+      align-items: center;
+      margin-right: 1.5rem;
+
+      width: fit-content;
+
+      transition-property: opacity;
+      transition-duration: 0.1s;
+
+      &.hover:hover,
+      &.touch {
+         opacity: 0.75;
+         cursor: pointer;
+      }
+
+      .audioIconContainer {
+         position: relative;
+         margin-right: 1rem;
+
+         width: 2rem;
+         height: 2rem;
+
+         .animatedAudioIcon {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+
+            width: 2rem;
+
+            animation: palyIcon;
+            animation-duration: 0.7s;
+            animation-iteration-count: infinite;
+         }
+
+         .audioIcon {
+            position: absolute;
+            top: 0;
+            left: 0;
+
+            width: 100%;
+            height: 100%;
+         }
+      }
+
+      .audioName {
+         display: block;
+         height: fit-content;
+
+         font-size: 1.3rem;
+         line-height: 2rem;
+         color: rgba(149, 149, 149);
+      }
+   }
+
+   .notVisibleValue {
+      display: block;
+      height: fit-content;
+
+      font-size: 1.3rem;
+      line-height: 2rem;
+      color: rgba(149, 149, 149);
+      white-space: nowrap;
+   }
+}
+
+@keyframes palyIcon {
+   0% {
+      width: 2rem;
+   }
+
+   50% {
+      width: 1.7rem;
+   }
+
+   100% {
+      width: 2rem;
+   }
+}
+
+@keyframes audiosListOpacity {
+   0% {
+      opacity: 0;
+   }
+
+   100% {
+      opacity: 1;
+   }
+}
+
+// mobile
+.audiosListItem.mobile {
+   padding: 0.6rem 1.1rem 0.6rem 0.6rem;
+
+   .audioNameContainer {
+      .audioIconContainer {
+         margin-right: 1.5rem;
+
+         width: 2.5rem;
+         height: 2.5rem;
+
+         .animatedAudioIcon {
+            width: 2.5rem;
+            animation: palyIconMobile;
+         }
+      }
+
+      .audioName {
+         font-size: 1.5rem;
+      }
+   }
+
+   .hideIcon {
+      width: 1.5rem;
+   }
+}
+
+@keyframes palyIconMobile {
+   0% {
+      width: 2.5rem;
+   }
+
+   50% {
+      width: 2.1rem;
+   }
+
+   100% {
+      width: 2.5rem;
+   }
+}

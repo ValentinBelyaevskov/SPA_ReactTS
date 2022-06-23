@@ -1,0 +1,68 @@
+.filesListItem {
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+
+   min-width: 100%;
+   padding: 0 1rem 0 0.5rem;
+
+   &:not(:first-of-type) {
+      margin-top: 1.2rem;
+   }
+
+   .fileLinkContainer,
+   .fileLinkForm {
+      display: flex;
+      align-items: center;
+      margin-right: 1.5rem;
+
+      width: fit-content;
+
+      transition-property: opacity;
+      transition-duration: 0.1s;
+
+      &.hover:hover,
+      &.touch {
+         opacity: 0.75;
+         cursor: pointer;
+      }
+
+      .fileIcon {
+         margin-right: 1rem;
+
+         width: 2rem;
+      }
+
+      .fileLink {
+         display: block;
+         height: fit-content;
+
+         font-size: 1.3rem;
+         line-height: 2rem;
+         color: rgba(149, 149, 149);
+      }
+   }
+
+   .notVisibleValue {
+      display: block;
+      height: fit-content;
+
+      font-size: 1.3rem;
+      line-height: 2rem;
+      color: rgba(149, 149, 149);
+      white-space: nowrap;
+   }
+
+   .hideIcon {
+      width: 1.1rem;
+
+      transition-property: opacity;
+      transition-duration: 0.1s;
+
+      &.hover:hover,
+      &.touch {
+         opacity: 0.6;
+         cursor: pointer;
+      }
+   }
+}

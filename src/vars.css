@@ -1,0 +1,32 @@
+:root {
+  /* * Colors */
+  --global-bcg-color: #f9f9f9;
+  --main-color: #fff;
+  --border-color: rgba(219, 219, 219, 0.4);
+  --theme-color: #8a2fff;
+  --theme-transperent-color: rgba(155, 79, 255, 0.7);
+  --theme-highlight-color: rgba(155, 79, 255, 0.9);
+  --theme-prompt-color: rgb(156, 81, 255);
+  --theme-active-color: #6f23d1;
+  --theme-hover-color: #7627df;
+  --theme-hover-shadow-color: #7c2ae671;
+  --input-plch-fontColor: rgba(149, 149, 149);
+  --input-plch-focus-fontColor: rgba(149, 149, 149, 0.6);
+  --input-fontColor: rgba(55, 55, 55, 0.8);
+  --controls-color: rgb(202, 202, 202);
+  --message-color: rgb(255, 255, 255);
+  --message-color-hover: rgb(230, 230, 230);
+  --base-fontColor: #000000;
+  --gray-fontColor: rgba(0, 0, 0, 0.5);
+  /* * Fonts */
+  --html-fz: 10px;
+  --main-fz: 1.3rem;
+  --secondary-fz: 1.2rem;
+  --interface-fz: 1.6rem;
+  --controls-fz: 1.6rem;
+  --controls-fw: 300;
+  --controls-lh: 2rem;
+  --ff: "Roboto", sans-serif;
+  --content-padding: 0 20px;
+}
+/*# sourceMappingURL=vars.css.map */

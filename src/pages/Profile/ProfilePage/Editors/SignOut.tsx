@@ -56,13 +56,21 @@ const SignOut = (props: Props) => {
    return (
       <div style={popupForm.editorStyle} onTransitionEnd={popupForm.transitionEndListener} className={`${styles.editor} ${styles.signOutEditor} editor`}>
          <div className={styles.signOutBody}>
+            {
+               loadInfo.loading && (
+                  <div className={styles.preloaderContainer}>
+                     <div className={styles.preloaderSubContainer}>
+                        <img src="./animatedIcons/preloader2.svg" alt="preloader" />
+                     </div>
+                  </div>
+               )
+            }
             <h2 className={styles.title}>
                Are you sure you want Sign out?
             </h2>
             {
-               loadInfo.loading ? <div className={`${styles.warning} ${styles.loadingWarning}`}>Loading...</div>
-                  : loadInfo.error ? <div className={`${styles.warning} ${styles.errorWarning}`}>{`${loadInfo.error}`}</div>
-                     : null
+               loadInfo.error ? <div className={`${styles.warning} ${styles.errorWarning}`}>{`${loadInfo.error}`}</div>
+                  : null
             }
             <div className={styles.buttons}>
                <Button

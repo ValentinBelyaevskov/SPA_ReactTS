@@ -34,16 +34,19 @@ const VideoUploader = (props: Props) => {
    const [videoSrc, setVideoSrc] = useState<string>("");
    const [videoFile, setVideoFile] = useState<File | null>(null);
    const [videoSizes, setVideoSizes] = useState<[number, number]>([0, 0]);
-   const fileLabelButtonHoverAndTouchClassNames = useHoverAndTouchClassNames();
+   const fileLabelButtonHoverAndTouchClassNames = useHoverAndTouchClassNames(styles.hover, styles.touch);
    const popupForm = usePopupForm(props.finishEditing);
    const fieldsRef = useRef<HTMLDivElement>(null);
    const [videoStyle, setVideoStyle] = useState<VideoStyle>({});
    const resize = useWindowSize("resize");
+   const [errorString, setErrorString] = useState<"The file must be an video" | undefined>(undefined);
 
 
 
-   const setImageSrc = (): void => {
+   const setVideoSrcOnChange = (): void => {
       const inputFile: File = watch("fileList")[0];
+
+      if (inputFile && !isTheFileAnVideo(inputFile)) return;
 
       if (inputFile) {
          const src: string = URL.createObjectURL(inputFile);
@@ -62,6 +65,8 @@ const VideoUploader = (props: Props) => {
       popupForm.setClickedButtonName(e);
    }
 
+   const isTheFileAnVideo = (imageFile: File) => imageFile.type.slice(0, 5) === "video" ? true : false;
+
 
 
    const { register, handleSubmit, watch } = useForm<Inputs>({
@@ -69,6 +74,8 @@ const VideoUploader = (props: Props) => {
    });
 
    const onSubmit: SubmitHandler<Inputs> = () => {
+      if (videoFile && !isTheFileAnVideo(videoFile)) return;
+
       resize.removeEventListener()
       const callback = (): void => {
          popupForm.hideEditorStyle();
@@ -110,22 +117,30 @@ const VideoUploader = (props: Props) => {
             setVideoStyle({
                height: `${containerWidth * videoAspect}px`,
                width: `${containerWidth}px`,
-            })
+            });
          } else {
             setVideoStyle({
                height: `${videoHeight}px`,
                width: `${videoWidth}px`,
                left: `${(containerWidth - videoWidth) / 2}px`
-            })
+            });
          }
       }
    }, [videoStyle.height, fieldsRef.current, videoSizes[0], videoSizes[1], resize.value[0]])
+
+   useEffect(() => {
+      if (videoFile && !isTheFileAnVideo(videoFile)) {
+         setErrorString('The file must be an video');
+      } else {
+         setErrorString(undefined);
+      }
+   }, [videoFile])
 
 
 
    return (
       <div style={popupForm.editorStyle} onTransitionEnd={popupForm.transitionEndListener} className={`${styles.editor} ${styles.changeAvatarEditor}`}>
-         <div className={`${styles.SelectAndEditAnImageFormContainer} ${styles.formContainer}`}>
+         <div className={`${styles.formContainer}`}>
             <form id="updloadAvatar" className={styles.form} onSubmit={handleSubmit(onSubmit)}>
                <h2 className={styles.title}>
                   {props.popupText}
@@ -134,10 +149,10 @@ const VideoUploader = (props: Props) => {
                   <label
                      className={`${styles.fileLabel} ${fileLabelButtonHoverAndTouchClassNames.className}`}
                      htmlFor="file"
-                     onMouseEnter={() => fileLabelButtonHoverAndTouchClassNames.setHoverClassName(styles.hover)}
-                     onMouseLeave={() => fileLabelButtonHoverAndTouchClassNames.setHoverClassName("")}
-                     onTouchStart={() => fileLabelButtonHoverAndTouchClassNames.setTouchClassName(styles.touch)}
-                     onTouchEnd={() => fileLabelButtonHoverAndTouchClassNames.resetTouchClassName(true)}
+                     onClick={fileLabelButtonHoverAndTouchClassNames.clickListener}
+                     onMouseEnter={fileLabelButtonHoverAndTouchClassNames.mouseEnterListener}
+                     onTouchStart={fileLabelButtonHoverAndTouchClassNames.touchStartListener}
+                     onTouchEnd={fileLabelButtonHoverAndTouchClassNames.touchEndListener}
                   >
                      Select a file
                   </label>
@@ -145,8 +160,10 @@ const VideoUploader = (props: Props) => {
                      className={styles.input}
                      type="file"
                      id="file"
-                     {...register("fileList", { onChange: setImageSrc })}
+                     accept="video/mp4,video/x-m4v,video/*"
+                     {...register("fileList", { onChange: setVideoSrcOnChange })}
                   />
+                  <p className={styles.validationError}>{errorString ? errorString : null}</p>
                   {
                      videoSrc && (
                         <div className={styles.videoContainer} style={videoStyle}>
@@ -177,7 +194,7 @@ const VideoUploader = (props: Props) => {
                            clickHandler: () => { },
                            text: props.uploadButtonText,
                            disabled:
-                              videoFile
+                              videoFile && isTheFileAnVideo(videoFile)
                                  ? false
                                  : true,
                            buttonClassName: `${styles.formButton} uploadNewAvatar`,

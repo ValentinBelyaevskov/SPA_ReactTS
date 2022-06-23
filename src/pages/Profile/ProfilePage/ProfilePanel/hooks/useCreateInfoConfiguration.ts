@@ -54,14 +54,13 @@ export const useCreateInfoConfiguration = (profileInfo: Profile, profileInfoLoad
 
 
    useEffect(() => {
-      setInformationBlocksIsFull(false);
+      setInformationBlocksIsFull(false)
    }, [profileInfo.country, profileInfo.region, profileInfo.city, profileInfo.dateOfBirth, profileInfo.education])
 
 
    useEffect(() => {
 
       if (!informationBlocks || informationBlocksIsFull) return;
-
 
       let briefPersonalInfo: ParametersList = [
          ["location", `${getStringPath(profileInfo.country, (!profileInfo.region && !profileInfo.city))} ${getStringPath(profileInfo.region, !profileInfo.city)} ${getStringPath(profileInfo.city, true)}`.trim()],

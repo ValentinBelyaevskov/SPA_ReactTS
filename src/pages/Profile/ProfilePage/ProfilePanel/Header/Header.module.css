@@ -1,0 +1,48 @@
+.header {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+}
+
+.header .username {
+  word-wrap: break-word;
+  max-width: 285px;
+  line-height: 1.8rem;
+  font-size: 1.6rem;
+  font-weight: 500;
+}
+
+.header .parametersIcon {
+  margin-right: -15px;
+  padding: 8px 15px;
+  -webkit-transition-property: opacity;
+  transition-property: opacity;
+  -webkit-transition-duration: 0.1s;
+          transition-duration: 0.1s;
+}
+
+.header .parametersIcon.hover:hover, .header .parametersIcon.touch {
+  cursor: pointer;
+  opacity: 0.6;
+}
+
+.header .parametersIcon img {
+  display: block;
+}
+
+@media (max-width: 460px) {
+  .header .username {
+    line-height: 1.8rem;
+    font-size: 1.7rem;
+  }
+  .header .parametersIcon img {
+    height: 8px;
+  }
+}
+/*# sourceMappingURL=Header.module.css.map */

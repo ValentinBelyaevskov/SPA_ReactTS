@@ -1,0 +1,56 @@
+.audioPlayer {
+   width: 100%;
+
+   padding: 1.2rem 1.5rem;
+   height: fit-content;
+   border-radius: 0.6rem;
+
+   background-color: white;
+
+   &.animatedOpacity {
+      animation: audiosListOpacity 0.3s linear;
+   }
+
+   &:hover {
+      cursor: pointer;
+   }
+
+   &.boxShadow {
+      box-shadow: 0px 1px 5px 1px rgb(0 0 0 / 15%);
+   }
+
+   .durationContainer {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.5rem;
+
+      width: 100%;
+
+      .currentTime,
+      .duration {
+         font-size: 1.2rem;
+      }
+   }
+}
+
+@keyframes audiosListOpacity {
+   0% {
+      opacity: 0;
+   }
+
+   100% {
+      opacity: 1;
+   }
+}
+
+// * mobile
+.audioPlayer.mobile {
+   .durationContainer {
+      margin-bottom: 1rem;
+
+      .currentTime,
+      .duration {
+         font-size: 1.3rem;
+      }
+   }
+}

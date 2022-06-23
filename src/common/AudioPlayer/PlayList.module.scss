@@ -1,0 +1,34 @@
+.playListContainer {
+   margin-top: 1.5rem;
+   width: calc(100% + 1.5rem);
+
+   .playList {
+      position: relative;
+
+      overflow-y: auto;
+      overflow-x: hidden;
+
+      padding-top: 0.8rem;
+      padding-bottom: 0.8rem;
+      max-height: 200px;
+
+      .preloader {
+         position: absolute;
+         z-index: 2;
+         left: 50%;
+         top: 50%;
+         transform: translate(calc(-50% - 0.75rem), -50%);
+
+         width: 35px;
+      }
+   }
+
+   .line {
+      margin-left: -1.5rem;
+
+      width: calc(100% + 1.5rem);
+      height: 1px;
+
+      background-color: #cccccc;
+   }
+}

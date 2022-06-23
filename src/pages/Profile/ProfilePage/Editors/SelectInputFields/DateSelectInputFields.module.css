@@ -1,0 +1,130 @@
+.selectElementsContainer {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  width: 100%;
+}
+
+.selectElementsContainer .selectContainer {
+  position: relative;
+}
+
+.selectElementsContainer .selectContainer.day {
+  width: 70px;
+}
+
+.selectElementsContainer .selectContainer.mounth {
+  width: 121px;
+}
+
+.selectElementsContainer .selectContainer.year {
+  width: 85px;
+}
+
+.selectElementsContainer .selectContainer .select {
+  position: relative;
+  display: block;
+  width: 100%;
+  padding: 0.5rem 1.2rem;
+  border: solid 1px lightgray;
+  border-radius: 0.5rem;
+  font-size: 1.3rem;
+  line-height: 1.1;
+  font-family: inherit;
+  -webkit-transition-duration: 0.1s;
+          transition-duration: 0.1s;
+  -webkit-transition-property: opacity;
+  transition-property: opacity;
+  opacity: 1;
+}
+
+.selectElementsContainer .selectContainer .select.hover:hover, .selectElementsContainer .selectContainer .select.touch {
+  cursor: pointer;
+  opacity: 0.7;
+}
+
+.selectElementsContainer .selectContainer .select .listArrow {
+  position: absolute;
+  right: 1.2rem;
+  width: 16px;
+  margin-left: 10px;
+  margin-top: 2px;
+}
+
+.selectElementsContainer .selectContainer .datesList {
+  overflow: auto;
+  position: absolute;
+  z-index: 2;
+  padding: 0.4rem 0.5rem;
+  border-radius: 0.5rem;
+  width: 100%;
+  max-height: 110px;
+  border: solid 1px var(--theme-transperent-color);
+  background-color: white;
+}
+
+.selectElementsContainer .selectContainer .datesList .listItem {
+  width: 100%;
+  padding: 0.7rem 0.5rem 0.7rem 1.5rem;
+  border-radius: 0.4rem;
+  font-size: 1.3rem;
+}
+
+.selectElementsContainer .selectContainer .datesList .listItem.hover:hover, .selectElementsContainer .selectContainer .datesList .listItem.touch {
+  cursor: pointer;
+  background-color: #e6e6e6;
+}
+
+@media (max-width: 460px) {
+  .selectElementsContainer .selectContainer.day {
+    width: 65px;
+  }
+  .selectElementsContainer .selectContainer.mounth {
+    width: 116px;
+  }
+  .selectElementsContainer .selectContainer.year {
+    width: 80px;
+  }
+  .selectElementsContainer .selectContainer .select {
+    padding: 0.6rem 0.9rem;
+    font-size: 1.4rem;
+  }
+  .selectElementsContainer .selectContainer .select .listArrow {
+    position: absolute;
+    right: 0.9rem;
+  }
+  .selectElementsContainer .selectContainer .datesList {
+    padding: 0.6rem 0.5rem;
+    -ms-overflow-style: none;
+    /* IE 11 */
+    scrollbar-width: none;
+  }
+  .selectElementsContainer .selectContainer .datesList::-webkit-scrollbar {
+    width: 0;
+  }
+  .selectElementsContainer .selectContainer .datesList .listItem {
+    padding: 1rem 0.5rem 1rem 1.8rem;
+    font-size: 1.4rem;
+  }
+}
+
+@media (max-width: 360px) {
+  .selectElementsContainer {
+    display: block;
+  }
+  .selectElementsContainer .selectContainer.day, .selectElementsContainer .selectContainer.mounth, .selectElementsContainer .selectContainer.year {
+    width: 100%;
+  }
+  .selectElementsContainer .selectContainer:not(:last-of-type) {
+    margin-bottom: 1.2rem;
+  }
+  .selectElementsContainer .selectContainer .datesList .listItem {
+    padding: 1rem 0.5rem 1rem rem;
+    padding: 1rem;
+    text-align: center;
+  }
+}
+/*# sourceMappingURL=DateSelectInputFields.module.css.map */

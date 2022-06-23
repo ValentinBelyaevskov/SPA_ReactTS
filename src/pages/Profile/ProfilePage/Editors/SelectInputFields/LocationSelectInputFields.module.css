@@ -1,0 +1,114 @@
+.locationSelectInputFields {
+  margin-bottom: 0.5rem;
+}
+
+.locationSelectInputFields .locationSelectElementContainer {
+  position: relative;
+}
+
+.locationSelectInputFields .locationSelectElementContainer:not(:first-of-type) {
+  margin-top: 0.7rem;
+}
+
+.locationSelectInputFields .locationSelectElementContainer .inputContainer {
+  width: 100%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.locationSelectInputFields .locationSelectElementContainer .inputContainer .label {
+  display: block;
+  width: 65px;
+  font-size: 1.3rem;
+  color: gray;
+  font-family: inherit;
+}
+
+.locationSelectInputFields .locationSelectElementContainer .inputContainer .input {
+  width: calc(100% - 65px);
+  padding: 0.5rem 1.5rem;
+  border: solid 1px lightgray;
+  border-radius: 0.5rem;
+  font-family: inherit;
+  font-size: 1.3rem;
+}
+
+.locationSelectInputFields .locationSelectElementContainer .inputContainer .validationError {
+  margin-bottom: 10px;
+  font-size: 1.3rem;
+  line-height: 1;
+  color: red;
+}
+
+.locationSelectInputFields .locationSelectElementContainer .listOfTerritories {
+  overflow: auto;
+  position: absolute;
+  z-index: 2;
+  right: 0;
+  margin-top: -1px;
+  padding: 0.4rem 0.5rem;
+  border-radius: 0.5rem;
+  width: calc(100% - 65px);
+  max-height: 110px;
+  border: solid 1px var(--theme-transperent-color);
+  background-color: white;
+}
+
+.locationSelectInputFields .locationSelectElementContainer .listOfTerritories .listItem {
+  width: 100%;
+  padding: 0.7rem 1rem;
+  border-radius: 0.4rem;
+  font-size: 1.3rem;
+}
+
+.locationSelectInputFields .locationSelectElementContainer .listOfTerritories .listItem.hover:hover, .locationSelectInputFields .locationSelectElementContainer .listOfTerritories .listItem.touch {
+  cursor: pointer;
+  background-color: #e6e6e6;
+}
+
+@media (max-width: 460px) {
+  .locationSelectInputFields .locationSelectElementContainer .inputContainer:not(:first-of-type) {
+    margin-top: 1rem;
+  }
+  .locationSelectInputFields .locationSelectElementContainer .inputContainer .label,
+  .locationSelectInputFields .locationSelectElementContainer .inputContainer .input {
+    font-size: 1.4rem;
+  }
+  .locationSelectInputFields .locationSelectElementContainer .inputContainer .label {
+    width: 70px;
+  }
+  .locationSelectInputFields .locationSelectElementContainer .inputContainer .input {
+    width: calc(100% - 70px);
+    padding: 0.6rem 1.5rem;
+  }
+  .locationSelectInputFields .locationSelectElementContainer .inputContainer .validationError {
+    font-size: 1.4rem;
+  }
+  .locationSelectInputFields .locationSelectElementContainer .listOfTerritories {
+    width: calc(100% - 70px);
+    padding: 0.6rem 0.5rem;
+    -ms-overflow-style: none;
+    /* IE 11 */
+    scrollbar-width: none;
+  }
+  .locationSelectInputFields .locationSelectElementContainer .listOfTerritories::-webkit-scrollbar {
+    width: 0;
+  }
+  .locationSelectInputFields .locationSelectElementContainer .listOfTerritories .listItem {
+    padding: 1rem;
+    font-size: 1.4rem;
+  }
+}
+
+@media (max-width: 360px) {
+  .locationSelectInputFields .locationSelectElementContainer .listOfTerritories .listItem {
+    padding: 1rem 0.5rem 1rem rem;
+    padding: 1rem;
+    text-align: center;
+  }
+}
+/*# sourceMappingURL=LocationSelectInputFields.module.css.map */

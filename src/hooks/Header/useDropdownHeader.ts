@@ -1,4 +1,4 @@
-import getValueWithoutMeasurer from "functions/getValueWithoutMeasurer";
+import getValueWithoutMeasure from "functions/getValueWithoutMeasure";
 import { useWindowSize } from "hooks/useWindowSize";
 import { useEffect, useState } from 'react';
 
@@ -39,7 +39,7 @@ export const useDropdownHeader = (needToShowControls: boolean, headerElement: HT
 
    useEffect(() => {
       if (headerElement) {
-         const headerHeight = +getValueWithoutMeasurer(getElementStyle(headerElement).height);
+         const headerHeight = +getValueWithoutMeasure(getElementStyle(headerElement).height);
 
          if (resize.value[0] > 600) {
             headerElement.style.transform = `translateY(-${0}px)`;
@@ -79,7 +79,7 @@ export const useDropdownHeader = (needToShowControls: boolean, headerElement: HT
    // useEffect(() => {
    //    const header = headerRef.current!;
    //    const headerY = getElementWindowCoords(header).y;
-   //    const headerHeight = +getValueWithoutMeasurer(getElementStyle(header).height);
+   //    const headerHeight = +getValueWithoutMeasure(getElementStyle(header).height);
 
    //    if (scrollDirection === "down" && !controlsContext.needToShowControls) {
    //       if (!headerY) {

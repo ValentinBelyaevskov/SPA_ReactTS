@@ -10,7 +10,7 @@
    height: 100vh;
    width: 100vw;
 
-   background-color: rgba(0, 0, 0, 0.7);
+   background-color: rgba(0, 0, 0, 0.8);
    transition-duration: 0.3s;
    transition-property: opacity;
    animation: bcg_opacity 0.5s;
@@ -19,12 +19,15 @@
       float: left;
       position: relative;
       left: 0;
-      top: -1rem;
-      margin: 1.2rem auto 0.2rem auto;
+      top: 0;
+      margin: 0 auto 0 auto;
 
       .video {
+         &.moveUp {
+            top: -22px;
+         }
+
          position: absolute;
-         top: 0;
          min-height: 100%;
          min-width: 100%;
          z-index: 9997;
@@ -43,9 +46,24 @@
       }
    }
 
+   .index {
+      position: relative;
+      text-align: left;
+      z-index: 9998;
+      left: 30px;
+      top: 22px;
+      margin: 0 auto;
+
+      max-width: 1000px;
+
+      color: white;
+      font-size: 22px;
+      line-height: 1;
+   }
+
    .hideIcon {
       position: relative;
-      z-index: 9998;
+      z-index: 9999;
       right: 20px;
       top: 10px;
       margin: 0 auto;
@@ -70,7 +88,7 @@
    .rowsContainer {
       position: relative;
       z-index: 9998;
-      top: calc(50% - (49px / 2));
+      top: calc(50% - (49px / 2) - 22px);
       margin: 0 auto;
 
       max-width: 1000px;
@@ -102,6 +120,10 @@
       position: relative;
 
       .image {
+         &.moveUp {
+            top: -22px;
+         }
+
          position: absolute;
          width: 100%;
          height: 100%;
@@ -109,7 +131,6 @@
    }
 }
 
-// * keyframes
 @keyframes bcg_opacity {
    from {
       opacity: 0;
@@ -117,5 +138,45 @@
 
    to {
       opacity: 1;
+   }
+}
+
+@media (max-width: 550px) {
+   .lightbox {
+      .index {
+         left: 20px;
+         top: 16px;
+      }
+
+      .hideIcon {
+         top: 4px;
+         right: 10px;
+      }
+
+      .rowsContainer {
+         .arrowLeft {
+            left: 10px;
+         }
+
+         .arrowRight {
+            right: 10px;
+         }
+      }
+   }
+}
+
+@media (max-width: 360px) {
+   .lightbox {
+      .formContainer {
+         width: 280px;
+      }
+   }
+}
+
+@media (max-width: 319px) {
+   .lightbox {
+      .formContainer {
+         width: 240px;
+      }
    }
 }

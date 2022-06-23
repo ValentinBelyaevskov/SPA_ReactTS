@@ -18,31 +18,28 @@ type Props = {
 
 
 const MenuItem = (props: Props) => {
-   const itemHoverAndTouchClassNames = useHoverAndTouchClassNames();
+   const itemHoverAndTouchClassNames = useHoverAndTouchClassNames(styles.hover, styles.touch);
 
 
 
    const itemTouchStartListener = () => {
-      itemHoverAndTouchClassNames.setTouchClassName(styles.touch);
+      itemHoverAndTouchClassNames.touchStartListener();
    }
 
    const itemTouchEndListener = (item: "edit" | "changePassword" | "signOut"): void => {
       props.setEditMode(item);
       props.hideMenuOnTouchStart();
-      itemHoverAndTouchClassNames.resetTouchClassName(true);
+      itemHoverAndTouchClassNames.touchEndListener();
    }
 
    const itemMouseEnterListener = () => {
-      itemHoverAndTouchClassNames.setHoverClassName(styles.hover);
-   }
-
-   const itemMouseLeaveListener = () => {
-      itemHoverAndTouchClassNames.setHoverClassName("");
+      itemHoverAndTouchClassNames.mouseEnterListener();
    }
 
    const itemClickListener = () => {
-      props.hideMenuOnTouchStart()
-      props.setEditMode(props.item)
+      itemHoverAndTouchClassNames.clickListener();
+      props.hideMenuOnTouchStart();
+      props.setEditMode(props.item);
    }
 
 
@@ -53,7 +50,6 @@ const MenuItem = (props: Props) => {
          key={props.item}
          onClick={itemClickListener}
          onMouseMove={itemMouseEnterListener}
-         onMouseLeave={itemMouseLeaveListener}
          onTouchStart={itemTouchStartListener}
          onTouchEnd={() => itemTouchEndListener(props.item)}
       >

@@ -1,0 +1,11 @@
+.recommendations {
+  width: 300px;
+  margin: 35px 0 0 30px;
+}
+
+@media (max-width: 1252px) {
+  .recommendations {
+    width: 150px;
+  }
+}
+/*# sourceMappingURL=Recommendations.module.css.map */

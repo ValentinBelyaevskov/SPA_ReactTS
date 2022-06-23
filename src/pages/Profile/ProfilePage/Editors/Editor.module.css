@@ -1,0 +1,499 @@
+.editor {
+  position: fixed;
+  z-index: 2;
+  left: 0;
+  top: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  height: 100vh;
+  width: 100vw;
+  padding: 100px 0 75px 0;
+  background-color: rgba(0, 0, 0, 0.35);
+  -webkit-transition-duration: 0.3s;
+          transition-duration: 0.3s;
+  -webkit-transition-property: opacity;
+  transition-property: opacity;
+  -webkit-animation: bcg_opacity 0.5s;
+          animation: bcg_opacity 0.5s;
+}
+
+.editor.signOutEditor .signOutBody {
+  top: 150px;
+}
+
+.editor.changeAvatarEditor .formContainer .title {
+  padding: 15px 15px 0px 15px;
+}
+
+.editor .signOutBody,
+.editor .formContainer {
+  position: relative;
+  -webkit-transform: translateX(-50%);
+          transform: translateX(-50%);
+  left: 50vw;
+  width: 400px;
+  border-radius: 0.7rem;
+  background-color: #fff;
+}
+
+.editor .signOutBody .title,
+.editor .formContainer .title {
+  text-align: center;
+  padding: 15px 20px 10px 20px;
+  font-size: 1.6rem;
+  font-weight: 500;
+  line-height: 1;
+}
+
+.editor .formContainer::-webkit-scrollbar {
+  display: none;
+}
+
+.editor .formContainer .form {
+  height: -webkit-fit-content;
+  height: -moz-fit-content;
+  height: fit-content;
+}
+
+.editor .signOutBody .buttons {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  border-top: 1px solid lightgray;
+  padding: 1rem 1.8rem 1rem 1.8rem;
+}
+
+.editor .signOutBody .warning {
+  font-size: 1.3rem;
+  margin: 5px 25px 5px 25px;
+}
+
+.form .inputFields {
+  padding: 0 1.8rem 0.5rem 1.8rem;
+  border-bottom: 1px solid lightgray;
+}
+
+.form .inputFields .label,
+.form .inputFields .fileLabel {
+  display: block;
+  font-size: 1.3rem;
+  font-weight: 400;
+}
+
+.form .inputFields .label {
+  margin-bottom: 10px;
+}
+
+.form .inputFields .label:not(:first-of-type) {
+  margin-top: 15px;
+}
+
+.form .inputFields .fileLabel {
+  padding: 5px 20px;
+  border-radius: 0.6rem;
+  text-align: center;
+  margin: 1.2rem auto 1rem auto;
+  font-size: 14px;
+  line-height: 1;
+  font-weight: 500;
+  color: white;
+  background-color: var(--theme-color);
+  -webkit-transition-property: background-color;
+  transition-property: background-color;
+  -webkit-transition-duration: 0.1s;
+          transition-duration: 0.1s;
+}
+
+.form .inputFields .fileLabel:hover {
+  cursor: pointer;
+  background-color: var(--theme-hover-color);
+}
+
+.form .inputFields .input {
+  display: block;
+  width: 100%;
+  padding: 5px 15px;
+  border: solid 1px lightgray;
+  border-radius: 0.5rem;
+  font-size: 1.3rem;
+  font-weight: 400;
+  color: #3a3a3a;
+}
+
+.form .inputFields .input[type="file"] {
+  display: none;
+}
+
+.form .inputFields .input:not(:last-of-type) {
+  margin-bottom: 1rem;
+}
+
+.form .inputFields .input::-webkit-input-placeholder {
+  color: #9c9c9c;
+}
+
+.form .inputFields .input:-ms-input-placeholder {
+  color: #9c9c9c;
+}
+
+.form .inputFields .input::-ms-input-placeholder {
+  color: #9c9c9c;
+}
+
+.form .inputFields .input::placeholder {
+  color: #9c9c9c;
+}
+
+.form .inputFields .input:focus {
+  border: solid 1px var(--theme-transperent-color);
+  outline: solid 1px var(--theme-transperent-color);
+}
+
+.form .inputFields .passwordInputContainer {
+  position: relative;
+}
+
+.form .inputFields .passwordInputContainer .passwordInput {
+  padding: 5px 40px 5px 15px;
+}
+
+.form .inputFields .passwordInputContainer .passwordVisibilityIcon {
+  position: absolute;
+  top: 2px;
+  right: 7px;
+  height: 23px;
+  opacity: 1;
+  -webkit-transition-property: opacity;
+  transition-property: opacity;
+  -webkit-transition-duration: 0.1s;
+          transition-duration: 0.1s;
+}
+
+.form .inputFields .passwordInputContainer .passwordVisibilityIcon.hover:hover, .form .inputFields .passwordInputContainer .passwordVisibilityIcon.touch {
+  cursor: pointer;
+  opacity: 0.6;
+}
+
+.form .inputFields .changeAvatarPreview {
+  display: block;
+  margin: 1.8rem auto 1.3rem auto;
+  width: -webkit-fit-content;
+  width: -moz-fit-content;
+  width: fit-content;
+  height: -webkit-fit-content;
+  height: -moz-fit-content;
+  height: fit-content;
+  border-radius: 0.6rem;
+  -webkit-backface-visibility: hidden;
+  -moz-backface-visibility: hidden;
+  -webkit-transform: translate3d(0, 0, 0);
+  -moz-transform: translate3d(0, 0, 0);
+  -webkit-box-shadow: 0px 1px 5px 2px rgba(0, 0, 0, 0.1);
+          box-shadow: 0px 1px 5px 2px rgba(0, 0, 0, 0.1);
+}
+
+.form .inputFields .validationError {
+  margin-bottom: 10px;
+  font-size: 1.3rem;
+  line-height: 1;
+  color: red;
+}
+
+.form .inputFields .validationError:last-of-type {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  line-height: 1;
+}
+
+.form .inputFields .description {
+  margin-bottom: 5px;
+  font-size: 1.3rem;
+  line-height: 17px;
+  color: var(--theme-color);
+  font-weight: 500;
+}
+
+.form .inputFields .warning {
+  font-size: 1.4rem;
+  font-weight: 400;
+  margin-top: 15px;
+  margin-bottom: 10px;
+}
+
+.form .buttons,
+.buttons {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  margin-left: auto;
+  padding: 1rem 1.8rem 1rem 1.8rem;
+  width: 100%;
+}
+
+.form .buttons .formButton,
+.buttons .formButton {
+  padding: 4px 15px;
+}
+
+.loadingWarning {
+  color: #3a3a3a;
+  font-size: 1.3rem;
+}
+
+.errorWarning {
+  color: red;
+}
+
+@-webkit-keyframes bcg_opacity {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes bcg_opacity {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@media (max-width: 460px) {
+  .editor,
+  .editor.signOutEditor {
+    padding: 0;
+  }
+  .editor .signOutBody .warning,
+  .editor.signOutEditor .signOutBody .warning {
+    font-size: 1.4rem;
+  }
+  .editor .signOutBody,
+  .editor .formContainer,
+  .editor.signOutEditor .signOutBody,
+  .editor.signOutEditor .formContainer {
+    width: 320px;
+    -webkit-transform: translate(-50%, -50%);
+            transform: translate(-50%, -50%);
+    left: 50vw;
+    top: 50%;
+  }
+  .editor .signOutBody .title,
+  .editor .formContainer .title,
+  .editor.signOutEditor .signOutBody .title,
+  .editor.signOutEditor .formContainer .title {
+    font-size: 1.7rem;
+    line-height: 2.1rem;
+    padding: 13px 15px 13px 15px;
+  }
+  .form .inputFields {
+    padding: 0 1.5rem 0.5rem 1.5rem;
+    padding-bottom: 1rem;
+  }
+  .form .inputFields .label,
+  .form .inputFields .fileLabel {
+    display: block;
+  }
+  .form .inputFields .input {
+    padding: 7px 10px;
+  }
+  .form .inputFields .input:not(:last-of-type) {
+    margin-bottom: 2rem;
+  }
+  .form .inputFields .label,
+  .form .inputFields .fileLabel,
+  .form .inputFields .input,
+  .form .inputFields .description,
+  .form .inputFields .validationError {
+    font-size: 1.4rem;
+  }
+  .form .inputFields .passwordVisibilityIcon {
+    position: absolute;
+    top: 5px;
+  }
+  .form .inputFields .fileLabel {
+    margin: 1.2rem auto 0.5rem auto;
+  }
+  .form .inputFields .changeAvatarPreview {
+    margin: 1.5rem auto 0.5rem auto;
+  }
+  .editor .signOutBody .buttons,
+  .form .buttons,
+  .buttons {
+    padding: 1.5rem 1.5rem 1.5rem 1.5rem;
+  }
+  .editor .signOutBody .buttons .formButton,
+  .form .buttons .formButton,
+  .buttons .formButton {
+    font-size: 1.6rem;
+    padding: 5px 15px;
+  }
+  .loadingWarning {
+    font-size: 1.4rem;
+  }
+}
+
+@media (max-width: 360px) {
+  .editor .signOutBody,
+  .editor .formContainer,
+  .editor.signOutEditor .signOutBody,
+  .editor.signOutEditor .formContainer {
+    width: 280px;
+  }
+  .form .inputFields .fileLabel {
+    font-size: 1.6rem;
+    line-height: 2rem;
+  }
+}
+
+@media (max-width: 319px) {
+  .editor .signOutBody,
+  .editor .formContainer,
+  .editor.signOutEditor .signOutBody,
+  .editor.signOutEditor .formContainer {
+    width: 240px;
+  }
+  .editor .signOutBody .buttons,
+  .form .buttons,
+  .buttons {
+    display: block;
+    padding: 1.5rem 1.5rem 1.5rem 1.5rem;
+    width: 100%;
+  }
+  .editor .signOutBody .buttons .formButtonContainer,
+  .form .buttons .formButtonContainer,
+  .buttons .formButtonContainer {
+    width: 100%;
+  }
+  .editor .signOutBody .buttons .formButtonContainer:last-of-type,
+  .form .buttons .formButtonContainer:last-of-type,
+  .buttons .formButtonContainer:last-of-type {
+    margin-top: 1rem;
+  }
+  .editor .signOutBody .buttons .formButton,
+  .form .buttons .formButton,
+  .buttons .formButton {
+    font-size: 1.6rem;
+    padding: 5px 15px;
+    width: 100%;
+  }
+  .loadingWarning {
+    font-size: 1.4rem;
+  }
+}
+
+@media (max-height: 650px) {
+  .editor.changeProfileInfoEditor {
+    padding: 50px 0 70px 0;
+  }
+  .editor.changeProfileInfoEditor .signOutBody,
+  .editor.changeProfileInfoEditor .formContainer {
+    position: relative;
+    -webkit-transform: translateX(-50%);
+            transform: translateX(-50%);
+    top: 0;
+  }
+}
+
+@media (max-height: 800px) {
+  .editor.changeProfileInfoEditor {
+    padding: 50px 0 70px 0;
+  }
+}
+
+@media (max-height: 500px) {
+  .editor.changeAvatarEditor.editorWithPreviewClassName {
+    padding: 30px 0;
+  }
+}
+
+@media (max-height: 460px) {
+  .editor.signOutEditor {
+    padding: 60px 0 30px 0;
+  }
+  .editor.signOutEditor .signOutBody {
+    position: relative;
+    -webkit-transform: translateX(-50%);
+            transform: translateX(-50%);
+    top: 0;
+  }
+}
+
+@media (max-height: 380px) {
+  .editor.changePasswordEditor, .editor.signOutEditor, .editor.changeProfileInfoEditor {
+    padding: 50px 0 30px;
+  }
+  .editor.changePasswordEditor .formContainer, .editor.signOutEditor .formContainer, .editor.changeProfileInfoEditor .formContainer {
+    position: relative;
+    -webkit-transform: translateX(-50%);
+            transform: translateX(-50%);
+    top: 0;
+  }
+  .editor.changeProfileInfoEditor {
+    padding: 50px 0 70px 0;
+  }
+}
+
+@media (max-height: 330px) {
+  .editor.changePasswordEditor,
+  .editor.changeProfileInfoEditor {
+    padding: 30px 0;
+  }
+  .editor.changePasswordEditor .signOutBody,
+  .editor.changePasswordEditor .formContainer,
+  .editor.changeProfileInfoEditor .signOutBody,
+  .editor.changeProfileInfoEditor .formContainer {
+    position: relative;
+    -webkit-transform: translateX(-50%);
+            transform: translateX(-50%);
+    top: 0;
+  }
+  .editor.changeProfileInfoEditor {
+    padding: 30px 0 70px 0;
+  }
+  .editor.changeAvatarEditor {
+    padding: 70px 0;
+  }
+}
+
+@media (min-width: 461px) and (max-height: 670px) {
+  .editor.changeAvatarEditor.editorWithPreviewClassName {
+    padding: 50px 0 30 0px;
+  }
+  .editor.changeAvatarEditor.editorWithPreviewClassName .signOutBody,
+  .editor.changeAvatarEditor.editorWithPreviewClassName .formContainer {
+    position: relative;
+    -webkit-transform: translateX(-50%);
+            transform: translateX(-50%);
+    top: 0;
+  }
+}
+
+@media (max-width: 460px) and (max-height: 550px) {
+  .editor.changeAvatarEditor.editorWithPreviewClassName {
+    padding: 75px 0 30px 0;
+  }
+  .editor.changeAvatarEditor.editorWithPreviewClassName .signOutBody,
+  .editor.changeAvatarEditor.editorWithPreviewClassName .formContainer {
+    position: relative;
+    -webkit-transform: translateX(-50%);
+            transform: translateX(-50%);
+    top: 0;
+  }
+}
+
+@media (max-width: 460px) and (max-height: 460px) {
+  .editor.changeAvatarEditor.editorWithPreviewClassName {
+    padding: 30px 0;
+  }
+}
+/*# sourceMappingURL=Editor.module.css.map */

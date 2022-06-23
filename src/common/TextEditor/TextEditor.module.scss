@@ -1,0 +1,103 @@
+.textEditorContainer {
+   position: relative;
+   // grid-area: editor;
+   // margin-top: 1.3rem;
+
+   [contentEditable="true"] {
+      font-size: 1.3rem;
+      line-height: 1.6rem;
+
+      padding-right: 3.5rem;
+
+      &:empty:before {
+         content: attr(placeholder);
+
+         color: rgba(149, 149, 149);
+         font-size: 1.3rem;
+      }
+
+      &:focus {
+         &:empty:before {
+            color: rgba(149, 149, 149, 0.7);
+         }
+      }
+
+      &:hover {
+         cursor: text;
+      }
+   }
+
+   .emojiContainer {
+      position: absolute;
+      z-index: 50;
+      top: -232px;
+      right: 0;
+   }
+
+   .emojiIcon {
+      position: absolute;
+      right: 0;
+      top: 0;
+
+      height: 18px;
+
+      transition-property: opacity;
+      transition-duration: 0.1s;
+
+      &.hover:hover,
+      &.touch {
+         opacity: 0.6;
+         cursor: pointer;
+      }
+   }
+}
+
+// media queries
+@media (max-width: 950px) {
+   .textEditorContainer {
+      .emojiContainer {
+         position: absolute;
+         top: -270px;
+         right: 0;
+      }
+   }
+}
+
+@media (max-width: 460px) {
+   .textEditorContainer {
+      [contentEditable="true"] {
+         margin-top: 2rem;
+         font-size: 1.5rem;
+         line-height: 1.8rem;
+
+         &:empty:before {
+            font-size: 1.5rem;
+         }
+      }
+
+      .emojiIcon {
+         top: 2rem;
+         height: 1.8rem;
+      }
+
+      .emojiContainer {
+         top: -258px;
+      }
+   }
+}
+
+@media (max-height: 319px) {
+   .textEditorContainer {
+      .emojiContainer {
+         top: -215px;
+      }
+   }
+}
+
+@media (max-height: 414px) and (max-width: 700px) and (min-width: 550px) {
+   .textEditorContainer {
+      .emojiContainer {
+         width: 80%;
+      }
+   }
+}

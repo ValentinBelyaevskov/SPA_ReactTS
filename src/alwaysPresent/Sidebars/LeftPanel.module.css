@@ -1,0 +1,16 @@
+.leftPanel {
+  height: 100%;
+  padding-left: 20px;
+  background-color: var(--main-color);
+  border-right: 1px solid var(--border-color);
+  -ms-grid-column: 1;
+  -ms-grid-column-span: 1;
+  grid-column: 1 / 2;
+}
+
+@media (max-width: 950px) {
+  .leftPanel {
+    display: none;
+  }
+}
+/*# sourceMappingURL=LeftPanel.module.css.map */

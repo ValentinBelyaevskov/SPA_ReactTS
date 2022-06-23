@@ -1,0 +1,77 @@
+.trackNameTickerContainer {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  height: -webkit-fit-content;
+  height: -moz-fit-content;
+  height: fit-content;
+}
+
+.trackNameTickerContainer .notVisibleTrackNameTicker {
+  opacity: 0;
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+.trackNameTickerContainer .trackNameTicker,
+.trackNameTickerContainer .notVisibleTrackNameTicker {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: nowrap;
+      flex-wrap: nowrap;
+  margin-bottom: 1rem;
+  margin-left: -3px;
+  -webkit-transform: translateX(3px);
+          transform: translateX(3px);
+  overflow: hidden;
+  width: -webkit-fit-content;
+  width: -moz-fit-content;
+  width: fit-content;
+  -webkit-animation-timing-function: linear;
+          animation-timing-function: linear;
+}
+
+.trackNameTickerContainer .trackNameTicker .first,
+.trackNameTickerContainer .trackNameTicker .second,
+.trackNameTickerContainer .notVisibleTrackNameTicker .first,
+.trackNameTickerContainer .notVisibleTrackNameTicker .second {
+  font-size: 1.3rem;
+  line-height: 1.6rem;
+  white-space: nowrap;
+}
+
+.trackNameTickerContainer .trackNameTicker .first,
+.trackNameTickerContainer .notVisibleTrackNameTicker .first {
+  margin-right: 0.6rem;
+}
+
+.trackNameTickerContainer.thumbnail {
+  margin-left: 1.2rem;
+  border-radius: 0.5rem;
+  height: -webkit-fit-content;
+  height: -moz-fit-content;
+  height: fit-content;
+  padding: 0.1rem 0.8rem;
+  -webkit-transition-property: background-color;
+  transition-property: background-color;
+  -webkit-transition-duration: 0.1s;
+          transition-duration: 0.1s;
+  background-color: #eeeeee;
+}
+
+.trackNameTickerContainer.thumbnail:hover {
+  background-color: #e0e0e0;
+}
+
+.trackNameTickerContainer.thumbnail .tickerNameWrapper {
+  overflow: hidden;
+}
+
+.trackNameTickerContainer.thumbnail .tickerNameWrapper .trackNameTicker,
+.trackNameTickerContainer.thumbnail .tickerNameWrapper .notVisibleTrackNameTicker {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+/*# sourceMappingURL=Ticker.module.css.map */

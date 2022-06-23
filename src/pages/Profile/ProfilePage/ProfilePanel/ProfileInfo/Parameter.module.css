@@ -1,0 +1,119 @@
+.parameter {
+  position: relative;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.parameter .notVisibleValue,
+.parameter .parameterValue,
+.parameter .parameterName {
+  font-size: 13px;
+  font-weight: normal;
+}
+
+.parameter .parameterName,
+.parameter .parameterValue {
+  padding: 4px 0;
+  line-height: 1.8rem;
+}
+
+.parameter .parameterName {
+  -webkit-box-flex: 0;
+      -ms-flex: 0 0 100px;
+          flex: 0 0 100px;
+  -ms-flex-item-align: start;
+      -ms-grid-row-align: start;
+      align-self: start;
+}
+
+.parameter .parameterValue {
+  -webkit-box-flex: 1;
+      -ms-flex: 1 1 72%;
+          flex: 1 1 72%;
+  color: var(--gray-fontColor);
+}
+
+.parameter .parameterValue .breakWord {
+  word-break: break-all;
+}
+
+.parameter .selectedValue {
+  -webkit-transition-duration: 0.1s;
+          transition-duration: 0.1s;
+  -webkit-transition-property: opacity;
+  transition-property: opacity;
+}
+
+.parameter .selectedValue.hover:hover, .parameter .selectedValue.touch {
+  opacity: 0.8;
+  cursor: pointer;
+}
+
+.parameter .notVisibleValue {
+  position: absolute;
+  white-space: nowrap;
+  width: -webkit-fit-content;
+  width: -moz-fit-content;
+  width: fit-content;
+  opacity: 0;
+}
+
+.parameter .prompt {
+  position: absolute;
+  z-index: 1;
+  bottom: 23px;
+  right: 0;
+  overflow: hidden;
+  word-break: break-all;
+  max-width: 100%;
+  padding: 3px 10px;
+  border-radius: 4px;
+  font-weight: 300;
+  font-size: 12px;
+  line-height: 15px;
+  color: white;
+  background-color: var(--theme-prompt-color);
+  opacity: 0;
+  -webkit-transition-property: opacity;
+  transition-property: opacity;
+  -webkit-transition-duration: 0.3s;
+          transition-duration: 0.3s;
+}
+
+.parameter:first-of-type .prompt {
+  top: 25px;
+  bottom: auto;
+}
+
+@media (max-width: 460px) {
+  .parameter .notVisibleValue,
+  .parameter .parameterValue,
+  .parameter .parameterName {
+    font-size: 1.5rem;
+  }
+  .parameter .prompt {
+    bottom: 30px;
+  }
+  .parameter .parameterName,
+  .parameter .parameterValue {
+    padding: 6px 0;
+  }
+  .parameter .parameterName {
+    -webkit-box-flex: 0;
+        -ms-flex: 0 0 112px;
+            flex: 0 0 112px;
+  }
+  .parameter .parameterValue {
+    -webkit-box-flex: 1;
+        -ms-flex: 1 1 72%;
+            flex: 1 1 72%;
+  }
+}
+/*# sourceMappingURL=Parameter.module.css.map */

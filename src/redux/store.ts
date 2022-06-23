@@ -11,6 +11,7 @@ import {
    REGISTER,
 } from 'redux-persist';
 import storage from 'redux-persist/lib/storage'; // defaults to localStorage for web
+import { audioPlayerReducer } from "common/AudioPlayer/redux/audioPlayerReducer";
 
 
 // store options
@@ -23,11 +24,12 @@ const profilePersistConfig = {
 const rootPersistConfig = {
    key: 'root',
    storage,
-   blacklist: ['friends', 'profile'],
+   blacklist: ['friends', 'profile', 'audioPlayer'],
 }
 
 const rootReducer = combineReducers({
    profile: persistReducer(profilePersistConfig, profileReducer),
+   audioPlayer: persistReducer(profilePersistConfig, audioPlayerReducer)
 })
 
 const persistedReducer = persistReducer(rootPersistConfig, rootReducer)

@@ -223,6 +223,15 @@ const ChangeProfileInfoForm = (props: Props) => {
          {
             iconsLoaded ?
                <div className={`${styles.changeProfileInfoFormContainer} ${styles.formContainer}`}>
+                  {
+                     loadInfo.loading && (
+                        <div className={styles.preloaderContainer}>
+                           <div className={styles.preloaderSubContainer}>
+                              <img src="./animatedIcons/preloader2.svg" alt="preloader" />
+                           </div>
+                        </div>
+                     )
+                  }
                   <form className={styles.form} onSubmit={handleSubmit(onSubmit)}>
                      <h2 className={styles.title}>
                         Edit profile information
@@ -336,9 +345,11 @@ const ChangeProfileInfoForm = (props: Props) => {
 
 
                         {
-                           loadInfo.loading ? <div className={`${styles.warning} ${styles.loadingWarning}`}>Loading...</div>
-                              : loadInfo.error ? <div className={`${styles.warning} ${styles.errorWarning}`}>{`${loadInfo.error}`}</div>
-                                 : null
+                           // loadInfo.loading ? <div className={`${styles.warning} ${styles.loadingWarning}`}>Loading...</div>
+                           //    : loadInfo.error ? <div className={`${styles.warning} ${styles.errorWarning}`}>{`${loadInfo.error}`}</div>
+                           //       : null
+                           loadInfo.error ? <div className={`${styles.warning} ${styles.errorWarning}`}>{`${loadInfo.error}`}</div>
+                              : null
                         }
                      </div>
                      <div className={styles.buttons}>

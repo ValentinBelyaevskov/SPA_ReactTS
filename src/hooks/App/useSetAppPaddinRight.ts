@@ -6,7 +6,8 @@ type Elements = {
    appElem: HTMLDivElement,
    pagesContainerElem: HTMLDivElement,
    headerContainerElem: HTMLDivElement,
-   sidebarsContainerElem: HTMLDivElement
+   sidebarsContainerElem: HTMLDivElement,
+   audioPlayerContainerElem: HTMLDivElement
 }
 
 
@@ -44,6 +45,9 @@ export const useSetAppPaddinRight = (elements: Elements, resize: WindowSize, can
             elements.headerContainerElem.style.paddingRight = `${scrollbarWidth}px`
             elements.pagesContainerElem.style.paddingRight = `${scrollbarWidth}px`
             elements.sidebarsContainerElem.style.paddingRight = `${scrollbarWidth}px`
+
+            if (elements.audioPlayerContainerElem) elements.audioPlayerContainerElem.style.paddingRight = `${scrollbarWidth}px`
+
          } else {
             pageElem.style.width = "auto";
             pagePartElem.style.paddingRight = `20px`;
@@ -51,6 +55,8 @@ export const useSetAppPaddinRight = (elements: Elements, resize: WindowSize, can
             elements.headerContainerElem.style.paddingRight = `0px`
             elements.pagesContainerElem.style.paddingRight = `0px`
             elements.sidebarsContainerElem.style.paddingRight = `0px`
+
+            if (elements.audioPlayerContainerElem) elements.audioPlayerContainerElem.style.paddingRight = `0px`
          }
       }
    }
@@ -69,7 +75,7 @@ export const useSetAppPaddinRight = (elements: Elements, resize: WindowSize, can
          setScrollHasBeenSet(true);
          setScrollbarWidth(window.innerWidth - document.documentElement.clientWidth)
       }
-   }, [elements.appElem, elements.headerContainerElem, elements.pagesContainerElem, elements.sidebarsContainerElem])
+   }, [elements.appElem, elements.headerContainerElem, elements.pagesContainerElem, elements.sidebarsContainerElem, elements.audioPlayerContainerElem])
 
    useEffect(() => {
       if (scrollHasBeenSet && elements) {

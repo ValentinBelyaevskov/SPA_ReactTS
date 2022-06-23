@@ -8,7 +8,7 @@ import { RootState } from '../../../redux/store';
 import { cloudinary } from '../../../API/cloudinary/cloudinary';
 
 
-// * initialState
+
 const initialState: ProfileState = {
    profileInfo: {
       firstName: "",
@@ -44,7 +44,7 @@ const initialState: ProfileState = {
 }
 
 
-// * slice
+
 const profileSlice = createSlice({
    name: 'profile',
    initialState,
@@ -92,8 +92,6 @@ const profileSlice = createSlice({
 
    extraReducers: builder => {
       builder
-         // ? loginAsGuest
-         // ! PayloadAction<any>
          .addCase(loginAsGuest.fulfilled, (state, action: PayloadAction<any>) => {
             state.profileInfo.objectId = action.payload.objectId;
             state.profileMode = "loggedInAsGuest"
@@ -102,8 +100,6 @@ const profileSlice = createSlice({
             state.loadInfo.error = undefined
             state.loadInfo.errorType = undefined
          })
-         // ? getProfileProps
-         // ! PayloadAction<any>
          .addCase(getProfileProps.fulfilled, (state, action: PayloadAction<any>) => {
             if (action.payload.guestMode) {
                state.profileInfo.objectId = action.payload.profile.objectId
@@ -120,8 +116,6 @@ const profileSlice = createSlice({
             state.loadInfo.error = undefined
             state.loadInfo.errorType = undefined
          })
-         // ? createAccount
-         // ! PayloadAction<any>
          .addCase(createAccount.fulfilled, (state, action: PayloadAction<any>) => {
             state.profileMode = "signIn"
             state.signInMode = 'login'
@@ -130,8 +124,6 @@ const profileSlice = createSlice({
             state.loadInfo.error = undefined
             state.loadInfo.errorType = undefined
          })
-         // ? update
-         // ! PayloadAction<any>
          .addCase(update.fulfilled, (state, action: PayloadAction<any>) => {
             if (action.payload) {
                state.profileInfo = action.payload
@@ -142,7 +134,6 @@ const profileSlice = createSlice({
             state.loadInfo.error = undefined
             state.loadInfo.errorType = undefined
          })
-         // ? uploadFile
          .addCase(uploadFile.fulfilled, (state, action: PayloadAction<any>) => {
             state.profileInfo = { ...state.profileInfo, avatar: action.payload };
             state.loadInfo.loading = false
@@ -150,8 +141,6 @@ const profileSlice = createSlice({
             state.loadInfo.error = undefined
             state.loadInfo.errorType = undefined
          })
-         // ? login
-         // ! PayloadAction<any>
          .addCase(login.fulfilled, (state, action: PayloadAction<any>) => {
             state.profileInfo = action.payload
             state.profileMode = "loggedIn"
@@ -160,8 +149,6 @@ const profileSlice = createSlice({
             state.loadInfo.error = undefined
             state.loadInfo.errorType = undefined
          })
-         // ? logout
-         // ! PayloadAction<any>
          .addCase(logout.fulfilled, (state, action: PayloadAction<any>) => {
             state.profileMode = "loggedOut"
             state.loadInfo.loading = false
@@ -169,15 +156,12 @@ const profileSlice = createSlice({
             state.loadInfo.error = undefined
             state.loadInfo.errorType = undefined
          })
-         // ? passwordReset
-         // ! PayloadAction<any>
          .addCase(passwordReset.fulfilled, (state, action: PayloadAction<any>) => {
             state.loadInfo.loading = false
             state.loadInfo.loaded = true
             state.loadInfo.error = undefined
             state.loadInfo.errorType = undefined
          })
-         // ? Pending, Error
          .addMatcher((action) => action.type.startsWith('profile/') && action.type.endsWith('/pending'),
             (state, action) => {
                state.loadInfo.loading = true
@@ -202,21 +186,6 @@ const profileSlice = createSlice({
 })
 
 
-// * selectors
-export const getProfileMode = createSelector(
-   (state: RootState) => state.profile.profileMode,
-   profileMode => profileMode
-)
-
-export const getProfileInfoMode = createSelector(
-   (state: RootState) => state.profile.profileInfoMode,
-   profileInfoMode => profileInfoMode
-)
-
-export const getSignInMode = createSelector(
-   (state: RootState) => state.profile.signInMode,
-   signInMode => signInMode
-)
 
 export const getLoadInfo = createSelector(
    (state: RootState) => state.profile.loadInfo,
@@ -226,12 +195,18 @@ export const getLoadInfo = createSelector(
 export const getProfileInfo = createSelector(
    (state: RootState) => state.profile.profileInfo,
    profileInfo => profileInfo
-)
+) 
 
 export const getErrorTypes = createSelector(
    (state: RootState) => state.profile.errorTypes,
    errorTypes => errorTypes
 )
+
+export const getSignInMode = (state: RootState) => state.profile.signInMode;
+
+export const getProfileInfoMode = (state: RootState) => state.profile.profileInfoMode;
+
+export const getProfileMode = (state: RootState) => state.profile.profileMode;
 
 export const getObjectId = (state: RootState) => state.profile.profileInfo.objectId
 
@@ -239,7 +214,6 @@ export const getLoadingStatus = (state: RootState) => state.profile.loadInfo.loa
 
 
 
-//* thunks
 export const loginAsGuest = createAsyncThunk(
    "profile/loginAsGuest",
    async (stayLoggedIn: boolean, { rejectWithValue }) => {
@@ -414,6 +388,5 @@ export const passwordReset = createAsyncThunk(
 
 
 
-// * export slice
-export const profileReducer = profileSlice.reducer
-export const profileActions = profileSlice.actions
+export const profileReducer = profileSlice.reducer;
+export const profileActions = profileSlice.actions;

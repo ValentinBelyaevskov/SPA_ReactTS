@@ -1,0 +1,18 @@
+.guestModePage .subscription {
+  width: 350px;
+  margin: 0 auto;
+  line-height: 1.6;
+  font-size: 16px;
+}
+
+.guestModePage .signInButtons {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  margin: 20px auto 0 auto;
+  width: 350px;
+}
+/*# sourceMappingURL=GuestPage.module.css.map */

@@ -1,4 +1,4 @@
-const getValueWithoutMeasurer = (value: string): string => {
+const getValueWithoutMeasure = (value: string): string => {
    let measureStr: string = ""
 
    value.split("").reverse().forEach((item: string, index: number) => {
@@ -10,4 +10,4 @@ const getValueWithoutMeasurer = (value: string): string => {
    return value.slice(0, - (measureStr.length))
 }
 
-export default getValueWithoutMeasurer;
+export default getValueWithoutMeasure;
