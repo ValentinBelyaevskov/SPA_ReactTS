@@ -1,11 +1,12 @@
 import { separatePatnAndName } from './../../../functions/separatePathAndName';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { ProfileState, Profile, AccountParams, LoginParams, ProfileMode, SetErrors, UpdateParams, ProfileInfoMode, SignInMode, UpdatedProfile, UploadFileParams } from '../types/types';
+import { ProfileState, Profile, AccountParams, LoginParams, ProfileMode, SetErrors, UpdateParams, ProfileInfoMode, SignInMode, UpdatedProfile, UploadFileParams, PostData, PostPayloadAction, Post } from '../types/types';
 import { UserProps, LoadInfo, BackendlessError } from '../../../types/types';
 import { createSelector } from 'reselect';
 import { RootState } from '../../../redux/store';
-import { cloudinary } from '../../../API/cloudinary/cloudinary';
+import { remoteFileStorage } from 'API/uploadFiles/remoteFileStorage';
+
 
 
 
@@ -21,6 +22,14 @@ const initialState: ProfileState = {
       objectId: "",
       education: "",
       dateOfBirth: undefined,
+   },
+   posts: {
+      entities: {},
+      ids: [],
+   },
+   files: {
+      entities: {},
+      ids: []
    },
    profileMode: "signIn",
    profileInfoMode: "view",
@@ -38,10 +47,11 @@ const initialState: ProfileState = {
       "emailConfirmation",
       "manyFailedLoginAttempts",
       "update",
-      "uploadFile",
-      "getProfileProps"
+      "uploadAvatar",
+      "getProfileProps",
    ],
 }
+
 
 
 
@@ -85,6 +95,7 @@ const profileSlice = createSlice({
                }
             }
             if (key === "avatar") state.profileInfo.avatar = state.profileInfo.avatar
+            // if (key === "posts") state.profileInfo.posts = []
          }
          state.profileMode = action.payload
       }
@@ -92,7 +103,7 @@ const profileSlice = createSlice({
 
    extraReducers: builder => {
       builder
-         .addCase(loginAsGuest.fulfilled, (state, action: PayloadAction<any>) => {
+         .addCase(loginAsGuest.fulfilled, (state, action) => {
             state.profileInfo.objectId = action.payload.objectId;
             state.profileMode = "loggedInAsGuest"
             state.loadInfo.loading = false
@@ -100,23 +111,39 @@ const profileSlice = createSlice({
             state.loadInfo.error = undefined
             state.loadInfo.errorType = undefined
          })
-         .addCase(getProfileProps.fulfilled, (state, action: PayloadAction<any>) => {
-            if (action.payload.guestMode) {
+         .addCase(getProfileProps.fulfilled, (state, action) => {
+            // if (action.payload.guestMode) {
+            //    state.profileInfo.objectId = action.payload.profile.objectId
+            //    state.profileMode = "loggedInAsGuest"
+            // } else if (action.payload.profile.objectId) {
+            //    state.profileInfo = action.payload.profile
+            //    state.profileMode = "loggedIn"
+            // }
+
+            if (action.payload.guestMode && action.payload.profile && action.payload.profile.objectId) {
                state.profileInfo.objectId = action.payload.profile.objectId
                state.profileMode = "loggedInAsGuest"
-            } else if (action.payload.profile.objectId) {
-               state.profileInfo = action.payload.profile
+            } else if (action.payload.profile && action.payload.profile.objectId) {
+               state.profileInfo = action.payload.profile as Profile
                state.profileMode = "loggedIn"
             } else {
                state.profileInfo.objectId = ""
                state.profileMode = "signIn"
             };
+
+            if (action.payload.posts) {
+               action.payload.posts.forEach(post => {
+                  state.posts.entities[post.objectId] = post;
+                  state.posts.ids.push(post.objectId);
+               });
+            }
+
             state.loadInfo.loading = false
             state.loadInfo.loaded = true
             state.loadInfo.error = undefined
             state.loadInfo.errorType = undefined
          })
-         .addCase(createAccount.fulfilled, (state, action: PayloadAction<any>) => {
+         .addCase(createAccount.fulfilled, (state, action) => {
             state.profileMode = "signIn"
             state.signInMode = 'login'
             state.loadInfo.loading = false
@@ -124,9 +151,14 @@ const profileSlice = createSlice({
             state.loadInfo.error = undefined
             state.loadInfo.errorType = undefined
          })
-         .addCase(update.fulfilled, (state, action: PayloadAction<any>) => {
+         .addCase(update.fulfilled, (state, action) => {
             if (action.payload) {
-               state.profileInfo = action.payload
+               if (action.payload) {
+                  state.profileInfo = {
+                     ...state,
+                     ...action.payload as Profile
+                  }
+               }
                state.profileInfoMode = "view"
             }
             state.loadInfo.loading = false
@@ -134,33 +166,52 @@ const profileSlice = createSlice({
             state.loadInfo.error = undefined
             state.loadInfo.errorType = undefined
          })
-         .addCase(uploadFile.fulfilled, (state, action: PayloadAction<any>) => {
+         .addCase(uploadAvatar.fulfilled, (state, action) => {
             state.profileInfo = { ...state.profileInfo, avatar: action.payload };
             state.loadInfo.loading = false
             state.loadInfo.loaded = true
             state.loadInfo.error = undefined
             state.loadInfo.errorType = undefined
          })
-         .addCase(login.fulfilled, (state, action: PayloadAction<any>) => {
-            state.profileInfo = action.payload
+         .addCase(login.fulfilled, (state, action) => {
+            state.profileInfo = {
+               ...state,
+               ...action.payload
+            }
             state.profileMode = "loggedIn"
             state.loadInfo.loading = false
             state.loadInfo.loaded = true
             state.loadInfo.error = undefined
             state.loadInfo.errorType = undefined
          })
-         .addCase(logout.fulfilled, (state, action: PayloadAction<any>) => {
+         .addCase(logout.fulfilled, (state, action) => {
             state.profileMode = "loggedOut"
             state.loadInfo.loading = false
             state.loadInfo.loaded = true
             state.loadInfo.error = undefined
             state.loadInfo.errorType = undefined
          })
-         .addCase(passwordReset.fulfilled, (state, action: PayloadAction<any>) => {
+         .addCase(passwordReset.fulfilled, (state, action) => {
             state.loadInfo.loading = false
             state.loadInfo.loaded = true
             state.loadInfo.error = undefined
             state.loadInfo.errorType = undefined
+         })
+         .addCase(createAPost.fulfilled, (state, action) => {
+            console.log("createAPost responce: ", action.payload);
+
+            // state.profileInfo.posts = action.payload.userPosts.slice(0);
+            // state.profileInfo.posts.push(action.payload.objectId);
+
+            state.posts.entities[action.payload.objectId] = action.payload;
+            // state.posts.ids = action.payload.userPosts.slice(0);
+            state.posts.ids.push(action.payload.objectId);
+
+            state.profileInfoMode = "view"
+            state.loadInfo.loading = false;
+            state.loadInfo.loaded = true;
+            state.loadInfo.error = undefined;
+            state.loadInfo.errorType = undefined;
          })
          .addMatcher((action) => action.type.startsWith('profile/') && action.type.endsWith('/pending'),
             (state, action) => {
@@ -187,6 +238,7 @@ const profileSlice = createSlice({
 
 
 
+
 export const getLoadInfo = createSelector(
    (state: RootState) => state.profile.loadInfo,
    loadInfo => loadInfo
@@ -195,7 +247,7 @@ export const getLoadInfo = createSelector(
 export const getProfileInfo = createSelector(
    (state: RootState) => state.profile.profileInfo,
    profileInfo => profileInfo
-) 
+)
 
 export const getErrorTypes = createSelector(
    (state: RootState) => state.profile.errorTypes,
@@ -211,6 +263,10 @@ export const getProfileMode = (state: RootState) => state.profile.profileMode;
 export const getObjectId = (state: RootState) => state.profile.profileInfo.objectId
 
 export const getLoadingStatus = (state: RootState) => state.profile.loadInfo.loading
+
+export const getPostIds = (state: RootState) => state.profile.posts.ids
+
+export const getPostEntities = (state: RootState) => state.profile.posts.entities
 
 
 
@@ -233,21 +289,31 @@ export const getProfileProps = createAsyncThunk(
    "profile/getProfileProps",
    async (_, { rejectWithValue }) => {
       try {
-         const objectId = await Backendless.UserService.loggedInUser()
-         const role: string[] = await Backendless.UserService.getUserRoles()
+         // const objectId = await Backendless.UserService.loggedInUser()
+         const objectId = await (await Backendless.UserService.getCurrentUser()).objectId;
+
+         const role: string[] = await Backendless.UserService.getUserRoles();
 
          if (role.includes("GuestUser", 0)) {
             return { profile: { objectId }, guestMode: true }
          } else if (objectId) {
             const profile: Profile = await Backendless.Data.of('Users').findById(`${objectId}`)
             const avatar = await fetch(`${profile.avatar}`)
+
             if (!avatar.ok || !profile.avatar) {
                profile.avatar = "";
             }
 
-            return { profile, guestMode: false }
+            const postQuery = await Backendless.DataQueryBuilder.create()
+               .setSortBy(["created"])
+               .setWhereClause(`userId = '${objectId}'`);
+
+            const posts: Post[] = await Backendless.Data.of("Posts").find(postQuery);
+
+            return { profile, guestMode: false, posts }
+
          } else {
-            return { profile: { objectId }, guestMode: false }
+            return { profile: undefined, guestMode: false }
          }
 
       } catch (err: any) {
@@ -291,20 +357,24 @@ export const createAccount = createAsyncThunk(
 
 export const update = createAsyncThunk(
    "profile/update",
-   async (updateParams: UpdateParams, { rejectWithValue, dispatch }) => {
+   async (updateParams: UpdateParams, { rejectWithValue }) => {
       try {
          let mode: "changePassword" | "updateProfile" = "updateProfile"
          let profile: UpdatedProfile = {};
+
          for (let key in updateParams.profile) {
             profile[key] = updateParams.profile[key]
          }
+
          if (updateParams.profilePasswords) {
             mode = 'changePassword'
             for (let key in updateParams.profilePasswords) {
                profile[key] = updateParams.profilePasswords[key]
             }
          }
-         const updatedProfile = await Backendless.UserService.update(profile)
+
+         const updatedProfile = await Backendless.UserService.update(profile);
+
          if (updatedProfile && updateParams.callback) {
             updateParams.callback()
          }
@@ -320,19 +390,20 @@ export const update = createAsyncThunk(
    }
 )
 
-export const uploadFile = createAsyncThunk(
-   "profile/uploadFile",
+export const uploadAvatar = createAsyncThunk(
+   "profile/uploadAvatar",
    async (uploadFileParams: UploadFileParams, { rejectWithValue }) => {
       try {
          if (uploadFileParams.typeOfFile !== "avatar") {
             throw Error("Wrong file type specified");
          }
 
-         const response = await cloudinary.uploadImage(uploadFileParams.file, uploadFileParams.objectId)
+         const response = await remoteFileStorage.uploadAvatar(uploadFileParams.file, uploadFileParams.objectId)
 
          if (response && uploadFileParams.callback) {
             const avatar = separatePatnAndName(uploadFileParams.avatar)[1];
-            await cloudinary.deleteImage(avatar);
+
+            await remoteFileStorage.deleteFiles([avatar]);
 
             uploadFileParams.callback();
             return response;
@@ -351,7 +422,7 @@ export const login = createAsyncThunk(
    "profile/login",
    async (loginParams: LoginParams, { rejectWithValue }) => {
       try {
-         const responce = await Backendless.UserService.login(loginParams.email, loginParams.password, loginParams.rememberMe);
+         const responce: Profile = await Backendless.UserService.login(loginParams.email, loginParams.password, loginParams.rememberMe);
          return responce;
       } catch (err: any) {
          console.log(err);
@@ -385,6 +456,74 @@ export const passwordReset = createAsyncThunk(
       }
    }
 )
+
+export const createAPost = createAsyncThunk(
+   "profile/createAPost",
+   async (postData: PostData, { rejectWithValue }) => {
+      try {
+
+         const getPostObject = async (
+            userId: string,
+            innerHTML: string,
+            imagesAndVideos: File[],
+            audios: File[],
+            files: File[]
+         ) => {
+
+            const fileUrls = await Promise.all(files.map(async file => {
+               const newFile = new File(
+                  [file],
+                  `${new Date().getTime()}${file.name}`,
+                  { type: file.type }
+               )
+
+               const responce = await Backendless.Files.upload(newFile, 'files', false);
+
+               return responce.fileURL;
+            }));
+
+            const audioUrls = await remoteFileStorage.uploadAudios(audios);
+            const imagesAndVideosUrls = await remoteFileStorage.uploadImagesAndVideos(imagesAndVideos);
+
+
+
+            return {
+               userId,
+               innerHTML: innerHTML ? innerHTML : "",
+               imagesAndVideos: JSON.stringify(imagesAndVideosUrls),
+               audios: JSON.stringify(audioUrls),
+               files: JSON.stringify(fileUrls),
+            }
+         }
+
+
+
+         const postObject = await getPostObject(
+            postData.profileId,
+            postData.innerHTML,
+            postData.imagesAndVideos,
+            postData.audios,
+            postData.files
+         );
+
+         const post: Post = await Backendless.Data.of("Posts").save<Post>(postObject);
+
+         await Backendless.UserService.update({
+            objectId: postData.profileId,
+            posts: [...postData.profilePosts, post.objectId]
+         });
+
+
+
+         return post;
+
+      } catch (err: any) {
+         console.log(err);
+         return rejectWithValue(err.message)
+      }
+   }
+)
+
 
 
 

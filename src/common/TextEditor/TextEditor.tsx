@@ -10,6 +10,8 @@ type Props = {
    textEditorClickListener?: (e: React.MouseEvent) => void
    containerClassName?: string
    setTextEditorInnerHTML: React.Dispatch<React.SetStateAction<string | undefined>>
+   resetInnerHTML: boolean
+   setResetInnerHTML: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 
@@ -60,6 +62,22 @@ const TextEditor = (props: Props) => {
    }
 
 
+   const resetTextEditor = (): void => {
+      if (textEditorRef.current) {
+         textEditorRef.current.innerHTML = "";
+         props.setTextEditorInnerHTML(undefined);
+      }
+   }
+
+
+
+
+   useEffect(() => {
+      if (props.resetInnerHTML) {
+         resetTextEditor();
+         props.setResetInnerHTML(false)
+      }
+   }, [props.resetInnerHTML])
 
 
    useEffect(() => {
@@ -72,6 +90,7 @@ const TextEditor = (props: Props) => {
    useEffect(() => {
       if (chosenEmoji && chosenEmoji.emoji && textEditorRef.current) {
          textEditorRef.current.innerHTML = textEditorRef.current.innerHTML + chosenEmoji.emoji;
+         textInputListener();
       }
    }, [chosenEmoji, textEditorRef.current])
 

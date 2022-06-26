@@ -37,6 +37,35 @@ $thumb-height: 10px;
       border-radius: 0.7rem;
       background-color: #fff;
 
+      .loadingPreloaderContainer {
+         position: absolute;
+         z-index: 50;
+
+         width: 100%;
+         height: 100%;
+
+         background-color: rgba(0, 0, 0, 0.3);
+         animation: preloader_bcg_color 0.3s;
+         border-radius: 0.7rem;
+
+         .loadingPreloaderSubContainer {
+            position: relative;
+
+            width: 100%;
+            height: 100%;
+
+            img {
+               position: absolute;
+
+               left: 50%;
+               top: 50%;
+               transform: translate(-50%, -50%);
+
+               width: 40px;
+            }
+         }
+      }
+
       .title {
          text-align: center;
 
@@ -191,8 +220,12 @@ $thumb-height: 10px;
             left: 50%;
             top: 50%;
             transform: translate(calc(-50% - 0.75rem), -50%);
-   
+
             width: 35px;
+
+            img {
+               border-radius: 50%;
+            }
          }
       }
 
@@ -253,6 +286,16 @@ $thumb-height: 10px;
 
    to {
       opacity: 1;
+   }
+}
+
+@keyframes preloader_bcg_color {
+   from {
+      background-color: rgba(0, 0, 0, 0);
+   }
+
+   to {
+      background-color: rgba(0, 0, 0, 0.3);
    }
 }
 

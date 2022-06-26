@@ -42,8 +42,16 @@ export const store = configureStore({
       getDefaultMiddleware({
          serializableCheck: {
             ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
-            ignoredPaths: ['friends.list', 'profile.profileInfo'],
-            ignoredActionPaths: ['payload', 'meta.arg.callback', 'meta.arg.file'],
+            ignoredPaths: ['friends.list', 'profile.profileInfo', 'profile.profileInfo.posts'],
+            ignoredActionPaths: [
+               'payload',
+               'meta.arg.callback',
+               'meta.arg.file',
+               'meta.arg.files',
+               'meta.arg.audios',
+               `meta.arg.imagesAndVideos`,
+               'profile.profileInfo.posts'
+            ],
          },
       }),
 })

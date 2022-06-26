@@ -1,5 +1,5 @@
 import { IconsThatAreLoaded } from 'common/IconsThatAreLoaded/IconsThatAreLoaded'
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import styles from './Preloader.module.scss'
 
 

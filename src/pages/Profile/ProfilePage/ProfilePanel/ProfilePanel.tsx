@@ -1,9 +1,8 @@
 import styles from './ProfilePanel.module.scss';
 import { useState, useEffect, useRef, useContext } from 'react';
-import { getLoadInfo, getProfileInfo, getProfileInfoMode, profileActions, uploadFile } from '../../redux/profileReducer';
+import { getLoadInfo, getProfileInfo, profileActions, uploadAvatar } from '../../redux/profileReducer';
 import { Profile } from '../../types/types';
 import { useAppDispatch, useAppSelector } from '../../../../hooks/redux';
-import ChangeProfileInfoForm from '../Editors/ChangeProfileInfoForm';
 import ChangePasswordForm from '../Editors/ChangePasswordForm';
 import SignOut from '../Editors/SignOut';
 import { IconsThatAreLoaded } from 'common/IconsThatAreLoaded/IconsThatAreLoaded';
@@ -13,8 +12,9 @@ import ProfileInfo from './ProfileInfo/ProfileInfo';
 import { Popup, usePopupElement } from 'hooks';
 import { useElementTouchStartListener } from 'hooks/usePopup/useElementTouchStartListener';
 import { AppContext, PopupContext } from '../../../../App';
-import PanelForCreatingAPost from './PanelForCreatingAPost/PanelForCreatingAPost';
 import SelectAndEditAnImageForm from 'common/UploadFormsAndLightbox/SelectAndEditAnImageForm';
+import PostEditPanel from 'common/PostEditPanel/PostEditPanel';
+import ChangeProfileInfoForm from '../Editors/ChangeProfileInfoForm';
 
 
 
@@ -93,7 +93,7 @@ const ProfilePanel = () => {
    }
 
    const changeAvatarFormSubmitListener = (croppedImage: File | null, callback: () => void): void => {
-      dispatch(uploadFile({
+      dispatch(uploadAvatar({
          file: croppedImage!,
          typeOfFile: "avatar",
          callback,
@@ -183,7 +183,8 @@ const ProfilePanel = () => {
             <ProfileInfo
                profileInfo={profileInfo}
             />
-            <PanelForCreatingAPost />
+            {/* <PanelForCreatingAPost /> */}
+            <PostEditPanel containerClassName={styles.panelForCreatingAPost} />
          </div>
          <IconsThatAreLoaded
             icons={editIcons}

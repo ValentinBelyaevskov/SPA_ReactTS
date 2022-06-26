@@ -38,7 +38,7 @@ const ChangePasswordForm = (props: Props) => {
    const icons: string[] = [
       "./icons/showPasswordIcon.svg",
       "./icons/hidePasswordIcon.svg",
-   ]
+   ];
 
 
 
@@ -64,12 +64,12 @@ const ChangePasswordForm = (props: Props) => {
          ...loadInfo,
          loaded: false,
          loading: true,
-      }))
+      }));
       dispatch(update({
          profile: { ...profile, },
          profilePasswords: { ...data },
          callback: popupForm.hideEditorStyle,
-      }))
+      }));
    }
 
    const currentPasswordIconTouchStartListener = (e: React.TouchEvent): void => {
@@ -80,11 +80,6 @@ const ChangePasswordForm = (props: Props) => {
    const currentPasswordIconClickListener = (): void => {
       currentPasswordIconPseudoClassNames.clickListener();
       currentPasswordVisibility.iconClickListener();
-   }
-
-   const newPasswordIconTouchStartListener = (e: React.TouchEvent): void => {
-      newPasswordIconPseudoClassNames.touchStartListener();
-      secondInputFocus.innerElementClickListener(e);
    }
 
    const newPasswordIconClickListener = (): void => {
@@ -102,7 +97,7 @@ const ChangePasswordForm = (props: Props) => {
                   loadInfo.loading && (
                      <div className={styles.preloaderContainer}>
                         <div className={styles.preloaderSubContainer}>
-                           <img src="./animatedIcons/preloader2.svg" alt="preloader" />
+                           <img src="./animatedIcons/preloader2_white.svg" alt="preloader" />
                         </div>
                      </div>
                   )

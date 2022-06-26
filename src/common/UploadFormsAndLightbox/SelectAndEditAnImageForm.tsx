@@ -151,6 +151,16 @@ const SelectAndEditAnImageForm = (props: Props) => {
    return (
       <div style={popupForm.editorStyle} onTransitionEnd={popupForm.transitionEndListener} className={`${styles.editor} ${styles.changeAvatarEditor} ${editorWithPreviewClassName}`}>
          <div className={`${styles.SelectAndEditAnImageFormContainer} ${styles.formContainer}`}>
+            {
+               (props.loadInfo && props.loadInfo.loading)
+               && (
+                  <div className={styles.loadingPreloaderContainer}>
+                     <div className={styles.loadingPreloaderSubContainer}>
+                        <img src="./animatedIcons/preloader2_white.svg" alt="preloader" />
+                     </div>
+                  </div>
+               )
+            }
             <form id="updloadAvatar" className={styles.form} onSubmit={handleSubmit(onSubmit)}>
                <h2 className={styles.title}>
                   {props.popupText}
@@ -189,9 +199,11 @@ const SelectAndEditAnImageForm = (props: Props) => {
                   }
                   {
                      props.loadInfo
-                        ? (props.loadInfo.loading ? <div className={`${styles.warning} ${styles.loadingWarning}`}>Loading...</div>
-                           : props.loadInfo.error ? <div className={`${styles.warning} ${styles.errorWarning}`}>{`${props.loadInfo.error}`}</div>
-                              : null)
+                        ? (
+                           props.loadInfo.error
+                              ? <div className={`${styles.warning} ${styles.errorWarning}`}>{`${props.loadInfo.error}`}</div>
+                              : null
+                        )
                         : null
                   }
                   {

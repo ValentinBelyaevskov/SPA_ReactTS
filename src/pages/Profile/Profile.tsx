@@ -62,7 +62,7 @@ const Profile = () => {
          {
             ((loading
                && (
-                  (!trySignIn && (profileInfoMode !== "edit"))
+                  (!trySignIn && (profileInfoMode === "view"))
                ))
                || !iconsLoaded
                || (showPreloader && profileMode === "loggedIn")) && !loadInfo.error

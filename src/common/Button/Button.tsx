@@ -22,6 +22,7 @@ type Params = {
    color?: "blue" | "red"
    disabled?: boolean
    buttonRef?: React.RefObject<HTMLButtonElement>
+   jsx?: JSX.Element
 }
 
 interface Props {
@@ -103,6 +104,11 @@ const Button = (props: Props) => {
             disabled={props.params.disabled ? true : false}
             ref={props.params.buttonRef ? props.params.buttonRef : undefined}
          >
+            {
+               props.params.jsx ?
+                  props.params.jsx
+                  : null
+            }
             {props.params.text}
          </button>
       </div>

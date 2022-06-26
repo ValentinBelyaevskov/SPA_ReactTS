@@ -1,5 +1,13 @@
-import { ConfigForAdaptability } from 'common/NotVisibleParameterValue/useSetParameterSize';
 import React from 'react';
+
+
+// * normalization
+export interface Entities<T> {
+   [key: string]: T
+}
+
+export type Ids = string[]
+// *
 
 
 export type LoadInfo = {

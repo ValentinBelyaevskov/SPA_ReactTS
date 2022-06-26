@@ -1,4 +1,4 @@
-import { LoadInfo, UserProps } from '../../../types/types';
+import { LoadInfo, UserProps, Entities, Ids } from '../../../types/types';
 
 export type ProfileState = {
    profileInfo: Profile
@@ -7,9 +7,17 @@ export type ProfileState = {
    signInMode: SignInMode
    loadInfo: LoadInfo
    errorTypes: string[]
+   posts: {
+      entities: Entities<Post>
+      ids: Ids
+   },
+   files: {
+      entities: Entities<File>
+      ids: Ids
+   }
 }
 
-export type Profile = {
+export interface Profile {
    firstName: string
    lastName: string
    email: string
@@ -21,6 +29,15 @@ export type Profile = {
    password?: string
    education?: string
    dateOfBirth?: string
+   // posts: Ids
+}
+
+export type Post = {
+   objectId: string
+   files: string[]
+   audios: string[]
+   imagesAndVideos: string[]
+   innerHTML: string
 }
 
 export type ProfileMode = "signIn"
@@ -30,7 +47,7 @@ export type ProfileMode = "signIn"
    | "guestSignIn"
 
 export type ProfileInfoMode = "view"
-   | "edit"
+   | "edit" | "addContent"
 
 export type SignInMode = "login"
    | "passwordReset"
@@ -54,21 +71,26 @@ export type UpdateParams = {
       newPassword: string
       education?: string
       dateOfBirth?: string
-      [prop: string]: string | number | null | undefined
+      posts?: Ids
+      [prop: string]: string | number | null | undefined | string[]
    },
    callback?: () => void
 }
 
-export type UpdatedProfile = {
+export interface UpdatedProfile {
    firstName?: string
    lastName?: string
    email?: string
-   location?: string
+   country?: string
+   region?: string
+   city?: string
+   avatar?: string
    objectId?: string
-   profileAvatar?: string
+   password?: string
    education?: string
    dateOfBirth?: string
-   [prop: string]: string | number | null | undefined
+   posts?: Ids
+   [prop: string]: string | number | null | undefined | string[]
 }
 
 export type CreateAccountArg = {
@@ -104,3 +126,19 @@ export type UploadFileParams = {
    objectId: string
    avatar: string
 }
+
+export type PostPayloadAction = {
+   post: Post,
+   userPosts: string[]
+}
+
+// ? create a post thunk
+export type PostData = {
+   profileId: string
+   profilePosts: string[]
+   innerHTML: string
+   imagesAndVideos: File[]
+   files: File[]
+   audios: File[]
+}
+//       ?

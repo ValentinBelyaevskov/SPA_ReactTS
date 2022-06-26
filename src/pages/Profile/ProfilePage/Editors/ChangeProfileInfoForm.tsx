@@ -227,7 +227,7 @@ const ChangeProfileInfoForm = (props: Props) => {
                      loadInfo.loading && (
                         <div className={styles.preloaderContainer}>
                            <div className={styles.preloaderSubContainer}>
-                              <img src="./animatedIcons/preloader2.svg" alt="preloader" />
+                              <img src="./animatedIcons/preloader2_white.svg" alt="preloader" />
                            </div>
                         </div>
                      )

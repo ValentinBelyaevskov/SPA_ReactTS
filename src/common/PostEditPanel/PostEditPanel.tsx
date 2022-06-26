@@ -1,20 +1,18 @@
-import styles from './PanelForCreatingAPost.module.scss';
-import profilePanelStyles from '../ProfilePanel.module.scss';
+import styles from './PostEditPanel.module.scss';
 import React, { useRef, useState, useEffect, useContext } from 'react';
 import { Button, RoundAvatar } from 'common';
-import { useAppSelector } from 'hooks/redux';
-import { getProfileInfo, profileActions, createAPost, getLoadInfo, getProfileInfoMode, getPostIds, getPostEntities } from '../../../redux/profileReducer';
+import { useAppDispatch, useAppSelector } from 'hooks/redux';
+import { getProfileInfo, profileActions, createAPost, getLoadInfo, getProfileInfoMode, getPostIds } from 'pages/Profile/redux/profileReducer';
 import { AppContext, PopupContext } from 'App';
 import AddContentIcon from './AddContentIcon';
 import SelectAndEditAnImageForm from 'common/UploadFormsAndLightbox/SelectAndEditAnImageForm';
-import { useAppDispatch } from '../../../../../hooks/redux';
 import { usePostImagesAndVideosBlock } from './hooks/usePostImagesAndVideosBlock';
 import { Popup, usePopupElement } from 'hooks';
 import VideoUploader from 'common/UploadFormsAndLightbox/VideoUploader';
 import ImagesAndVideosBlockContainer from './ImagesAndVideosBlockContainer';
 import ImageAndVideoLightbox from 'common/UploadFormsAndLightbox/ImageAndVideoLightbox';
 import { IconsThatAreLoaded } from 'common/IconsThatAreLoaded/IconsThatAreLoaded';
-import FileUploader from '../../../../../common/UploadFormsAndLightbox/FileUploader';
+import FileUploader from 'common/UploadFormsAndLightbox/FileUploader';
 import FilesListItem from './FilesListItem';
 import AudiosListItem from './AudiosListItem';
 import AudioUploader from 'common/UploadFormsAndLightbox/AudioUploader';
@@ -38,6 +36,7 @@ type AddContentButtonClickListeners = {
 }
 
 type Props = {
+   containerClassName: string
 }
 
 type ImagesAndVideosBlockCtxt = {
@@ -90,7 +89,7 @@ export let ImagesAndVideosBlockContext = React.createContext<ImagesAndVideosBloc
 
 
 
-const PanelForCreatingAPost = (props: Props) => {
+const PostEditPanel = (props: Props) => {
    const dispatch = useAppDispatch();
    const profile = useAppSelector(getProfileInfo);
    const loadInfo = useAppSelector(getLoadInfo);
@@ -328,7 +327,7 @@ const PanelForCreatingAPost = (props: Props) => {
 
 
    return (
-      <div className={`${styles.panelForCreatingAPost} ${profilePanelStyles.panelForCreatingAPost}`} ref={panelRef}>
+      <div className={`${styles.panelForCreatingAPost} ${props.containerClassName}`} ref={panelRef}>
          {
             iconsLoaded ?
                (
@@ -448,4 +447,4 @@ const PanelForCreatingAPost = (props: Props) => {
 
 
 
-export default PanelForCreatingAPost
+export default PostEditPanel
