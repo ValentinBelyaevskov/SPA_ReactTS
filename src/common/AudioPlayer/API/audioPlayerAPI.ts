@@ -1,7 +1,7 @@
 import { AppDispatch } from "redux/store";
 import { setPlayerField } from "../functions.ts/setPlayerField";
 import { AudioPlayerActions } from "../redux/audioPlayerReducer";
-import { ActiveTrackIdAction,  AddAudioFileAction,  AudioFile, AudioFilesAction, AudioUploadedAction, CommonTrackSliderProps, CommonVolumeSliderProps, IsPlayingAction, ItemIdAction, PlayerConfig, PlayerConfigAction, PlayerName, PlayerState, PlayerStateAction, PlayerStatusAction, PlaylistLoadedAction, RemoveAudioFileAction, ShowAudioPlayerAction, ShowPlaylistAction, TrackSliderProps, TrackSliderPropsAction, WindowSizeAction } from "../types/types";
+import { ActiveTrackIdAction, AddAudioFileAction, AudioFile, AudioFilesAction, AudioUploadedAction, CommonTrackSliderProps, CommonVolumeSliderProps, IsPlayingAction, ItemIdAction, PlayerConfig, PlayerConfigAction, PlayerName, PlayerState, PlayerStateAction, PlayerStatusAction, PlaylistLoadedAction, RemoveAudioFileAction, ShowAudioPlayerAction, ShowPlaylistAction, TrackSliderProps, TrackSliderPropsAction, WindowSizeAction } from "../types/types";
 
 
 
@@ -42,6 +42,10 @@ export class audioPlayerApi {
          name: this.name,
          playerState
       });
+   }
+
+   setGeneralPlayerContext = (context: string) => {
+      this.dispatch(this.audioPlayerActions.setGeneralPlayerContext(context))
    }
 
    setConfig = (playerConfig: PlayerConfig) => {

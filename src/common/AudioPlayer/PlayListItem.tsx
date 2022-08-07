@@ -103,7 +103,7 @@ const PlayListItem = (props: Props) => {
 
          if (isPlaying) {
             setActive(true);
-            props.setActiveTrackId(props.id);
+            // props.setActiveTrackId(props.id);
          };
       }
    }, [props.audioIsPlaying, props.id, props.activeTrackId, isPlaying])

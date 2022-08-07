@@ -29,15 +29,15 @@ export interface Profile {
    password?: string
    education?: string
    dateOfBirth?: string
-   // posts: Ids
 }
 
 export type Post = {
    objectId: string
-   files: string[]
-   audios: string[]
-   imagesAndVideos: string[]
    innerHTML: string
+   imagesAndVideos: ImagesAndVideosItem[],
+   files: FilesItem[],
+   audios: AudiosItem[],
+   created: number
 }
 
 export type ProfileMode = "signIn"
@@ -53,6 +53,7 @@ export type SignInMode = "login"
    | "passwordReset"
    | "createAccount"
    | "loginAsGuest"
+   | "emailConfirmation"
 
 export type SignInParams = {
    accountExists: boolean,
@@ -133,12 +134,46 @@ export type PostPayloadAction = {
 }
 
 // ? create a post thunk
+export type ImagesAndVideosItem = {
+   type: "image" | "video"
+   src?: string,
+   file?: File,
+   aspect?: number,
+   area?: number,
+   sizes?: [number, number]
+}
+
+export type FilesItem = {
+   type: string
+   name?: string
+   src?: string
+   file?: File
+   size?: number
+}
+
+export type AudiosItem = {
+   type: "audio",
+   file?: File
+   src: string
+   name: string,
+   size: number,
+}
+
 export type PostData = {
    profileId: string
    profilePosts: string[]
    innerHTML: string
-   imagesAndVideos: File[]
-   files: File[]
-   audios: File[]
+   imagesAndVideos: ImagesAndVideosItem[]
+   files: FilesItem[]
+   audios: AudiosItem[]
+}
+
+export type PostObject = {
+   userId: string,
+   innerHTML: string,
+   imagesAndVideos: ImagesAndVideosItem[],
+   files: FilesItem[],
+   audios: AudiosItem[],
+   [key: string]: any
 }
 //       ?

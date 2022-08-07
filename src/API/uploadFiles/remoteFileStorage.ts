@@ -1,5 +1,6 @@
 import { digestMessage } from '../../functions/digestMessage';
 import Backendless from 'backendless';
+import { convertFileSizeToMb } from 'functions/convertFileSizeToMB';
 
 
 
@@ -39,6 +40,7 @@ class RemoteFileStorage implements Cloud {
    readonly videoUrl: string = "https://api.cloudinary.com/v1_1/studentnsk/video/";
    protected avatarsPreset: string = "avatarsPreset";
    protected imagesAndVideosPreset: string = "imagesAndVideosPreset";
+   protected imagesAndVideosPresetEco: string = "imagesAndVideosPresetEco";
    protected audiosPreset: string = "audiosPreset";
    protected filesPreset: string = "filesPreset";
 
@@ -75,10 +77,9 @@ class RemoteFileStorage implements Cloud {
       try {
          if (files.length === 0) return [];
 
-
-
          const savedFiles: string[] = await Promise.all(files.map(async (file) => {
             const optimizationFormData: FormData = new FormData();
+            let size: "normal" | "big" = "normal";
 
             const typeUrl: string | undefined = (
                file.type.includes("image")
@@ -88,16 +89,34 @@ class RemoteFileStorage implements Cloud {
                      : undefined
             );
 
-            console.log("file.type: ", file.type);
+
+
+            if (
+               file.type.includes("image")
+               && convertFileSizeToMb(file.size) > 5
+               && convertFileSizeToMb(file.size) < 10
+            ) {
+               size = "big";
+            } else if (convertFileSizeToMb(file.size) > 10) {
+               throw new Error("Image size should not exceed 10mb");
+            }
 
             if (!typeUrl) {
-               throw new Error();
+               throw new Error("The file is not a video or image");
             }
+
+
 
             const url: string = typeUrl + "upload";
 
             optimizationFormData.append("file", file);
-            optimizationFormData.append("upload_preset", this.imagesAndVideosPreset);
+
+            if (size === 'big') {
+               optimizationFormData.append("upload_preset", this.imagesAndVideosPresetEco);
+            } else if (size === 'normal') {
+               optimizationFormData.append("upload_preset", this.imagesAndVideosPreset);
+            }
+
 
             const response: Response = await fetch(url, {
                method: "POST",
@@ -122,10 +141,7 @@ class RemoteFileStorage implements Cloud {
    // * audios
    async uploadAudios(files: File[]): Promise<string[]> {
       try {
-         console.log(files);
          if (files.length === 0) return [];
-
-
 
          const savedFiles: string[] = await Promise.all(files.map(async (file) => {
             const optimizationFormData: FormData = new FormData();

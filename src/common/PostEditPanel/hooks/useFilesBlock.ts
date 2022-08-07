@@ -1,13 +1,14 @@
+import { getFileSizeString } from "functions/getFileSizeString";
 import { useEffect, useState } from "react";
 
 
 
 
 export type FilesItem = {
+   type: string
    name?: string
-   type?: string
    src?: string
-   file: File
+   file?: File
    size?: number
 }
 
@@ -27,8 +28,11 @@ export const useFilesBlock = () => {
             name: file.name,
             file,
             type: file.type,
-            src: URL.createObjectURL(file)
+            src: URL.createObjectURL(file),
+            size: file.size
          }
+
+         console.log(`${getFileSizeString(file.size)} MB`);
 
          setFiles([...files, fileObj]);
       }
@@ -60,6 +64,7 @@ export const useFilesBlock = () => {
 
    return {
       files,
+      setFiles,
       filesBlockStyle,
       addFile,
       deleteFile,

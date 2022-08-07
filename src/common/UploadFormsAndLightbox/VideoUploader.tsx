@@ -6,6 +6,7 @@ import { usePopupForm } from "hooks/usePopup/usePopupForm";
 import { LoadInfo } from "types/types";
 import { useHoverAndTouchClassNames } from "hooks/useHoverAndTouchClassNames";
 import { useWindowSize } from '../../hooks/useWindowSize';
+import { convertFileSizeToMb } from "functions/convertFileSizeToMB";
 
 
 
@@ -16,6 +17,7 @@ interface Props {
    closeButtonClickHandler?: () => void
    uploadButtonText: string
    popupText: string
+   playVideoListener?: () => void
 }
 
 type Inputs = {
@@ -39,14 +41,28 @@ const VideoUploader = (props: Props) => {
    const fieldsRef = useRef<HTMLDivElement>(null);
    const [videoStyle, setVideoStyle] = useState<VideoStyle>({});
    const resize = useWindowSize("resize");
-   const [errorString, setErrorString] = useState<"The file must be an video" | undefined>(undefined);
+   const [errorString, setErrorString] = useState<string | undefined>(undefined);
 
 
 
    const setVideoSrcOnChange = (): void => {
       const inputFile: File = watch("fileList")[0];
 
-      if (inputFile && !isTheFileAnVideo(inputFile)) return;
+      if (inputFile) {
+         if (!isTheFileAnVideo(inputFile)) {
+            setErrorString('The file must be an video');
+            setVideoFile(null);
+            setVideoSrc("")
+            return;
+         } else if (!fileSizeDoesNotExceedTheAllowable(inputFile)) {
+            setErrorString('file size should not exceed 20 mb');
+            setVideoFile(null);
+            setVideoSrc("")
+            return;
+         } else {
+            setErrorString(undefined)
+         }
+      }
 
       if (inputFile) {
          const src: string = URL.createObjectURL(inputFile);
@@ -67,6 +83,7 @@ const VideoUploader = (props: Props) => {
 
    const isTheFileAnVideo = (imageFile: File) => imageFile.type.slice(0, 5) === "video" ? true : false;
 
+   const fileSizeDoesNotExceedTheAllowable = (file: File) => convertFileSizeToMb(file.size) <= 20 ? true : false
 
 
    const { register, handleSubmit, watch } = useForm<Inputs>({
@@ -74,7 +91,11 @@ const VideoUploader = (props: Props) => {
    });
 
    const onSubmit: SubmitHandler<Inputs> = () => {
-      if (videoFile && !isTheFileAnVideo(videoFile)) return;
+      if (
+         videoFile
+         && !isTheFileAnVideo(videoFile)
+         && !fileSizeDoesNotExceedTheAllowable(videoFile)
+      ) return;
 
       resize.removeEventListener()
       const callback = (): void => {
@@ -129,9 +150,20 @@ const VideoUploader = (props: Props) => {
    }, [videoStyle.height, fieldsRef.current, videoSizes[0], videoSizes[1], resize.value[0]])
 
    useEffect(() => {
-      if (videoFile && !isTheFileAnVideo(videoFile)) {
-         setErrorString('The file must be an video');
-      } else {
+      if (videoFile) {
+         if (!isTheFileAnVideo(videoFile)) {
+            setErrorString('The file must be an video');
+         } else if (!fileSizeDoesNotExceedTheAllowable(videoFile)) {
+            setErrorString('The file must be an video');
+         }
+
+      } else if (
+         (
+            videoFile
+            && isTheFileAnVideo(videoFile)
+            && fileSizeDoesNotExceedTheAllowable(videoFile)
+         )
+      ) {
          setErrorString(undefined);
       }
    }, [videoFile])
@@ -172,6 +204,8 @@ const VideoUploader = (props: Props) => {
                               className={`${styles.video} unselectable`}
                               width={videoStyle.width}
                               height={videoStyle.height}
+                              onPlay={props.playVideoListener}
+                              muted={true}
                               controls
                            >
                            </video>

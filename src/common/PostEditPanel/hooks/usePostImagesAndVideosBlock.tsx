@@ -7,10 +7,10 @@ import { isTheFileTypeIsCorrect } from "../functions/isTheFileTypeIsCorrect";
 
 export type GridDirection = "vertical" | "horizontal"
 
-export type PostImagesItem = {
+export type ImagesAndVideosItem = {
    type: "image" | "video"
    src?: string,
-   file: File,
+   file?: File,
    aspect?: number,
    area?: number,
    sizes?: [number, number]
@@ -31,7 +31,7 @@ type GridTemplateFr = {
 
 
 export const usePostImagesAndVideosBlock = (resize: WindowSize) => {
-   const [imagesAndVideos, setImagesAndVideos] = useState<PostImagesItem[]>([]);
+   const [imagesAndVideos, setImagesAndVideos] = useState<ImagesAndVideosItem[]>([]);
    const [imagesAndVideosBlockStyle, setImagesAndVideosBlockStyle] = useState<{ marginTop?: string, maxHeight?: string }>({});
    const [gridDirection, setGridDirection] = useState<GridDirection>("horizontal");
    const [imagesAndVideosContainerStyle, setImagesAndVideosContainerStyle] = useState<GridContainerStyle>({});
@@ -52,7 +52,7 @@ export const usePostImagesAndVideosBlock = (resize: WindowSize) => {
             return;
          };
 
-         const imageObj: PostImagesItem = {
+         const imageObj: ImagesAndVideosItem = {
             type,
             src: URL.createObjectURL(file),
             file: file,
@@ -124,7 +124,7 @@ export const usePostImagesAndVideosBlock = (resize: WindowSize) => {
    }
 
 
-   const getImagesOrVideosAspects = (imgsIstartIend: [PostImagesItem[], number, number]): number[] => imgsIstartIend[0].slice(imgsIstartIend[1], imgsIstartIend[2]).map(item => item.aspect!)
+   const getImagesOrVideosAspects = (imgsIstartIend: [ImagesAndVideosItem[], number, number]): number[] => imgsIstartIend[0].slice(imgsIstartIend[1], imgsIstartIend[2]).map(item => item.aspect!)
 
 
    const resetImagesBlock = (): void => {
@@ -137,6 +137,8 @@ export const usePostImagesAndVideosBlock = (resize: WindowSize) => {
    useEffect(() => {
       if (imagesAndVideos.length) {
          setImagesAndVideosBlockStyle({ marginTop: "15px" });
+      } else {
+         setImagesAndVideosBlockStyle({});
       }
    }, [imagesAndVideos.length]);
 
@@ -573,6 +575,7 @@ export const usePostImagesAndVideosBlock = (resize: WindowSize) => {
 
    return {
       imagesAndVideos,
+      setImagesAndVideos,
       imagesAndVideosBlockStyle,
       gridDirection,
       imagesAndVideosContainerStyle,

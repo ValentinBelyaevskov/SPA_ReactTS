@@ -63,6 +63,7 @@ const CreateAccountForm = () => {
             password: data.password,
          },
       }))
+      dispatch(profileActions.setSignInMode('emailConfirmation'))
       dispatch(profileActions.setLoadInfo({
          ...loadInfo,
          loading: true,

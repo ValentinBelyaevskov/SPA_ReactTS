@@ -1,28 +1,30 @@
 import { useHoverAndTouchClassNames } from 'hooks/useHoverAndTouchClassNames';
 import styles from './AudiosListItem.module.scss'
 import NotVisibleParameterValue from 'common/NotVisibleParameterValue/NotVisibleParameterValue';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useEffect } from 'react';
 import getFileNameAndFormat from 'functions/getFileNameAndFormat';
-import { AudioFile } from 'common/AudioPlayer/types/types';
+import { AudioFilesItem } from './hooks/useAudiosBlock';
+import { convertSecondsToMs } from 'common/AudioPlayer/functions.ts/convertSecondsToMs';
 
 
 
 
 type Props = {
    index: number
-   id: number
-   file: AudioFile
-   deleteAudio: (id: number, index: number) => void
-   activeTrackId: number
-   setActiveTrackId: (activeTrackId: number) => void
+   mode: "edit" | "view"
+   file: AudioFilesItem
+   currentPlaylistActive: boolean
+   deleteAudio: (index: number) => void
+   activeTrackIdNumber: number
    audioIsPlaying: boolean
    setAudioIsPlaying: (isPlaying: boolean) => void
    setShowAudioPlayer: React.Dispatch<React.SetStateAction<boolean>>
-   setActiveTrack: (activeTrack: number) => void
+   setActiveTrackIdNumber: React.Dispatch<React.SetStateAction<number>>
    loadingStatus: boolean
    updateLoadingStatusesItem: (itemIndex: number, newItemValue: boolean) => void
    numberOfLoadedStatuses: number
+   setGeneralPlayerContext: () => void
 }
 
 
@@ -41,6 +43,9 @@ const AudiosListItem = (props: Props) => {
    const [isTheValueLong, setIsTheValueLong] = useState<boolean | undefined>(undefined);
    const [active, setActive] = useState<boolean>(false);
    const [loadingStatus, setLoadingStatus] = useState<boolean>(false);
+   const audioRef = useRef<HTMLAudioElement>(null);
+   const [trackDuration, setTrackDuration] = useState<string | undefined>(undefined);
+   const [expectContextMatch, setExpectContextMatch] = useState<boolean>(false);
 
 
 
@@ -49,25 +54,48 @@ const AudiosListItem = (props: Props) => {
 
    const audioClickHandler = (): void => {
       audioLinkHoverAndTouchClassNames.clickListener();
-      setIsPlaying(!isPlaying);
-      props.setAudioIsPlaying(!isPlaying);
-      props.setActiveTrack(props.id);
+
+      if (props.currentPlaylistActive) {
+         setIsPlaying(!isPlaying);
+         props.setAudioIsPlaying(!isPlaying);
+      } else {
+         setExpectContextMatch(true);
+      }
+
+      props.setActiveTrackIdNumber(props.index);
+      props.setGeneralPlayerContext();
       props.setShowAudioPlayer(true);
    }
 
    const hideIconClickHandler = (): void => {
       hideIconHoverAndTouchClassNames.clickListener();
-      props.deleteAudio(props.id, props.index);
+      props.deleteAudio(props.index);
 
       if (
-         props.id === props.activeTrackId
+         props.index === props.activeTrackIdNumber
+         && props.currentPlaylistActive
       ) {
          setIsPlaying(false);
          props.setAudioIsPlaying(false);
       }
    }
 
+   const audioLoadListener = () => {
+      if (audioRef.current) {
+         setTrackDuration(convertSecondsToMs(+audioRef.current.duration.toFixed(2)))
+      }
+   }
 
+
+
+
+   useEffect(() => {
+      if (expectContextMatch && props.currentPlaylistActive) {
+         setIsPlaying(!isPlaying);
+         props.setAudioIsPlaying(!isPlaying);
+         setExpectContextMatch(false);
+      }
+   }, [expectContextMatch, props.currentPlaylistActive])
 
 
    useEffect(() => {
@@ -107,23 +135,25 @@ const AudiosListItem = (props: Props) => {
       }
    }, [isPlaying])
 
+   // ! При удалении элементов неправильно задаётся свойство active
+   // При удалении первого трека, в момент проигрыша другого, сбиваются значения
 
    useEffect(() => {
-      if (props.id !== props.activeTrackId) {
+      if (props.index !== props.activeTrackIdNumber || !props.currentPlaylistActive) {
          setIsPlaying(false);
       }
-   }, [isPlaying, props.id, props.activeTrackId])
+   }, [isPlaying, props.index, props.activeTrackIdNumber, props.currentPlaylistActive])
 
 
    useEffect(() => {
-      if (props.id === props.activeTrackId) {
+      if (props.index === props.activeTrackIdNumber && props.currentPlaylistActive) {
          setIsPlaying(props.audioIsPlaying);
+
          if (isPlaying) {
             setActive(true);
-            props.setActiveTrack(props.id);
          }
       }
-   }, [props.audioIsPlaying, props.id, props.activeTrackId, isPlaying])
+   }, [props.audioIsPlaying, props.index, props.activeTrackIdNumber, isPlaying, props.currentPlaylistActive])
 
 
    useEffect(() => {
@@ -136,17 +166,17 @@ const AudiosListItem = (props: Props) => {
 
 
    useEffect(() => {
-      if (props.id !== props.activeTrackId) {
+      if (props.index !== props.activeTrackIdNumber || !props.currentPlaylistActive) {
          setActive(false);
       }
-   }, [props.id, props.activeTrackId])
+   }, [props.index, props.activeTrackIdNumber, props.currentPlaylistActive])
 
 
 
 
    return (
       <>
-         <div className={`${styles.audiosListItem} ${active ? styles.active : ""} unselectable`}>
+         <div className={`${styles.audiosListItem} ${styles[props.mode]} ${active ? styles.active : ""} unselectable`}>
             {
                loadingStatus
                   ? (
@@ -165,6 +195,9 @@ const AudiosListItem = (props: Props) => {
                               {audioNameWithFormat}
                            </p>
                         </div >
+                        <div className={styles.trackDuration}>
+                           {trackDuration}
+                        </div>
                         <img
                            className={`${styles.hideIcon} ${hideIconHoverAndTouchClassNames.className}`}
                            src="./icons/hideMini.svg"
@@ -192,6 +225,12 @@ const AudiosListItem = (props: Props) => {
                      </>
                   )
             }
+            <audio
+               ref={audioRef}
+               src={props.file.src}
+               onLoadedData={audioLoadListener}
+            >
+            </audio>
             <NotVisibleParameterValue
                parameterValue={props.file.name}
                setIsTheValueLong={setIsTheValueLong}

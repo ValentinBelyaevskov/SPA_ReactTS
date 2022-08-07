@@ -21,6 +21,7 @@ interface Props {
    finishWatching: () => void
    contentArr: ContentArrItem[]
    itemIndex: number
+   playVideoListener?: () => void
 }
 
 type ContentStyle = {
@@ -202,6 +203,8 @@ const ImageAndVideoLightbox = (props: Props) => {
                         className={`${styles.video} ${moveUpClassName}`}
                         width={contentStyle.width}
                         height={contentStyle.height}
+                        onPlay={props.playVideoListener}
+                        muted={true}
                         controls
                         src={props.contentArr[itemIndex].src}
                      />

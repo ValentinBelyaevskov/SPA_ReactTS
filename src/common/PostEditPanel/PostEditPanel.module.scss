@@ -1,6 +1,6 @@
 .panelForCreatingAPost {
    position: relative;
-   padding-top: 25px;
+
    width: 100%;
 
    .buttonPreloader {
@@ -15,15 +15,6 @@
    .gridContainer {
       position: relative;
       display: grid;
-      grid-template-columns: 60px minmax(100px, 1fr) 91px;
-      grid-template-rows: 20px 20px minmax(29px, 1fr) minmax(0, auto);
-      grid-template-areas:
-         "avatar          contentIcons    button"
-         "avatar          contentIcons    button"
-         "editor          editor          editor"
-         "imagesAndVideos imagesAndVideos imagesAndVideos"
-         "audios          audios          audios"
-         "files           files           files";
 
       width: 100%;
 
@@ -35,22 +26,116 @@
          width: 40px;
       }
 
-      //       *
-      .textEditorContainer {
-         grid-area: editor;
-         margin-top: 1.3rem;
-      }
-      //       *
+      &.edit {
+         grid-template-columns: 60px minmax(100px, 1fr) 91px;
+         grid-template-rows: 20px 20px 7px minmax(29px, 1fr) minmax(0, auto) minmax(0, auto) minmax(0, auto);
+         grid-template-areas:
+            "avatar          contentIcons    button"
+            "avatar          contentIcons    button"
+            "null            null            null"
+            "editor          editor          editor"
+            "imagesAndVideos imagesAndVideos imagesAndVideos"
+            "audios          audios          audios"
+            "files           files           files";
 
-      .createAPostButtonContainer {
-         grid-area: button;
-         justify-self: end;
-         align-self: center;
+         .textEditorContainer {
+            grid-area: editor;
+            margin-top: 1.3rem;
+         }
 
-         .createAPostButton {
-            padding: 5px 20px;
+         .createAPostButtonContainer {
+            grid-area: button;
+            justify-self: end;
+            align-self: center;
+
+            .createAPostButton {
+               padding: 5px 20px;
+            }
+         }
+
+         .contentIcons {
+            position: relative;
+            grid-area: contentIcons;
+            align-self: center;
+
+            &:hover {
+               cursor: pointer;
+            }
+
+            .contentIconsPrompt {
+               position: absolute;
+               top: -25px;
+
+               padding: 3px 8px;
+               border-radius: 0.4rem;
+
+               font-size: 1.3rem;
+               line-height: 1;
+
+               background-color: var(--theme-prompt-color);
+               color: white;
+
+               transition-property: opacity;
+               transition-duration: 0.2s;
+               opacity: 0;
+            }
+
+            img {
+               padding: 2px 9px;
+
+               transition-property: opacity;
+               transition-duration: 0.1s;
+
+               &:first-of-type {
+                  margin-left: -0.9rem;
+               }
+
+               &.hover:hover,
+               &.touch {
+                  opacity: 0.6;
+               }
+            }
          }
       }
+
+      &.view {
+         grid-template-columns: 55px minmax(0, 1fr);
+         grid-template-rows: 20px 20px 7px minmax(0, auto) minmax(0, auto) minmax(0, auto) minmax(0, auto);
+         grid-template-areas:
+            "avatar          userName"
+            "avatar          date"
+            "null            null"
+            "text            text"
+            "imagesAndVideos imagesAndVideos"
+            "audios          audios         "
+            "files           files          ";
+
+         .userName {
+            grid-area: userName;
+            align-self: center;
+
+            font-size: 1.3rem;
+            font-weight: 700;
+         }
+
+         .date {
+            grid-area: date;
+            align-self: center;
+            font-size: 1.3rem;
+         }
+
+         .text {
+            grid-area: text;
+            margin-top: 1.3rem;
+
+            width: 100%;
+
+            font-size: 1.3rem;
+         }
+      }
+
+      //       *
+      //       *
 
       .imagesBlock {
          grid-area: imagesAndVideos;
@@ -71,78 +156,53 @@
       .audiosBlock {
          grid-area: audios;
       }
-
-      .contentIcons {
-         position: relative;
-         grid-area: contentIcons;
-         align-self: center;
-
-         &:hover {
-            cursor: pointer;
-         }
-
-         .contentIconsPrompt {
-            position: absolute;
-            top: -25px;
-
-            padding: 3px 8px;
-            border-radius: 0.4rem;
-
-            font-size: 1.3rem;
-            line-height: 1;
-
-            background-color: var(--theme-prompt-color);
-            color: white;
-
-            transition-property: opacity;
-            transition-duration: 0.2s;
-            opacity: 0;
-         }
-
-         img {
-            padding: 2px 9px;
-
-            transition-property: opacity;
-            transition-duration: 0.1s;
-
-            &:first-of-type {
-               margin-left: -0.9rem;
-            }
-
-            &.hover:hover,
-            &.touch {
-               opacity: 0.6;
-            }
-         }
-      }
    }
 }
 
 @media (max-width: 460px) {
    .panelForCreatingAPost {
       .gridContainer {
-         grid-template-columns: 58px minmax(75px, 1fr) 80px;
-         grid-template-rows: 23px 23px minmax(31px, 1fr) minmax(0, auto);
-
          .avatar {
             padding: 0 0 46px 0;
             width: 46px;
          }
 
-         .createAPostButtonContainer {
-            .createAPostButton {
-               padding: 5px 20px;
+         &.edit {
+            grid-template-columns: 58px minmax(75px, 1fr) 80px;
+            grid-template-rows: 23px 23px 7px minmax(31px, 1fr) minmax(0, auto);
+
+            .createAPostButtonContainer {
+               .createAPostButton {
+                  padding: 5px 20px;
+               }
+            }
+
+            .contentIcons {
+               img {
+                  &:first-of-type {
+                     margin-left: 0rem;
+                  }
+
+                  padding: 2px 15px;
+                  height: 25px;
+               }
             }
          }
 
-         .contentIcons {
-            img {
-               &:first-of-type {
-                  margin-left: 0rem;
-               }
+         &.view {
+            grid-template-columns: 61px minmax(0, 1fr);
+            grid-template-rows: 23px 23px 7px minmax(0, auto) minmax(0, auto) minmax(0, auto) minmax(0, auto);
 
-               padding: 2px 15px;
-               height: 25px;
+            .userName {
+               font-size: 1.5rem;
+            }
+
+            .date {
+               font-size: 1.5rem;
+            }
+
+            .text {
+               font-size: 1.5rem;
             }
          }
       }
@@ -152,28 +212,47 @@
 @media (max-width: 400px) {
    .panelForCreatingAPost {
       .gridContainer {
-         grid-template-columns: 60px 1fr;
-         grid-template-rows: 23px 23px minmax(31px, 1fr) minmax(0, auto);
-         grid-template-areas:
-            "avatar          null    contentIcons"
-            "avatar          null    contentIcons"
-            "editor          editor          editor"
-            "imagesAndVideos imagesAndVideos imagesAndVideos"
-            "audios          audios          audios"
-            "files           files           files"
-            "button          button         button";
+         &.edit {
+            grid-template-columns: 60px 1fr;
+            grid-template-rows: 23px 23px 7px minmax(31px, 1fr) minmax(0, auto);
+            grid-template-areas:
+               "avatar          undefined       contentIcons"
+               "avatar          undefined       contentIcons"
+               "null            null            null"
+               "editor          editor          editor"
+               "imagesAndVideos imagesAndVideos imagesAndVideos"
+               "audios          audios          audios"
+               "files           files           files"
+               "button          button          button";
 
-         .contentIcons {
-            margin-right: -15px;
+            .contentIcons {
+               margin-right: -15px;
+            }
+
+            .createAPostButtonContainer {
+               width: 100%;
+               margin-top: 2rem;
+
+               .createAPostButton {
+                  width: 100%;
+               }
+            }
+         }
+      }
+
+      &.view {
+         grid-template-columns: 60px 1fr;
+
+         .userName {
+            font-size: 1.5rem;
          }
 
-         .createAPostButtonContainer {
-            width: 100%;
-            margin-top: 2rem;
+         .date {
+            font-size: 1.5rem;
+         }
 
-            .createAPostButton {
-               width: 100%;
-            }
+         .text {
+            font-size: 1.5rem;
          }
       }
    }

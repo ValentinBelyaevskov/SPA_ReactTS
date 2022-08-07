@@ -69,8 +69,6 @@ const DateSelectElement = (props: Props) => {
             onTouchStart={selectHoverAndTouchClassNames.touchStartListener}
             onTouchEnd={selectHoverAndTouchClassNames.touchEndListener}
             onTouchMove={() => setShowAListOfDates(true)}
-
-            
          >
             {dateValue ? dateValue : props.fieldName.toLowerCase()}
             <img className={styles.listArrow} src={arrowIcon} />

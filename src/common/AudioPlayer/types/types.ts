@@ -8,10 +8,10 @@ export type AudioElementsCtxt = {
 }
 
 export type AudioFile = {
+   type: "audio"
    src: string
    name: string
    size: number
-   type: "audio"
 }
 
 export type PlayerMode = "thumbnail" | "full"
@@ -120,7 +120,7 @@ export type AudioFiles = {
    [key: number]: AudioFile
 }
 
-export type Player = {
+export interface Player {
    status: boolean
    state: PlayerState
    config: PlayerConfig
@@ -128,12 +128,16 @@ export type Player = {
    audioFileIds: number[]
 }
 
+export interface GeneralPlayer extends Player {
+   context: string | undefined
+}
+
 export type AudioPlayerState = {
    playerNames: PlayerName[]
    players: {
       popup: Player,
-      general: Player
-      [key: string]: Player
+      general: GeneralPlayer
+      [key: string]: Player | GeneralPlayer
    }
    commonVolumeSliderProps: CommonVolumeSliderProps
    commonTrackSliderProps: CommonTrackSliderProps

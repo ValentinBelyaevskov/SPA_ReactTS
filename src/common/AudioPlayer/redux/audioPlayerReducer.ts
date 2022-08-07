@@ -52,6 +52,7 @@ const initialState: AudioPlayerState = {
 
       general: {
          status: false,
+         context: undefined,
          state: {
             windowSize: [1280, 980],
             showAudioPlayer: false,
@@ -131,6 +132,10 @@ const playerSlice = createSlice({
          state.players[action.payload.name].state = action.payload.playerState;
       },
 
+      setGeneralPlayerContext: (state, action: PayloadAction<string>) => {
+         state.players.general.context = action.payload;
+      },
+
       setAudioFiles: (state, action: PayloadAction<AudioFilesAction>) => {
          state.players[action.payload.name].audioFiles = {};
          state.players[action.payload.name].audioFileIds = [];
@@ -170,6 +175,10 @@ const playerSlice = createSlice({
          player.status = false;
          player.audioFiles = {};
          player.audioFileIds = [];
+
+         if (action.payload === 'general') {
+            state.players[action.payload].context = undefined;
+         }
 
          state.players[action.payload].state = {
             windowSize: [1280, 980],
@@ -304,6 +313,11 @@ export const getPlayerState = (playerName: PlayerName) => createSelector(
    playerConfigs => playerConfigs
 )
 
+export const getGeneralPlayerContext = createSelector(
+   (state: RootState) => state.audioPlayer.players.general.context,
+   context => context
+)
+
 export const getPlayerAudioFiles = (playerName: PlayerName) => createSelector(
    (state: RootState) => state.audioPlayer.players[playerName].audioFiles,
    audioFiles => audioFiles
@@ -333,7 +347,7 @@ export const getActiveTrackName = (playerName: PlayerName) => createSelector(
    (state: RootState) => state.audioPlayer.players[playerName].audioFiles,
    (state: RootState) => state.audioPlayer.players[playerName].state.activeTrackId,
    (audioFiles, activeTrackId) => {
-      return activeTrackId !== 0
+      return activeTrackId !== 0 && audioFiles[activeTrackId]
          ? audioFiles[activeTrackId].name
          : undefined
    }

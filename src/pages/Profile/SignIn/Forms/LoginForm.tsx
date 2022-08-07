@@ -95,7 +95,8 @@ const LoginForm = () => {
                Login
             </h3>
             {
-               (loadInfo.error && (loadInfo.errorType === "emailConfirmation"))
+               ((loadInfo.error && (loadInfo.errorType === "emailConfirmation"))
+               || signInMode === 'emailConfirmation')
                   ? <p className={styles.prompt}>Before you login and begin working with the application, please confirm your email address by following the link.
                      <br />The link is in the message sent to your email.</p>
                   : null
