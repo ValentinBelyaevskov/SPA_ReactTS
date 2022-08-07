@@ -183,8 +183,11 @@ const ProfilePanel = () => {
             <ProfileInfo
                profileInfo={profileInfo}
             />
-            {/* <PanelForCreatingAPost /> */}
-            <PostEditPanel containerClassName={styles.panelForCreatingAPost} />
+            <PostEditPanel
+               containerClassName={styles.panelForCreatingAPost}
+               mode="edit"
+               audioPlayerContext='createAPost'
+            />
          </div>
          <IconsThatAreLoaded
             icons={editIcons}

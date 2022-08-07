@@ -84,16 +84,37 @@
       white-space: nowrap;
    }
 
-   .hideIcon {
-      width: 1.1rem;
+   .trackDuration {
+      justify-self: end;
 
-      transition-property: opacity;
-      transition-duration: 0.1s;
+      color: #959595;
+      font-size: 1.2rem;
+      line-height: 2rem;
+   }
 
-      &.hover:hover,
-      &.touch {
-         opacity: 0.6;
-         cursor: pointer;
+   &.edit {
+      .trackDuration {
+         margin-right: 2.5rem;
+         margin-left: auto;
+      }
+
+      .hideIcon {
+         width: 1.1rem;
+
+         transition-property: opacity;
+         transition-duration: 0.1s;
+
+         &.hover:hover,
+         &.touch {
+            opacity: 0.6;
+            cursor: pointer;
+         }
+      }
+   }
+
+   &.view {
+      .hideIcon {
+         display: none;
       }
    }
 }
@@ -141,6 +162,9 @@
          .audioName {
             font-size: 1.5rem;
          }
+      }
+
+      .trackDuration {
       }
 
       .hideIcon {

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { GridContainerStyle, GridDirection, PostImagesItem } from "./hooks/usePostImagesAndVideosBlock"
+import { GridContainerStyle, GridDirection, ImagesAndVideosItem } from "./hooks/usePostImagesAndVideosBlock"
 import ImagesAndVideosBlockSubContainer from "./ImagesAndVideosBlockSubContainer"
 import styles from './ImagesAndVideosBlockContainer.module.scss'
 import PostImage from "./PostImage"
@@ -13,7 +13,7 @@ type SubContainerStyles = {
 }
 
 type Config = {
-   imagesAndVideos: PostImagesItem[]
+   imagesAndVideos: ImagesAndVideosItem[]
    deleteImageOrVideo: (index: number) => void
    gridDirection: GridDirection
    imagesAndVideosContainerStyle: GridContainerStyle
@@ -39,7 +39,7 @@ const imagesContainerStyles = [
 
 
 const ImagesAndVideosBlockContainer = (props: Props) => {
-   const [imagesBlockArr, setImagesBlockArr] = useState<PostImagesItem[][]>([]);
+   const [imagesBlockArr, setImagesBlockArr] = useState<ImagesAndVideosItem[][]>([]);
    const config = props.config;
    const subContainerStyles = config.subContainerStyles;
 

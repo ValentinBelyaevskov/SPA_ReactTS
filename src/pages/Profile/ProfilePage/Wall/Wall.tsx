@@ -1,8 +1,7 @@
 import { useAppSelector } from 'hooks/redux'
 import styles from './Wall.module.scss'
 import { getPostIds, getPostEntities } from '../../redux/profileReducer';
-import { useEffect } from 'react';
-import MyPost from './MyPost';
+import PostEditPanel from 'common/PostEditPanel/PostEditPanel';
 
 
 type Props = {
@@ -18,15 +17,20 @@ const Wall = (props: Props) => {
 
    return postIds.length > 0
       ? (
-         <div className={`${styles.wall} pagePart`}>
-            <div className={styles.content}>
-               {
-                  postIds.map(id => (
-                     <MyPost key={id} id={id} entity={postEntities[id]} />
-                  ))
-               }
-            </div>
-         </div>
+         <>
+            {
+               postIds.map(id => (
+                  <div key={id} className={`${styles.postContainer} pagePart`}>
+                     <PostEditPanel
+                        mode='view'
+                        containerClassName={styles.post}
+                        post={postEntities[id]}
+                        audioPlayerContext={`post_${id}`}
+                     />
+                  </div>
+               ))
+            }
+         </>
       )
       : <></>
 }

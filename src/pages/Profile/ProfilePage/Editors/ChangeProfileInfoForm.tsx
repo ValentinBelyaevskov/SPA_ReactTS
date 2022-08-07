@@ -345,9 +345,6 @@ const ChangeProfileInfoForm = (props: Props) => {
 
 
                         {
-                           // loadInfo.loading ? <div className={`${styles.warning} ${styles.loadingWarning}`}>Loading...</div>
-                           //    : loadInfo.error ? <div className={`${styles.warning} ${styles.errorWarning}`}>{`${loadInfo.error}`}</div>
-                           //       : null
                            loadInfo.error ? <div className={`${styles.warning} ${styles.errorWarning}`}>{`${loadInfo.error}`}</div>
                               : null
                         }

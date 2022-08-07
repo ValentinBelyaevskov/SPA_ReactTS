@@ -54,17 +54,19 @@ const PostImage = (props: Props) => {
       props.deleteImageOrVideo(props.index);
    }
 
-   const getHideIcon = (): JSX.Element => (
-      <div
-         className={`${styles.hideIcon} ${hideIconHoverAndTouchClassNames.className} unselectable`}
-         onClick={deleteImageOrVideo}
-         onMouseEnter={hideIconHoverAndTouchClassNames.mouseEnterListener}
-         onTouchStart={hideIconHoverAndTouchClassNames.touchStartListener}
-         onTouchEnd={hideIconHoverAndTouchClassNames.touchEndListener}
-      >
-         <img src="./icons/hideMiniWhite.svg" />
-      </div>
-   );
+   const getHideIcon = (): JSX.Element | undefined => imagesAndVideosBlockContext.mode === "edit"
+      ? (
+         <div
+            className={`${styles.hideIcon} ${hideIconHoverAndTouchClassNames.className} unselectable`}
+            onClick={deleteImageOrVideo}
+            onMouseEnter={hideIconHoverAndTouchClassNames.mouseEnterListener}
+            onTouchStart={hideIconHoverAndTouchClassNames.touchStartListener}
+            onTouchEnd={hideIconHoverAndTouchClassNames.touchEndListener}
+         >
+            <img src="./icons/hideMiniWhite.svg" />
+         </div>
+      )
+      : undefined
 
 
 

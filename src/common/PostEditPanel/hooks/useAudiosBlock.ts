@@ -1,18 +1,31 @@
 import { audioPlayerApi } from "common/AudioPlayer/API/audioPlayerAPI";
-import { audioPlayerActions, getPlayerAudioFileIds, getPlayerAudioFiles, getPlayerState } from "common/AudioPlayer/redux/audioPlayerReducer";
+import { audioPlayerActions, getGeneralPlayerContext, getPlayerAudioFileIds, getPlayerAudioFiles, getPlayerState } from "common/AudioPlayer/redux/audioPlayerReducer";
 import { AudioFile } from "common/AudioPlayer/types/types";
 import { AudioPlayerContext } from "common/AudioPlayer/useAudioPlayer";
 import { getArrayWithUpdatedItemValue } from "functions/getArrayWithUpdatedItemValue";
 import { getFilledArray } from "functions/getFiledArray";
 import { useAppDispatch, useAppSelector } from "hooks/redux";
 import { WindowSize } from "hooks/useWindowSize";
+import { Post } from "pages/Profile/types/types";
 import { useContext, useEffect, useState } from "react";
 import { AppCtxt } from "types/types";
 
 
 
 
-export const useAudioBlock = (appContext: AppCtxt, resize: WindowSize) => {
+export type AudioFilesItem = {
+   type: "audio"
+   id?: number
+   file?: File
+   src: string
+   name: string
+   size: number
+}
+
+
+
+
+export const useAudiosBlock = (appContext: AppCtxt, resize: WindowSize, panelAudioPlayerContext: string, mode: "view" | "edit", post: Post | undefined) => {
    const dispatch = useAppDispatch();
 
    const {
@@ -21,14 +34,17 @@ export const useAudioBlock = (appContext: AppCtxt, resize: WindowSize) => {
    } = useContext(AudioPlayerContext);
 
    const audioPlayerState = useAppSelector(getPlayerState("general"));
+   const audioPlayerContext = useAppSelector(getGeneralPlayerContext);
    const audioPlayerStateAPI = new audioPlayerApi(dispatch, audioPlayerActions, "general");
    const audios = useAppSelector(getPlayerAudioFiles("general"));
    const audioIds = useAppSelector(getPlayerAudioFileIds("general"));
+   const [audioFiles, setAudioFiles] = useState<AudioFilesItem[]>([]);
+   const [activeTrackIdNumber, setActiveTrackIdNumber] = useState<number>(0);
    const [audiosBlockStyle, setAudiosBlockStyle] = useState<{ marginTop?: string }>({});
    const [showAudioPlayer, setShowAudioPlayer] = useState<boolean>(false);
-   const [audioFiles, setAudioFiles] = useState<File[]>([]);
+   const [currentPlaylistActive, setCurrentPlaylistActive] = useState<boolean>(false);
 
-   const [audioLoadingStatuses, setAudioLoadingStatuses] = useState<boolean[]>(getFilledArray(false, audioIds.length));
+   const [audioLoadingStatuses, setAudioLoadingStatuses] = useState<boolean[]>(getFilledArray(false, audioFiles.length));
    const [numberOfAudioLoadedStatuses, setNumberOfAudioLoadedStatuses] = useState<number>(0);
 
 
@@ -44,30 +60,39 @@ export const useAudioBlock = (appContext: AppCtxt, resize: WindowSize) => {
          }
 
          audioPlayerStateAPI.addAudioFile(audioObj);
-         setAudioFiles([...audioFiles, file]);
+         setAudioFiles([
+            ...audioFiles,
+            {
+               file,
+               id: new Date().getTime(),
+               ...audioObj,
+            }
+         ]);
       }
 
       callback();
    }
 
 
-   const deleteAudio = (id: number): void => {
-      const idNumber = audioIds.findIndex(audioId => id === audioId);
+   const deleteAudio = (index: number): void => {
+      const activeTrackIdNumber = audioIds.findIndex(id => id === audioPlayerState.activeTrackId);
 
-      setAudioFiles(audioFiles.filter((item, index) => index !== idNumber));
-
-      if (id === audioPlayerState.activeTrackId) {
+      if (index === activeTrackIdNumber) {
          if (audioIds.length === 1) {
             audioPlayerStateAPI.setActiveTrackId(0);
-         } else if (idNumber === audioIds.length - 1) {
-            audioPlayerStateAPI.setActiveTrackId(audioIds[idNumber - 1]);
+         } else if (index === audioIds.length - 1) {
+            audioPlayerStateAPI.setActiveTrackId(audioIds[index - 1]);
          } else {
-            audioPlayerStateAPI.setActiveTrackId(audioIds[idNumber + 1]);
+            audioPlayerStateAPI.setActiveTrackId(audioIds[index + 1]);
          }
       }
 
-      audioPlayerStateAPI.removeAudioFile(id);
+      setAudioFiles(audioFiles.filter((item, i) => i !== index));
+      audioPlayerStateAPI.removeAudioFile(audioIds[index]);
    }
+
+
+   const getActiveTrackIdNumber = (activeTrackId: number): number => audioIds.findIndex(id => id === activeTrackId);
 
 
    const updateLoadingStatusesItem = (index: number, newItemValue: boolean): void => {
@@ -82,6 +107,28 @@ export const useAudioBlock = (appContext: AppCtxt, resize: WindowSize) => {
    }
 
 
+   const stopAudio = (): void => {
+      audioPlayerStateAPI.setIsPlaying(false);
+   }
+
+
+
+
+   useEffect(() => {
+      setShowAudioPlayer(false);
+   }, [audioPlayerContext, panelAudioPlayerContext])
+
+
+   useEffect(() => {
+      setAudioLoadingStatuses(getFilledArray(false, audioFiles.length));
+   }, [audioFiles.length])
+
+
+   useEffect(() => {
+      if (audios[audioPlayerState.activeTrackId]) {
+         setActiveTrackIdNumber(getActiveTrackIdNumber(audioPlayerState.activeTrackId));
+      }
+   }, [audioPlayerState.activeTrackId, audioIds.length])
 
 
    useEffect(() => {
@@ -95,14 +142,14 @@ export const useAudioBlock = (appContext: AppCtxt, resize: WindowSize) => {
 
 
    useEffect(() => {
-      setAudioLoadingStatuses(getFilledArray(false, audioIds.length));
+      setAudioLoadingStatuses(getFilledArray(false, audioFiles.length));
 
-      if (audioIds.length === 0) {
+      if (audioFiles.length === 0) {
          audioPlayerStateAPI.resetPlayer();
-         setAudioLoadingStatuses(getFilledArray(false, audioIds.length));
+         setAudioLoadingStatuses(getFilledArray(false, audioFiles.length));
          setShowPlayerOnPlayBtnClick!(false);
       }
-   }, [audioIds.length])
+   }, [audioFiles.length])
 
 
    useEffect(() => {
@@ -111,32 +158,32 @@ export const useAudioBlock = (appContext: AppCtxt, resize: WindowSize) => {
 
 
    useEffect(() => {
-      if (audioIds.length > 0) {
+      if (audioFiles.length > 0) {
          setAudiosBlockStyle({ marginTop: "15px" });
       } else {
          setAudiosBlockStyle({});
          setShowAudioPlayer(false);
          audioPlayerStateAPI.setIsPlaying(false);
       }
-   }, [audioIds.length])
+   }, [audioFiles.length])
 
 
    useEffect(() => {
-      if (audioPlayerState.isPlaying && !showAudioPlayer && audioIds.length > 0) {
+      if (audioPlayerState.isPlaying && !showAudioPlayer && audioFiles.length > 0 && panelAudioPlayerContext === audioPlayerContext) {
          setShowAudioPlayer(true);
-      } else if (audioIds.length === 0) {
+      } else if (audioFiles.length === 0) {
          setShowAudioPlayer(false);
       }
-   }, [audioPlayerState.isPlaying, showAudioPlayer, audioIds.length])
+   }, [audioPlayerState.isPlaying, showAudioPlayer, audioFiles.length, panelAudioPlayerContext, audioPlayerContext]);
 
 
    useEffect(() => {
-      if (!audioPlayerState.showAudioPlayer) {
+      if (!audioPlayerState.showAudioPlayer && panelAudioPlayerContext === audioPlayerContext) {
          setShowAudioPlayer(false);
       } else {
-         setShowPlayerOnPlayBtnClick!(true)
+         setShowPlayerOnPlayBtnClick!(true);
       }
-   }, [audioPlayerState.showAudioPlayer])
+   }, [audioPlayerState.showAudioPlayer, panelAudioPlayerContext, audioPlayerContext])
 
 
    useEffect(() => {
@@ -209,30 +256,76 @@ export const useAudioBlock = (appContext: AppCtxt, resize: WindowSize) => {
 
          audioPlayerStateAPI.setStatus(true);
       }
-   }, [showAudioPlayer, resize.value[0]])
+   }, [showAudioPlayer, resize.value[0], audioPlayerContext, panelAudioPlayerContext, audioPlayerContext])
 
+
+   useEffect(() => {
+      if (mode === 'view') {
+         setAudioFiles(
+            post!.audios.map((item, index) => ({
+               ...item,
+               id: new Date().getTime() + index
+            }))
+         );
+      }
+   }, [mode])
+
+
+   useEffect(() => {
+      if (panelAudioPlayerContext === audioPlayerContext && showAudioPlayer) {
+         audioPlayerStateAPI.setAudioFiles(
+            audioFiles.map(item => ({
+               name: item.name,
+               size: item.size,
+               src: item.src,
+               type: item.type
+            }))
+         );
+      }
+   }, [panelAudioPlayerContext, audioPlayerContext, audioFiles.length, showAudioPlayer])
+
+
+   useEffect(() => {
+      if (audioIds[activeTrackIdNumber] && panelAudioPlayerContext === audioPlayerContext) {
+         audioPlayerStateAPI.setActiveTrackId(audioIds[activeTrackIdNumber]);
+      }
+   }, [activeTrackIdNumber, audioIds.length, audioIds[0], panelAudioPlayerContext, audioPlayerContext])
+
+
+   useEffect(() => {
+      if (audioPlayerState.showAudioPlayer && panelAudioPlayerContext === audioPlayerContext) {
+         setCurrentPlaylistActive(true);
+      } else {
+         setCurrentPlaylistActive(false);
+      }
+   }, [audioPlayerState.showAudioPlayer, panelAudioPlayerContext, audioPlayerContext])
+
+
+   useEffect(() => {
+      if (!audioPlayerState.showAudioPlayer) {
+         audioPlayerStateAPI.setGeneralPlayerContext("")
+         audioPlayerStateAPI.resetPlayer();
+      }
+   }, [audioPlayerState.showAudioPlayer])
 
 
 
    return {
-      audioIds,
-      audios,
+      stopAudio,
       audioFiles,
+      currentPlaylistActive,
+      setActiveTrackIdNumber,
+      activeTrackIdNumber,
       audiosBlockStyle,
       audioPlayerState,
       audioPlayerStateAPI,
       audioLoadingStatuses,
       numberOfAudioLoadedStatuses,
-      showAudioPlayer,
       setShowAudioPlayer,
-      showPlayerOnPlayBtnClick,
-      setShowPlayerOnPlayBtnClick,
-      setAudioLoadingStatuses,
-      setAudiosBlockStyle,
-      setNumberOfAudioLoadedStatuses,
       updateLoadingStatusesItem,
       addAudio,
       deleteAudio,
-      resetAudios
+      resetAudios,
+      setGeneralPlayerContext: () => audioPlayerStateAPI.setGeneralPlayerContext(panelAudioPlayerContext),
    }
 }

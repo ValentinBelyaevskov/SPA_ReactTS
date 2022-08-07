@@ -1,11 +1,11 @@
-import { GridContainerStyle, GridDirection, PostImagesItem } from "./hooks/usePostImagesAndVideosBlock"
+import { GridContainerStyle, GridDirection, ImagesAndVideosItem } from "./hooks/usePostImagesAndVideosBlock"
 import styles from './ImagesAndVideosBlockContainer.module.scss'
 import PostImage from "./PostImage"
 
 
 
 type Props = {
-   imagesAndVideos: PostImagesItem[]
+   imagesAndVideos: ImagesAndVideosItem[]
    deleteImageOrVideo: (index: number) => void
    gridDirection: GridDirection
    subContainerStyle: GridContainerStyle

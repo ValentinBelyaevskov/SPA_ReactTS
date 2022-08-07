@@ -24,7 +24,7 @@ const SignIn = () => {
    return (
       <div className={styles.signIn}>
          {
-            (signInMode === "login") || (signInMode === "passwordReset")
+            (signInMode === "login") || (signInMode === "passwordReset") || (signInMode === "emailConfirmation")
                ? <LoginForm />
                : signInMode === "createAccount"
                   ? <CreateAccountForm />

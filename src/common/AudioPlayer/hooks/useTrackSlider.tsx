@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { PlayerConfig, PlayerState, PlayerName, TrackSliderProps, AudioFiles } from '../types/types';
+import { PlayerState, PlayerName, TrackSliderProps, AudioFiles } from '../types/types';
 import { getSwitchToNextTrackFunc } from "../functions.ts/getSwitchToNextTrackFunc";
 
 
@@ -33,11 +33,8 @@ export const useTrackSlider = (
 
             if (audioFileIds.length === 1) {
                setIsPlaying(false);
-            } else if (audioFileIds.length > 1 && state.activeTrackId < audioFileIds.length - 1) {
-               switchToNextTrack(state.activeTrackId, audioFileIds);
-            } else if (audioFileIds.length > 1 && state.activeTrackId === audioFileIds.length - 1) {
-               switchToNextTrack(state.activeTrackId, audioFileIds);
-               setIsPlaying(false);
+            } else if (audioFileIds.length > 1) {
+                  switchToNextTrack(state.activeTrackId, audioFileIds);
             }
          }
       }

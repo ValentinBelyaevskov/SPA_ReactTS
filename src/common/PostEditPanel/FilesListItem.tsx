@@ -11,6 +11,7 @@ import { FilesItem } from './hooks/useFilesBlock';
 
 type Props = {
    file: FilesItem
+   mode: "edit" | "view"
    deleteFile: (index: number) => void
    index: number
 }
@@ -18,7 +19,19 @@ type Props = {
 
 
 const FilesListItem = (props: Props) => {
-   const fileIconIndex: number = addContentButtonNames.findIndex(item => props.file.type!.includes(item) || ((props.file.type!.includes("text") || props.file.type!.includes("application")) && item === "file"));
+   const fileIconIndex: number = addContentButtonNames.findIndex((item, index) => {
+      if (props.file.type.length === 0 && index === 1) return true
+
+
+      return props.file.type!.includes(item)
+         || (
+            (
+               props.file.type!.includes("text")
+               || props.file.type!.includes("application")
+            )
+            && item === "file"
+         )
+   });
    const fileIcon: string = icons[fileIconIndex];
    const hideIconHoverAndTouchClassNames = useHoverAndTouchClassNames(styles.hover, styles.touch);
    const fileLinkHoverAndTouchClassNames = useHoverAndTouchClassNames(styles.hover, styles.touch);

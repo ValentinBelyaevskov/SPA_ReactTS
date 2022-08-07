@@ -1,7 +1,7 @@
 import { separatePatnAndName } from './../../../functions/separatePathAndName';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { ProfileState, Profile, AccountParams, LoginParams, ProfileMode, SetErrors, UpdateParams, ProfileInfoMode, SignInMode, UpdatedProfile, UploadFileParams, PostData, PostPayloadAction, Post } from '../types/types';
+import { ProfileState, Profile, AccountParams, LoginParams, ProfileMode, SetErrors, UpdateParams, ProfileInfoMode, SignInMode, UpdatedProfile, UploadFileParams, PostData, PostPayloadAction, Post, ImagesAndVideosItem, AudiosItem, FilesItem, PostObject } from '../types/types';
 import { UserProps, LoadInfo, BackendlessError } from '../../../types/types';
 import { createSelector } from 'reselect';
 import { RootState } from '../../../redux/store';
@@ -29,7 +29,7 @@ const initialState: ProfileState = {
    },
    files: {
       entities: {},
-      ids: []
+      ids: [],
    },
    profileMode: "signIn",
    profileInfoMode: "view",
@@ -95,7 +95,6 @@ const profileSlice = createSlice({
                }
             }
             if (key === "avatar") state.profileInfo.avatar = state.profileInfo.avatar
-            // if (key === "posts") state.profileInfo.posts = []
          }
          state.profileMode = action.payload
       }
@@ -112,14 +111,6 @@ const profileSlice = createSlice({
             state.loadInfo.errorType = undefined
          })
          .addCase(getProfileProps.fulfilled, (state, action) => {
-            // if (action.payload.guestMode) {
-            //    state.profileInfo.objectId = action.payload.profile.objectId
-            //    state.profileMode = "loggedInAsGuest"
-            // } else if (action.payload.profile.objectId) {
-            //    state.profileInfo = action.payload.profile
-            //    state.profileMode = "loggedIn"
-            // }
-
             if (action.payload.guestMode && action.payload.profile && action.payload.profile.objectId) {
                state.profileInfo.objectId = action.payload.profile.objectId
                state.profileMode = "loggedInAsGuest"
@@ -199,13 +190,8 @@ const profileSlice = createSlice({
          })
          .addCase(createAPost.fulfilled, (state, action) => {
             console.log("createAPost responce: ", action.payload);
-
-            // state.profileInfo.posts = action.payload.userPosts.slice(0);
-            // state.profileInfo.posts.push(action.payload.objectId);
-
             state.posts.entities[action.payload.objectId] = action.payload;
-            // state.posts.ids = action.payload.userPosts.slice(0);
-            state.posts.ids.push(action.payload.objectId);
+            state.posts.ids.unshift(action.payload.objectId);
 
             state.profileInfoMode = "view"
             state.loadInfo.loading = false;
@@ -289,7 +275,6 @@ export const getProfileProps = createAsyncThunk(
    "profile/getProfileProps",
    async (_, { rejectWithValue }) => {
       try {
-         // const objectId = await Backendless.UserService.loggedInUser()
          const objectId = await (await Backendless.UserService.getCurrentUser()).objectId;
 
          const role: string[] = await Backendless.UserService.getUserRoles();
@@ -310,7 +295,7 @@ export const getProfileProps = createAsyncThunk(
 
             const posts: Post[] = await Backendless.Data.of("Posts").find(postQuery);
 
-            return { profile, guestMode: false, posts }
+            return { profile, guestMode: false, posts: posts.reverse() }
 
          } else {
             return { profile: undefined, guestMode: false }
@@ -378,11 +363,13 @@ export const update = createAsyncThunk(
          if (updatedProfile && updateParams.callback) {
             updateParams.callback()
          }
+
          if (mode === "updateProfile") {
             return updatedProfile
          } else {
             return undefined
          }
+
       } catch (err: any) {
          console.log(err);
          return rejectWithValue(err.message);
@@ -403,7 +390,9 @@ export const uploadAvatar = createAsyncThunk(
          if (response && uploadFileParams.callback) {
             const avatar = separatePatnAndName(uploadFileParams.avatar)[1];
 
-            await remoteFileStorage.deleteFiles([avatar]);
+            if (uploadFileParams.typeOfFile) {
+               await remoteFileStorage.deleteFiles([avatar]);
+            }
 
             uploadFileParams.callback();
             return response;
@@ -461,38 +450,61 @@ export const createAPost = createAsyncThunk(
    "profile/createAPost",
    async (postData: PostData, { rejectWithValue }) => {
       try {
-
          const getPostObject = async (
             userId: string,
             innerHTML: string,
-            imagesAndVideos: File[],
-            audios: File[],
-            files: File[]
-         ) => {
+            imagesAndVideos: ImagesAndVideosItem[],
+            audios: AudiosItem[],
+            files: FilesItem[],
+         ): Promise<PostObject> => {
 
-            const fileUrls = await Promise.all(files.map(async file => {
-               const newFile = new File(
-                  [file],
-                  `${new Date().getTime()}${file.name}`,
-                  { type: file.type }
-               )
+            console.log("files: ", files)
 
-               const responce = await Backendless.Files.upload(newFile, 'files', false);
+            const fileUrls = await Promise.all(
+               files
+                  .map(item => item.file!)
+                  .map(async file => {
+                     const newFile = new File(
+                        [file],
+                        `${new Date().getTime()}${file.name}`,
+                        { type: file.type }
+                     );
 
-               return responce.fileURL;
-            }));
+                     const responce = await Backendless.Files.upload(newFile, 'files', false);
 
-            const audioUrls = await remoteFileStorage.uploadAudios(audios);
-            const imagesAndVideosUrls = await remoteFileStorage.uploadImagesAndVideos(imagesAndVideos);
+                     return responce.fileURL;
+                  })
+            );
+
+            const audioUrls = await remoteFileStorage.uploadAudios(audios.map(item => item.file!));
+            const imagesAndVideosUrls = await remoteFileStorage.uploadImagesAndVideos(imagesAndVideos.map(item => item.file!));
 
 
 
             return {
                userId,
                innerHTML: innerHTML ? innerHTML : "",
-               imagesAndVideos: JSON.stringify(imagesAndVideosUrls),
-               audios: JSON.stringify(audioUrls),
-               files: JSON.stringify(fileUrls),
+               imagesAndVideos: imagesAndVideosUrls.map((src, index) => (
+                  {
+                     src,
+                     area: imagesAndVideos[index].area,
+                     aspect: imagesAndVideos[index].aspect,
+                     sizes: imagesAndVideos[index].sizes,
+                     type: imagesAndVideos[index].type,
+                  }
+               )),
+               audios: audioUrls.map((src, index) => ({
+                  src,
+                  name: audios[index].name,
+                  size: audios[index].size,
+                  type: audios[index].type,
+               })),
+               files: fileUrls.map((src, index) => ({
+                  src,
+                  name: files[index].name,
+                  size: files[index].size,
+                  type: files[index].type,
+               })),
             }
          }
 
@@ -503,10 +515,21 @@ export const createAPost = createAsyncThunk(
             postData.innerHTML,
             postData.imagesAndVideos,
             postData.audios,
-            postData.files
+            postData.files,
          );
 
+         const jsonPostObject: { [key: string]: any } = {}
+
+         for (let key in postObject) {
+            if (key === "imagesAndVideos" || key === "audios" || key === "files") {
+               jsonPostObject[key] = JSON.stringify(postObject[key]);
+            } else {
+               jsonPostObject[key] = postObject[key];
+            }
+         }
+
          const post: Post = await Backendless.Data.of("Posts").save<Post>(postObject);
+
 
          await Backendless.UserService.update({
             objectId: postData.profileId,

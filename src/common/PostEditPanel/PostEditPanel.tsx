@@ -19,8 +19,10 @@ import AudioUploader from 'common/UploadFormsAndLightbox/AudioUploader';
 import { useWindowSize } from 'hooks/useWindowSize';
 import { AudioFile } from 'common/AudioPlayer/types/types';
 import { useFilesBlock } from './hooks/useFilesBlock';
-import { useAudioBlock } from './hooks/useAudioBlock';
+import { useAudiosBlock } from './hooks/useAudiosBlock';
 import TextEditor from 'common/TextEditor/TextEditor';
+import { Post } from 'pages/Profile/types/types';
+import getFormattedDate from 'functions/createCivilDate/getFormattedDate';
 
 
 
@@ -37,11 +39,15 @@ type AddContentButtonClickListeners = {
 
 type Props = {
    containerClassName: string
+   mode: "edit" | "view"
+   audioPlayerContext: string
+   post?: Post
 }
 
 type ImagesAndVideosBlockCtxt = {
    setShowVideoAndImageSlider?: React.Dispatch<React.SetStateAction<boolean>>
    setSliderStartIndex?: React.Dispatch<React.SetStateAction<number>>
+   mode?: "edit" | "view"
 }
 
 
@@ -114,6 +120,7 @@ const PostEditPanel = (props: Props) => {
 
    const {
       imagesAndVideos,
+      setImagesAndVideos,
       imagesAndVideosBlockStyle,
       gridDirection,
       imagesAndVideosContainerStyle,
@@ -131,6 +138,7 @@ const PostEditPanel = (props: Props) => {
 
    const {
       files,
+      setFiles,
       filesBlockStyle,
       addFile,
       deleteFile,
@@ -140,9 +148,11 @@ const PostEditPanel = (props: Props) => {
 
 
    const {
-      audioIds,
-      audios,
+      stopAudio,
       audioFiles,
+      currentPlaylistActive,
+      setActiveTrackIdNumber,
+      activeTrackIdNumber,
       audiosBlockStyle,
       audioPlayerState,
       audioPlayerStateAPI,
@@ -152,9 +162,10 @@ const PostEditPanel = (props: Props) => {
       updateLoadingStatusesItem,
       addAudio,
       deleteAudio,
-      resetAudios
+      resetAudios,
+      setGeneralPlayerContext
 
-   } = useAudioBlock(appContext, resize);
+   } = useAudiosBlock(appContext, resize, props.audioPlayerContext, props.mode, props.post);
 
 
 
@@ -206,12 +217,11 @@ const PostEditPanel = (props: Props) => {
 
       dispatch(createAPost({
          profileId: profile.objectId,
-         // profilePosts: profile.posts,
          profilePosts: postIds,
          innerHTML: textEditorInnerHTML ? textEditorInnerHTML : "",
-         files: files.map(item => item.file),
+         files: [...files],
          audios: [...audioFiles],
-         imagesAndVideos: imagesAndVideos.map(item => item.file)
+         imagesAndVideos: [...imagesAndVideos]
       }))
    }
 
@@ -221,6 +231,14 @@ const PostEditPanel = (props: Props) => {
       : undefined;
 
 
+
+
+   useEffect(() => {
+      if (props.mode === 'view') {
+         setImagesAndVideos(props.post!.imagesAndVideos!);
+         setFiles(props.post!.files!);
+      }
+   }, [props.mode])
 
 
    useEffect(() => {
@@ -240,13 +258,13 @@ const PostEditPanel = (props: Props) => {
 
 
    useEffect(() => {
-      if (imagesAndVideos.length + audioIds.length > 0) {
+      if (imagesAndVideos.length + audioFiles.length > 0) {
          resize.removeEventListener();
          resize.addEventListener();
       } else {
          resize.removeEventListener();
       }
-   }, [imagesAndVideos.length, files.length, audioIds.length])
+   }, [imagesAndVideos.length, files.length, audioFiles.length])
 
 
    useEffect(() => {
@@ -286,6 +304,7 @@ const PostEditPanel = (props: Props) => {
                submitListener={addImageOrVideo}
                uploadButtonText="Add video to post"
                popupText='Add video to post'
+               playVideoListener={stopAudio}
             />);
          } else if (editMode === 'fileSelection') {
             appContext.setPopup!(<FileUploader
@@ -310,18 +329,19 @@ const PostEditPanel = (props: Props) => {
             itemIndex={sliderStartIndex}
             contentArr={imagesAndVideos}
             finishWatching={finishWatching}
+            playVideoListener={stopAudio}
          />);
       }
    }, [editMode, showVideoAndImageSlider, sliderStartIndex, imagesAndVideos.length]);
 
 
    useEffect(() => {
-      if (imagesAndVideos.length + files.length + audioIds.length === 10) {
+      if (imagesAndVideos.length + files.length + audioFiles.length === 10) {
          setContentIconsPromptText("A post can only have 10 attachments");
       } else {
          setContentIconsPromptText(undefined);
       };
-   }, [imagesAndVideos.length, files.length, audioIds.length, activeContentIcon]);
+   }, [imagesAndVideos.length, files.length, audioFiles.length, activeContentIcon]);
 
 
 
@@ -331,20 +351,81 @@ const PostEditPanel = (props: Props) => {
          {
             iconsLoaded ?
                (
-                  <div className={styles.gridContainer}>
+                  <div className={`${styles.gridContainer} ${styles[props.mode]}`}>
                      <RoundAvatar
                         src={profile.avatar ? profile.avatar : './image/defaultAvatar.jpg'}
                         additionalClass={styles.avatar}
                      />
-                     <TextEditor
-                        setTextEditorInnerHTML={setTextEditorInnerHTML}
-                        textEditorClickListener={textEditorClickListener}
-                        containerClassName={styles.textEditorContainer}
-                        resetInnerHTML={resetInnerHTML}
-                        setResetInnerHTML={setResetInnerHTML}
-                     />
+                     {
+                        props.mode === 'edit'
+                           ?
+                           <>
+                              <div className={`${styles.contentIcons} unselectable`}>
+                                 {
+                                    popupPrompt.needToShowElement && contentIconsPromptText
+                                       ? <div className={styles.contentIconsPrompt} ref={promptRef}>
+                                          {contentIconsPromptText}
+                                       </div>
+                                       : null
+                                 }
+                                 {icons.map((icon, index) => (
+                                    <AddContentIcon
+                                       key={icon}
+                                       icon={icon}
+                                       addContentButtonName={addContentButtonNames[index]}
+                                       addContentButtonClickListener={addContentButtonClickListeners[addContentButtonNames[index]]}
+                                       setActiveContentIcon={setActiveContentIcon}
+                                       popupPrompt={popupPrompt}
+                                    />
+                                 ))}
+                              </div>
+                              <Button
+                                 params={
+                                    {
+                                       text: "Post",
+                                       clickHandler: postButtonClickHandler,
+                                       changeStyleOnHover: true,
+                                       containerClassName: styles.createAPostButtonContainer,
+                                       buttonClassName: styles.createAPostButton,
+                                       jsx: buttonPreloader(),
+                                       buttonStyle: postIsLoading ? {
+                                          color: "rgba(0, 0, 0, 0)"
+                                       } : undefined
+                                    }
+                                 }
+                              />
+                           </>
+                           : props.mode === 'view'
+                              ?
+                              <>
+                                 <div className={styles.userName}>
+                                    {`${profile.firstName} ${profile.lastName}`}
+                                 </div>
+                                 <div className={styles.date}>
+                                    {getFormattedDate(props.post!.created, "posts")}
+                                 </div>
+                              </>
+                              : null
+                     }
+                     {
+                        props.mode === 'edit'
+                           ?
+                           <TextEditor
+                              setTextEditorInnerHTML={setTextEditorInnerHTML}
+                              textEditorClickListener={textEditorClickListener}
+                              containerClassName={styles.textEditorContainer}
+                              resetInnerHTML={resetInnerHTML}
+                              setResetInnerHTML={setResetInnerHTML}
+                           />
+                           : props.mode === 'view' && props.post && props.post.innerHTML
+                              ?
+                              <div className={styles.text}>
+                                 {props.post.innerHTML}
+                              </div>
+                              : undefined
+                     }
                      <div className={styles.imagesBlock} style={imagesAndVideosBlockStyle}>
-                        <ImagesAndVideosBlockContext.Provider value={{ setShowVideoAndImageSlider, setSliderStartIndex }}>
+                        <ImagesAndVideosBlockContext.Provider value={{ setShowVideoAndImageSlider, setSliderStartIndex, mode: props.mode }}>
                            <ImagesAndVideosBlockContainer
                               config={
                                  {
@@ -369,6 +450,7 @@ const PostEditPanel = (props: Props) => {
                            files.map((item, index) =>
                               <FilesListItem
                                  key={item.src}
+                                 mode={props.mode}
                                  file={item}
                                  deleteFile={deleteFile}
                                  index={index}
@@ -378,60 +460,27 @@ const PostEditPanel = (props: Props) => {
                      </div>
                      <div className={styles.audiosBlock} style={audiosBlockStyle}>
                         {
-                           audioIds.map((id, index) =>
+                           audioFiles.map((item, index) =>
                               <AudiosListItem
-                                 key={id}
+                                 key={item.id}
                                  index={index}
-                                 id={id}
-                                 file={audios[id]}
+                                 mode={props.mode}
+                                 file={item}
+                                 currentPlaylistActive={currentPlaylistActive}
                                  deleteAudio={deleteAudio}
-                                 activeTrackId={audioPlayerState.activeTrackId}
-                                 setActiveTrackId={audioPlayerStateAPI.setActiveTrackId}
+                                 activeTrackIdNumber={activeTrackIdNumber}
                                  audioIsPlaying={audioPlayerState.isPlaying}
                                  setAudioIsPlaying={audioPlayerStateAPI.setIsPlaying}
                                  setShowAudioPlayer={setShowAudioPlayer}
-                                 setActiveTrack={audioPlayerStateAPI.setActiveTrackId}
+                                 setActiveTrackIdNumber={setActiveTrackIdNumber}
                                  loadingStatus={audioLoadingStatuses[index]}
                                  updateLoadingStatusesItem={updateLoadingStatusesItem}
                                  numberOfLoadedStatuses={numberOfAudioLoadedStatuses}
+                                 setGeneralPlayerContext={setGeneralPlayerContext}
                               />
                            )
                         }
                      </div>
-                     <div className={`${styles.contentIcons} unselectable`}>
-                        {
-                           popupPrompt.needToShowElement && contentIconsPromptText
-                              ? <div className={styles.contentIconsPrompt} ref={promptRef}>
-                                 {contentIconsPromptText}
-                              </div>
-                              : null
-                        }
-                        {icons.map((icon, index) => (
-                           <AddContentIcon
-                              key={icon}
-                              icon={icon}
-                              addContentButtonName={addContentButtonNames[index]}
-                              addContentButtonClickListener={addContentButtonClickListeners[addContentButtonNames[index]]}
-                              setActiveContentIcon={setActiveContentIcon}
-                              popupPrompt={popupPrompt}
-                           />
-                        ))}
-                     </div>
-                     <Button
-                        params={
-                           {
-                              text: "Post",
-                              clickHandler: postButtonClickHandler,
-                              changeStyleOnHover: true,
-                              containerClassName: styles.createAPostButtonContainer,
-                              buttonClassName: styles.createAPostButton,
-                              jsx: buttonPreloader(),
-                              buttonStyle: postIsLoading ? {
-                                 color: "rgba(0, 0, 0, 0)"
-                              } : undefined
-                           }
-                        }
-                     />
                   </div >
                )
                : null
