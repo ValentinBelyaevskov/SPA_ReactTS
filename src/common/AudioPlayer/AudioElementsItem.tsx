@@ -5,7 +5,7 @@ import { PlayerName } from './types/types';
 import { useAppDispatch, useAppSelector } from 'hooks/redux';
 import { audioPlayerActions, getCommonTrackSliderProps, getCommonVolumeSliderProps, getPlayerAudioFileIds, getPlayerAudioFiles, getPlayerConfig, getPlayerState, getTrackSliderProps } from './redux/audioPlayerReducer';
 import { audioPlayerApi } from './API/audioPlayerAPI';
-import { useWindowSize } from 'hooks/useWindowSize';
+import { useScrollOrWindowSize } from 'hooks/useScrollOrWindowSize';
 import { AudioPlayerContext } from './useAudioPlayer';
 
 
@@ -34,7 +34,7 @@ const AudioElementsItem = (props: Props) => {
 
    const audioRef = useRef<HTMLAudioElement>(null);
 
-   const windowSize = useWindowSize("resize");
+   const windowSize = useScrollOrWindowSize("resize");
 
 
 

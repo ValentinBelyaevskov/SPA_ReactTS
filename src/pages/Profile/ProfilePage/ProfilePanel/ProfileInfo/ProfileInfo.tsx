@@ -7,7 +7,7 @@ import { useCreateInfoConfiguration } from "../hooks/useCreateInfoConfiguration"
 import Parameters from "./Parameters";
 import styles from './ProfileInfo.module.scss'
 import profilePanelStyles from '../ProfilePanel.module.scss'
-import { getLoadInfo } from '../../../redux/profileReducer';
+import { getLoadInfo, getUploadedPostIds, getProfileInfo } from '../../../redux/profileReducer';
 import { useHoverAndTouchClassNames } from "hooks/useHoverAndTouchClassNames";
 
 
@@ -26,6 +26,7 @@ type ShowMoreButtonStyle = {
 
 const ProfileInfo = (props: Props) => {
    const loadInfo = useAppSelector(getLoadInfo);
+   const allPostIds = useAppSelector(getProfileInfo).posts;
    const [showMore, setShowMore] = useState<boolean>(false);
    const [showButtonMoreClassName, setShowButtonMoreClassName] = useState<string>(`${styles.showMoreHighlighted} ${styles.showMoreButton}`);
    const [showMoreButtonText, setShowMoreButtonText] = useState<ShowMoreText>("Show more information");
@@ -46,9 +47,9 @@ const ProfileInfo = (props: Props) => {
       hideProfileInfoClassname,
       setProfileInfoClassname,
 
-   } = useCreateInfoConfiguration(props.profileInfo, loadInfo.loaded, styles);
+   } = useCreateInfoConfiguration(props.profileInfo, loadInfo.loaded, styles, allPostIds.length);
 
-
+   console.log("allPostIds", allPostIds)
 
    const showMoreClickListener = () => {
       showMorePseudoClassNames.clickListener();

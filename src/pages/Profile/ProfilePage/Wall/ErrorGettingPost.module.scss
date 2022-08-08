@@ -1,0 +1,14 @@
+.errorDescription {
+    background-color: white;
+    margin-top: 10px;
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+
+    color: red;
+    font-size: 1.4rem;
+    text-align: center;
+
+    &:last-of-type {
+        margin-bottom: 10px;
+    }
+}

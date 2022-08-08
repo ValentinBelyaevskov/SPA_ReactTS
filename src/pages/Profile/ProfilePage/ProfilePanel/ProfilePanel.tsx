@@ -80,13 +80,13 @@ const ProfilePanel = () => {
    }
 
    const showPopupAvatarPrompt = (): void => {
-      popupAvatarPrompt.showElementWithTimeout(0);
+      popupAvatarPrompt.showElementWithAnimation(0);
       setShowElementOnTouchStart(false);
       elementMouseEnterListener();
    }
 
    const hidePopupAvatarPrompt = (): void => {
-      popupAvatarPrompt.hideElementWithTimeout(0);
+      popupAvatarPrompt.hideElementWithAnimation(0);
       setShowElementOnTouchStart(true);
       enableTouchEventsSimulation();
       resetElementHoverClassName();

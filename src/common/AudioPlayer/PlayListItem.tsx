@@ -16,7 +16,7 @@ type Props = {
    audioFile: AudioFile
    activeTrackId: number
    setActiveTrackId: (activeTrack: number) => void
-   updateLoadingStatusesItem: (itemIndex: number, newItemValue: boolean) => void
+   updateAudioLoadingStatusesItem: (itemIndex: number, newItemValue: boolean) => void
    loadingStatus: boolean
    numberOfLoadedStatuses: number
    audioIsPlaying: boolean
@@ -62,11 +62,11 @@ const PlayListItem = (props: Props) => {
       if (isTheValueLong !== undefined) {
          if (isTheValueLong) {
             if (visibleParameterValue !== file.name) {
-               if (props.loadingStatus === false) props.updateLoadingStatusesItem(props.index, true);
+               if (props.loadingStatus === false) props.updateAudioLoadingStatusesItem(props.index, true);
             }
 
          } else {
-            if (props.loadingStatus === false) props.updateLoadingStatusesItem(props.index, true);
+            if (props.loadingStatus === false) props.updateAudioLoadingStatusesItem(props.index, true);
          }
       }
    }, [

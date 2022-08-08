@@ -1,7 +1,7 @@
 import { separatePatnAndName } from './../../../functions/separatePathAndName';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { ProfileState, Profile, AccountParams, LoginParams, ProfileMode, SetErrors, UpdateParams, ProfileInfoMode, SignInMode, UpdatedProfile, UploadFileParams, PostData, PostPayloadAction, Post, ImagesAndVideosItem, AudiosItem, FilesItem, PostObject } from '../types/types';
+import { ProfileState, Profile, AccountParams, LoginParams, ProfileMode, SetErrors, UpdateParams, ProfileInfoMode, SignInMode, UpdatedProfile, UploadFileParams, PostData, PostPayloadAction, Post, ImagesAndVideosItem, AudiosItem, FilesItem, PostObject, GetPostsData } from '../types/types';
 import { UserProps, LoadInfo, BackendlessError } from '../../../types/types';
 import { createSelector } from 'reselect';
 import { RootState } from '../../../redux/store';
@@ -22,8 +22,9 @@ const initialState: ProfileState = {
       objectId: "",
       education: "",
       dateOfBirth: undefined,
+      posts: [],
    },
-   posts: {
+   uploadedPosts: {
       entities: {},
       ids: [],
    },
@@ -35,6 +36,12 @@ const initialState: ProfileState = {
    profileInfoMode: "view",
    signInMode: "login",
    loadInfo: {
+      loaded: false,
+      loading: true,
+      error: undefined,
+      errorType: undefined,
+   },
+   postsLoadInfo: {
       loaded: false,
       loading: true,
       error: undefined,
@@ -122,12 +129,19 @@ const profileSlice = createSlice({
                state.profileMode = "signIn"
             };
 
+            state.uploadedPosts.entities = {}
+            state.uploadedPosts.ids = []
+
             if (action.payload.posts) {
                action.payload.posts.forEach(post => {
-                  state.posts.entities[post.objectId] = post;
-                  state.posts.ids.push(post.objectId);
+                  state.uploadedPosts.entities[post.objectId] = post;
+                  state.uploadedPosts.ids.push(post.objectId);
                });
             }
+
+
+            state.postsLoadInfo.loading = false
+            state.postsLoadInfo.loaded = true
 
             state.loadInfo.loading = false
             state.loadInfo.loaded = true
@@ -167,9 +181,25 @@ const profileSlice = createSlice({
          .addCase(login.fulfilled, (state, action) => {
             state.profileInfo = {
                ...state,
-               ...action.payload
+               ...action.payload.profile
             }
+
+            state.uploadedPosts.entities = {}
+            state.uploadedPosts.ids = []
+
+            if (action.payload.posts) {
+               action.payload.posts.forEach(post => {
+                  state.uploadedPosts.entities[post.objectId] = post;
+                  state.uploadedPosts.ids.push(post.objectId);
+               });
+            }
+
             state.profileMode = "loggedIn"
+
+
+            state.postsLoadInfo.loading = false
+            state.postsLoadInfo.loaded = true
+
             state.loadInfo.loading = false
             state.loadInfo.loaded = true
             state.loadInfo.error = undefined
@@ -190,10 +220,15 @@ const profileSlice = createSlice({
          })
          .addCase(createAPost.fulfilled, (state, action) => {
             console.log("createAPost responce: ", action.payload);
-            state.posts.entities[action.payload.objectId] = action.payload;
-            state.posts.ids.unshift(action.payload.objectId);
+            state.uploadedPosts.entities[action.payload.objectId] = action.payload;
+            state.uploadedPosts.ids.unshift(action.payload.objectId);
 
             state.profileInfoMode = "view"
+
+
+            state.postsLoadInfo.loading = false
+            state.postsLoadInfo.loaded = true
+
             state.loadInfo.loading = false;
             state.loadInfo.loaded = true;
             state.loadInfo.error = undefined;
@@ -203,6 +238,16 @@ const profileSlice = createSlice({
             (state, action) => {
                state.loadInfo.loading = true
                state.loadInfo.loaded = false
+
+               if (
+                  action.type === "profile/getProfileProps/pending"
+                  || action.type === "profile/login/pending"
+                  || action.type === "profile/createAPost/pending"
+                  || action.type === "profile/getPosts/pending"
+               ) {
+                  state.postsLoadInfo.loading = true
+                  state.postsLoadInfo.loaded = false
+               }
             })
          .addMatcher((action) => action.type.startsWith('profile/') && action.type.endsWith('/rejected'),
             (state, action: BackendlessError) => {
@@ -217,6 +262,19 @@ const profileSlice = createSlice({
                } else {
                   state.loadInfo.errorType = action.type.split("").slice(8, -9).join("")
                }
+
+               if (
+                  action.type === "profile/getProfileProps/rejected"
+                  || action.type === "profile/login/rejected"
+                  || action.type === "profile/createAPost/rejected"
+                  || action.type === "profile/getPosts/rejected"
+               ) {
+                  state.postsLoadInfo.error = "An error occurred while loading posts. Try reloading the app."
+                  state.postsLoadInfo.errorType = action.type.split("").slice(8, -9).join("")
+
+                  console.log("An error occurred while loading posts. Try reloading the app.")
+               }
+
                console.log(state.loadInfo.errorType)
             })
    }
@@ -228,6 +286,11 @@ const profileSlice = createSlice({
 export const getLoadInfo = createSelector(
    (state: RootState) => state.profile.loadInfo,
    loadInfo => loadInfo
+)
+
+export const getPostsLoadInfo = createSelector(
+   (state: RootState) => state.profile.postsLoadInfo,
+   postsLoadInfo => postsLoadInfo
 )
 
 export const getProfileInfo = createSelector(
@@ -250,9 +313,9 @@ export const getObjectId = (state: RootState) => state.profile.profileInfo.objec
 
 export const getLoadingStatus = (state: RootState) => state.profile.loadInfo.loading
 
-export const getPostIds = (state: RootState) => state.profile.posts.ids
+export const getUploadedPostIds = (state: RootState) => state.profile.uploadedPosts.ids
 
-export const getPostEntities = (state: RootState) => state.profile.posts.entities
+export const getPostEntities = (state: RootState) => state.profile.uploadedPosts.entities
 
 
 
@@ -279,21 +342,36 @@ export const getProfileProps = createAsyncThunk(
 
          const role: string[] = await Backendless.UserService.getUserRoles();
 
+
          if (role.includes("GuestUser", 0)) {
             return { profile: { objectId }, guestMode: true }
+
          } else if (objectId) {
             const profile: Profile = await Backendless.Data.of('Users').findById(`${objectId}`)
             const avatar = await fetch(`${profile.avatar}`)
+
 
             if (!avatar.ok || !profile.avatar) {
                profile.avatar = "";
             }
 
+
+
             const postQuery = await Backendless.DataQueryBuilder.create()
+               .setPageSize(15)
                .setSortBy(["created"])
+               // .setOffset(profile.posts.length - 3)
                .setWhereClause(`userId = '${objectId}'`);
 
             const posts: Post[] = await Backendless.Data.of("Posts").find(postQuery);
+
+            // await Backendless.UserService.update({
+            //    ...profile,
+            //    posts: posts.map(post => post.objectId)
+            // })
+
+            console.log("profile", profile)
+            console.log("posts: ", posts)
 
             return { profile, guestMode: false, posts: posts.reverse() }
 
@@ -411,8 +489,20 @@ export const login = createAsyncThunk(
    "profile/login",
    async (loginParams: LoginParams, { rejectWithValue }) => {
       try {
-         const responce: Profile = await Backendless.UserService.login(loginParams.email, loginParams.password, loginParams.rememberMe);
-         return responce;
+         const profile: Profile = await Backendless.UserService.login(loginParams.email, loginParams.password, loginParams.rememberMe);
+
+         const postQuery = await Backendless.DataQueryBuilder.create()
+            .setPageSize(3)
+            .setSortBy(["created"])
+            .setOffset(profile.posts.length - 3)
+            .setWhereClause(`userId = '${profile.objectId}'`);
+
+         const posts: Post[] = await Backendless.Data.of("Posts").find(postQuery);
+
+         console.log("posts: ", posts)
+
+         return { profile, posts: posts.reverse() }
+
       } catch (err: any) {
          console.log(err);
          return rejectWithValue(err.message);
@@ -480,6 +570,7 @@ export const createAPost = createAsyncThunk(
             const imagesAndVideosUrls = await remoteFileStorage.uploadImagesAndVideos(imagesAndVideos.map(item => item.file!));
 
 
+            console.log("imagesAndVideosUrls: ", imagesAndVideosUrls)
 
             return {
                userId,
@@ -547,6 +638,33 @@ export const createAPost = createAsyncThunk(
    }
 )
 
+export const getPosts = createAsyncThunk(
+   "profile/getPosts",
+   async (getPostsData: GetPostsData, { rejectWithValue }) => {
+      try {
+         const allPostIdsLength = getPostsData.allPostIdsLength;
+         const uploadedPostIdsLength = getPostsData.uploadedPostIdsLength;
+
+
+         if (allPostIdsLength > uploadedPostIdsLength) {
+            const postQuery = await Backendless.DataQueryBuilder.create()
+               .setPageSize(3)
+               .setSortBy(["created"])
+               .setOffset(allPostIdsLength - uploadedPostIdsLength - 3)
+               .setWhereClause(`userId = '${getPostsData.objectId}'`);
+
+            const posts: Post[] = await Backendless.Data.of("Posts").find(postQuery);
+
+            console.log("posts: ", posts)
+         }
+
+
+      } catch (err: any) {
+         console.log(err);
+         return rejectWithValue(err.message)
+      }
+   }
+)
 
 
 

@@ -6,8 +6,9 @@ export type ProfileState = {
    profileInfoMode: ProfileInfoMode
    signInMode: SignInMode
    loadInfo: LoadInfo
+   postsLoadInfo: LoadInfo
    errorTypes: string[]
-   posts: {
+   uploadedPosts: {
       entities: Entities<Post>
       ids: Ids
    },
@@ -29,6 +30,7 @@ export interface Profile {
    password?: string
    education?: string
    dateOfBirth?: string
+   posts: string[]
 }
 
 export type Post = {
@@ -177,3 +179,9 @@ export type PostObject = {
    [key: string]: any
 }
 //       ?
+
+export type GetPostsData = {
+   objectId: string
+   uploadedPostIdsLength: number,
+   allPostIdsLength: number,
+}

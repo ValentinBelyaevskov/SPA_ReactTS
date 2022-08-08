@@ -5,7 +5,7 @@ import { AudioPlayerContext } from "common/AudioPlayer/useAudioPlayer";
 import { getArrayWithUpdatedItemValue } from "functions/getArrayWithUpdatedItemValue";
 import { getFilledArray } from "functions/getFiledArray";
 import { useAppDispatch, useAppSelector } from "hooks/redux";
-import { WindowSize } from "hooks/useWindowSize";
+import { WindowSize } from "hooks/useScrollOrWindowSize";
 import { Post } from "pages/Profile/types/types";
 import { useContext, useEffect, useState } from "react";
 import { AppCtxt } from "types/types";
@@ -95,7 +95,7 @@ export const useAudiosBlock = (appContext: AppCtxt, resize: WindowSize, panelAud
    const getActiveTrackIdNumber = (activeTrackId: number): number => audioIds.findIndex(id => id === activeTrackId);
 
 
-   const updateLoadingStatusesItem = (index: number, newItemValue: boolean): void => {
+   const updateAudioLoadingStatusesItem = (index: number, newItemValue: boolean): void => {
       setAudioLoadingStatuses(getArrayWithUpdatedItemValue<boolean>(audioLoadingStatuses, index, newItemValue));
    }
 
@@ -322,7 +322,7 @@ export const useAudiosBlock = (appContext: AppCtxt, resize: WindowSize, panelAud
       audioLoadingStatuses,
       numberOfAudioLoadedStatuses,
       setShowAudioPlayer,
-      updateLoadingStatusesItem,
+      updateAudioLoadingStatusesItem,
       addAudio,
       deleteAudio,
       resetAudios,
