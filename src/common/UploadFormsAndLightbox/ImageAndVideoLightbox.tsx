@@ -2,7 +2,7 @@ import styles from "./ImageAndVideoLightbox.module.scss";
 import { useState, useEffect } from 'react';
 import { usePopupForm } from "hooks/usePopup/usePopupForm";
 import { useHoverAndTouchClassNames } from "hooks/useHoverAndTouchClassNames";
-import { useWindowSize } from '../../hooks/useWindowSize';
+import { useScrollOrWindowSize } from '../../hooks/useScrollOrWindowSize';
 import CustomImage from "common/Image/CustomImage";
 
 
@@ -37,7 +37,7 @@ type ContentStyle = {
 const ImageAndVideoLightbox = (props: Props) => {
    const [contentStyle, setContentStyle] = useState<ContentStyle>({});
    const [itemIndex, setItemIndex] = useState<number>(props.itemIndex);
-   const resize = useWindowSize("resize");
+   const resize = useScrollOrWindowSize("resize");
    const popupForm = usePopupForm(props.finishWatching);
    const closeButtonHoverAndTouchClassNames = useHoverAndTouchClassNames(styles.hover, styles.touch);
    const leftArrowHoverAndTouchClassNames = useHoverAndTouchClassNames(styles.hover, styles.touch);

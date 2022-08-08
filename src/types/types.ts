@@ -58,7 +58,6 @@ export type PopupControlsCtxt = {
    needToShowBackground?: boolean
    setNeedToShowBackground?: React.Dispatch<React.SetStateAction<boolean>>
    setPopupLoaded?: React.Dispatch<React.SetStateAction<boolean>>
-   popupSwitcherlickListener?: (needToShowPopup: boolean) => void
 }
 
 export type ShowPopupCtxt = {

@@ -91,15 +91,35 @@ class RemoteFileStorage implements Cloud {
 
 
 
-            if (
-               file.type.includes("image")
-               && convertFileSizeToMb(file.size) > 5
-               && convertFileSizeToMb(file.size) < 10
-            ) {
-               size = "big";
-            } else if (convertFileSizeToMb(file.size) > 10) {
-               throw new Error("Image size should not exceed 10mb");
+            // if (
+            //    file.type.includes("image")
+            //    && convertFileSizeToMb(file.size) > 5
+            //    && convertFileSizeToMb(file.size) < 10
+            // ) {
+            //    size = "big";
+            // } else if (convertFileSizeToMb(file.size) > 10) {
+            //    throw new Error("Image size should not exceed 10mb");
+            // }
+
+
+            if (file.type.includes("image")) {
+               if (
+                  convertFileSizeToMb(file.size) > 5
+                  && convertFileSizeToMb(file.size) < 10
+               ) {
+                  size = "big";
+               } else if (convertFileSizeToMb(file.size) > 10) {
+                  throw new Error("Image size should not exceed 10mb");
+               }
+
+            } else if (file.type.includes("video")) {
+               if (convertFileSizeToMb(file.size) > 15) {
+                  size = "big";
+               } else if (convertFileSizeToMb(file.size) > 20) {
+                  throw new Error("Image size should not exceed 10mb");
+               }
             }
+
 
             if (!typeUrl) {
                throw new Error("The file is not a video or image");

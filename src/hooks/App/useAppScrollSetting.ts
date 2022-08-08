@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { AppStyle } from "types/types";
 import getValueWithoutMeasure from '../../functions/getValueWithoutMeasure';
-import { useWindowSize } from 'hooks/useWindowSize';
+import { useScrollOrWindowSize } from 'hooks/useScrollOrWindowSize';
 import { useSetAppPaddinRight } from './useSetAppPaddinRight';
 
 
@@ -15,7 +15,7 @@ type Elements = {
 
 
 export const useAppScrollSetting = (needToShowPopup: boolean, needToShowBackground: boolean, elements: Elements, showPreloader: boolean) => {
-   const resize = useWindowSize("resize");
+   const resize = useScrollOrWindowSize("resize");
    const [appStyle, setAppStyle] = useState<AppStyle>({});
    const [fullAppHeight, setFullAppHeight] = useState<number>(0);
    const [scrollTop, setScrollTop] = useState<number>(0);

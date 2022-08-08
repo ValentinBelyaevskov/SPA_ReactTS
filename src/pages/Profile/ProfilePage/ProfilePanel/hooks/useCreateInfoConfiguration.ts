@@ -13,7 +13,7 @@ const getStringPath = (string: string | null, isThisTheLastPart: boolean): strin
 
 
 
-export const useCreateInfoConfiguration = (profileInfo: Profile, profileInfoLoaded: boolean, styles: any) => {
+export const useCreateInfoConfiguration = (profileInfo: Profile, profileInfoLoaded: boolean, styles: any, numberOfPosts: number) => {
    const [hideProfileInfoClassname, setHideProfileInfoClassname] = useState<string>(`${styles.profileInfo} ${styles.hideMoreInfo}`);
    const [showProfileInfoClassname, setShowProfileInfoClassname] = useState<string>(styles.profileInfo);
    const [profileInfoClassname, setProfileInfoClassname] = useState<string>(hideProfileInfoClassname);
@@ -55,7 +55,14 @@ export const useCreateInfoConfiguration = (profileInfo: Profile, profileInfoLoad
 
    useEffect(() => {
       setInformationBlocksIsFull(false)
-   }, [profileInfo.country, profileInfo.region, profileInfo.city, profileInfo.dateOfBirth, profileInfo.education])
+   }, [
+      profileInfo.country,
+      profileInfo.region,
+      profileInfo.city,
+      profileInfo.dateOfBirth,
+      profileInfo.education,
+      numberOfPosts
+   ])
 
 
    useEffect(() => {
@@ -104,9 +111,22 @@ export const useCreateInfoConfiguration = (profileInfo: Profile, profileInfoLoad
          if (!informationBlocksIsFull) setInformationBlocksIsFull(true);
       }
 
+      if (numberOfPosts > 0) {
+         informationBlocksCopy[4][0][1] = numberOfPosts
+      }
+
       setInformationBlocks(informationBlocksCopy);
 
-   }, [informationBlocks, informationBlocksIsFull, profileInfo.country, profileInfo.region, profileInfo.city, profileInfo.dateOfBirth, profileInfo.education]);
+   }, [
+      informationBlocks,
+      informationBlocksIsFull,
+      profileInfo.country,
+      profileInfo.region,
+      profileInfo.city,
+      profileInfo.dateOfBirth,
+      profileInfo.education,
+      numberOfPosts
+   ]);
 
 
    useEffect(() => {

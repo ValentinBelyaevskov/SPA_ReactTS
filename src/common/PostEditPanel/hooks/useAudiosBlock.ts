@@ -5,7 +5,7 @@ import { AudioPlayerContext } from "common/AudioPlayer/useAudioPlayer";
 import { getArrayWithUpdatedItemValue } from "functions/getArrayWithUpdatedItemValue";
 import { getFilledArray } from "functions/getFiledArray";
 import { useAppDispatch, useAppSelector } from "hooks/redux";
-import { WindowSize } from "hooks/useWindowSize";
+import { WindowSize } from "hooks/useScrollOrWindowSize";
 import { Post } from "pages/Profile/types/types";
 import { useContext, useEffect, useState } from "react";
 import { AppCtxt } from "types/types";

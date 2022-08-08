@@ -12,6 +12,8 @@ import { useRef } from 'react';
 import AudioElements from 'common/AudioPlayer/AudioElements';
 import GeneralPlayerInterface from 'common/GeneralPlayerInterfaces/GeneralPlayerInterface';
 import { AudioPlayerContext, useAudioPlayer } from 'common/AudioPlayer/useAudioPlayer';
+import { Navigate, Route, Routes } from 'react-router-dom';
+import { NotFound } from 'pages/NotFound/NotFound';
 
 
 
@@ -102,7 +104,34 @@ const App = (props: Props) => {
                            <RightPanel />
                         </div>
                         <div className={`${styles.pagesContainer} ${showAudioPlayer ? styles.withAudioPlayer : ""}`} ref={pagesContainerRef}>
-                           <Profile />
+                           <Routes>
+                              <Route
+                                 path="/"
+                                 element={<Navigate to="Profile" replace />}
+                              />
+                              <Route path='/Profile' element={<Profile />} />
+                              <Route path='/:parent/NotFoundPage' element={<NotFound />} />
+                              <Route
+                                 path="/News"
+                                 element={<Navigate to="NotFoundPage" replace />}
+                              />
+                              <Route
+                                 path="/Messages"
+                                 element={<Navigate to="NotFoundPage" replace />}
+                              />
+                              <Route
+                                 path="/Friends"
+                                 element={<Navigate to="NotFoundPage" replace />}
+                              />
+                              <Route
+                                 path="/Communities"
+                                 element={<Navigate to="NotFoundPage" replace />}
+                              />
+                              <Route
+                                 path="/Settings"
+                                 element={<Navigate to="NotFoundPage" replace />}
+                              />
+                           </Routes>
                         </div>
                         <div className={styles.popupControlsContainer} style={popupControlsContext.popupStyle}>
                            <Controls />

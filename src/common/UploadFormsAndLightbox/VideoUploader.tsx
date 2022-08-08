@@ -5,7 +5,7 @@ import Button from "common/Button/Button";
 import { usePopupForm } from "hooks/usePopup/usePopupForm";
 import { LoadInfo } from "types/types";
 import { useHoverAndTouchClassNames } from "hooks/useHoverAndTouchClassNames";
-import { useWindowSize } from '../../hooks/useWindowSize';
+import { useScrollOrWindowSize } from '../../hooks/useScrollOrWindowSize';
 import { convertFileSizeToMb } from "functions/convertFileSizeToMB";
 
 
@@ -40,7 +40,7 @@ const VideoUploader = (props: Props) => {
    const popupForm = usePopupForm(props.finishEditing);
    const fieldsRef = useRef<HTMLDivElement>(null);
    const [videoStyle, setVideoStyle] = useState<VideoStyle>({});
-   const resize = useWindowSize("resize");
+   const resize = useScrollOrWindowSize("resize");
    const [errorString, setErrorString] = useState<string | undefined>(undefined);
 
 

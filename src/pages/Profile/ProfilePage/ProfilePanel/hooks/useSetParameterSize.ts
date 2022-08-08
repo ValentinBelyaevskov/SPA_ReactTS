@@ -1,4 +1,4 @@
-import { useWindowSize } from 'hooks/useWindowSize';
+import { useScrollOrWindowSize } from 'hooks/useScrollOrWindowSize';
 import { useEffect, useState } from 'react';
 
 
@@ -8,7 +8,7 @@ export type ConfigForAdaptability = ([number | undefined, number | undefined, nu
 
 
 export const useSetParameterSize = (config: ConfigForAdaptability) => {
-   const resize = useWindowSize("resize");
+   const resize = useScrollOrWindowSize("resize");
    const [maxParameterWidth, setMaxParameterWidth] = useState<number>(235);
    const [maxParameterLength, setMaxParameterLength] = useState<number>(19);
 

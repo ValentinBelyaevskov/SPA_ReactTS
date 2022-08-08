@@ -5,7 +5,8 @@ import { useElementEventHandlers } from 'hooks/useElementEventHandlers';
 import { usePopupElement } from 'hooks/usePopup/usePopupElement';
 import { IconsThatAreLoaded } from 'common/IconsThatAreLoaded/IconsThatAreLoaded';
 import { PopupControlsContext } from 'App';
-import { useWindowSize } from 'hooks/useWindowSize';
+import { useScrollOrWindowSize } from 'hooks/useScrollOrWindowSize';
+
 
 
 
@@ -18,9 +19,10 @@ type ControlsListContainerStyle = { transform?: "translateX(100%)", display?: "n
 
 
 
+
 const Controls = (props: Props) => {
    const popupContext = useContext(PopupControlsContext);
-   const resize = useWindowSize("resize");
+   const resize = useScrollOrWindowSize("resize");
    const pagesList: PagesList = [
       "Profile",
       "News",
@@ -29,7 +31,10 @@ const Controls = (props: Props) => {
       "Communities",
       "Settings",
    ];
+   const [iconsLoaded, setIconsLoaded] = useState<boolean>(false);
+   const [activeIconsLoaded, setActiveIconsLoaded] = useState<boolean>(false);
    const icons = pagesList.map(pageName => `./icons/${pageName.toLocaleLowerCase()}.svg`);
+   const activeIcons = pagesList.map(pageName => `./icons/${pageName.toLocaleLowerCase()}Active.svg`);
    const [controlsListContainerStyle, setControlsListContainerStyle] = useState<ControlsListContainerStyle>({ display: 'none' });
    const controlsBackground: React.RefObject<HTMLDivElement> = useRef<HTMLDivElement>(null);
    const controls: React.RefObject<HTMLDivElement> = useRef<HTMLDivElement>(null);
@@ -39,26 +44,37 @@ const Controls = (props: Props) => {
 
 
    function hideControlsOnTouchEvent(): void {
-      popupContext.popupSwitcherlickListener!(popupContext.needToShowPopup!);
+      popupContext.setNeedToShowPopup!(false);
    }
 
 
+
+   // !
    const showControls = (): void => {
       console.log("showControls")
       popupContext.setIcon!('./icons/hide.svg');
       setControlsListContainerStyle({ transform: 'translateX(100%)' });
       touchEvents.addEventListener();
-      popupBackground.showElementWithTimeout(0);
+      popupBackground.showElementWithAnimation(0);
    }
 
    function hideControls(): void {
+      console.log("hideControls")
       popupContext.setIcon!('./icons/burger.svg');
       setControlsListContainerStyle({});
       touchEvents.enableEventSimulation();
-      popupBackground.hideElementWithTimeout(0);
+      popupBackground.hideElementWithAnimation(0);
    }
+   // !
 
 
+
+
+   useEffect(() => {
+      if (iconsLoaded && activeIconsLoaded) {
+         popupContext.setPopupLoaded!(true)
+      }
+   }, [iconsLoaded, activeIconsLoaded])
 
    useEffect(() => {
       popupContext.setNeedToShowBackground!(popupBackground.needToShowElement);
@@ -99,17 +115,23 @@ const Controls = (props: Props) => {
                      key={item}
                      buttonName={item}
                      icon={icons[i]}
+                     activeIcon={activeIcons[i]}
                   />
                ))}
             </ul>
          </div>
          <IconsThatAreLoaded
             icons={icons}
-            setIconsLoaded={popupContext.setPopupLoaded!}
+            setIconsLoaded={setIconsLoaded}
+         />
+         <IconsThatAreLoaded
+            icons={activeIcons}
+            setIconsLoaded={setActiveIconsLoaded}
          />
       </div>
    )
 }
+
 
 
 

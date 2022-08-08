@@ -140,6 +140,9 @@ const PostImage = (props: Props) => {
             additionalImageClass={styles.image}
             jsx={getHideIcon()}
             onImgClick={imageAndVideoClickHandler}
+            onLoad={() => {
+               console.log("image was loaded")
+            }}
          />
          : <div className={`${styles.imageContainer} unselectable`} ref={contentRef} style={imageContainerStyle}>
             <div className={styles.videoContainer} style={iframeStyle} onClick={imageAndVideoClickHandler}>
@@ -148,6 +151,9 @@ const PostImage = (props: Props) => {
                   className={`${styles.video} unselectable`}
                   width={iframeStyle.width}
                   height={iframeStyle.height}
+                  onLoad={() => {
+                     console.log("video was loaded")
+                  }}
                >
                </video>
             </div>

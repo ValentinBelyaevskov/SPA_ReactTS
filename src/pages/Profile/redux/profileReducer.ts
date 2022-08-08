@@ -1,7 +1,7 @@
 import { separatePatnAndName } from './../../../functions/separatePathAndName';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { ProfileState, Profile, AccountParams, LoginParams, ProfileMode, SetErrors, UpdateParams, ProfileInfoMode, SignInMode, UpdatedProfile, UploadFileParams, PostData, PostPayloadAction, Post, ImagesAndVideosItem, AudiosItem, FilesItem, PostObject } from '../types/types';
+import { ProfileState, Profile, AccountParams, LoginParams, ProfileMode, SetErrors, UpdateParams, ProfileInfoMode, SignInMode, UpdatedProfile, UploadFileParams, PostData, PostPayloadAction, Post, ImagesAndVideosItem, AudiosItem, FilesItem, PostObject, GetPostsData } from '../types/types';
 import { UserProps, LoadInfo, BackendlessError } from '../../../types/types';
 import { createSelector } from 'reselect';
 import { RootState } from '../../../redux/store';
@@ -22,8 +22,9 @@ const initialState: ProfileState = {
       objectId: "",
       education: "",
       dateOfBirth: undefined,
+      posts: [],
    },
-   posts: {
+   uploadedPosts: {
       entities: {},
       ids: [],
    },
@@ -124,8 +125,8 @@ const profileSlice = createSlice({
 
             if (action.payload.posts) {
                action.payload.posts.forEach(post => {
-                  state.posts.entities[post.objectId] = post;
-                  state.posts.ids.push(post.objectId);
+                  state.uploadedPosts.entities[post.objectId] = post;
+                  state.uploadedPosts.ids.push(post.objectId);
                });
             }
 
@@ -190,8 +191,8 @@ const profileSlice = createSlice({
          })
          .addCase(createAPost.fulfilled, (state, action) => {
             console.log("createAPost responce: ", action.payload);
-            state.posts.entities[action.payload.objectId] = action.payload;
-            state.posts.ids.unshift(action.payload.objectId);
+            state.uploadedPosts.entities[action.payload.objectId] = action.payload;
+            state.uploadedPosts.ids.unshift(action.payload.objectId);
 
             state.profileInfoMode = "view"
             state.loadInfo.loading = false;
@@ -250,9 +251,9 @@ export const getObjectId = (state: RootState) => state.profile.profileInfo.objec
 
 export const getLoadingStatus = (state: RootState) => state.profile.loadInfo.loading
 
-export const getPostIds = (state: RootState) => state.profile.posts.ids
+export const getUploadedPostIds = (state: RootState) => state.profile.uploadedPosts.ids
 
-export const getPostEntities = (state: RootState) => state.profile.posts.entities
+export const getPostEntities = (state: RootState) => state.profile.uploadedPosts.entities
 
 
 
@@ -279,21 +280,29 @@ export const getProfileProps = createAsyncThunk(
 
          const role: string[] = await Backendless.UserService.getUserRoles();
 
+
          if (role.includes("GuestUser", 0)) {
             return { profile: { objectId }, guestMode: true }
+
          } else if (objectId) {
             const profile: Profile = await Backendless.Data.of('Users').findById(`${objectId}`)
             const avatar = await fetch(`${profile.avatar}`)
+
 
             if (!avatar.ok || !profile.avatar) {
                profile.avatar = "";
             }
 
+
             const postQuery = await Backendless.DataQueryBuilder.create()
+               .setPageSize(3)
                .setSortBy(["created"])
+               .setOffset(profile.posts.length - 3)
                .setWhereClause(`userId = '${objectId}'`);
 
             const posts: Post[] = await Backendless.Data.of("Posts").find(postQuery);
+
+            console.log("posts: ", posts)
 
             return { profile, guestMode: false, posts: posts.reverse() }
 
@@ -480,6 +489,7 @@ export const createAPost = createAsyncThunk(
             const imagesAndVideosUrls = await remoteFileStorage.uploadImagesAndVideos(imagesAndVideos.map(item => item.file!));
 
 
+            console.log("imagesAndVideosUrls: ", imagesAndVideosUrls)
 
             return {
                userId,
@@ -547,6 +557,33 @@ export const createAPost = createAsyncThunk(
    }
 )
 
+export const getPosts = createAsyncThunk(
+   "profile/getPosts",
+   async (getPostsData: GetPostsData, { rejectWithValue }) => {
+      try {
+         const allPostIdsLength = getPostsData.allPostIdsLength;
+         const uploadedPostIdsLength = getPostsData.uploadedPostIdsLength;
+
+
+         if (allPostIdsLength > uploadedPostIdsLength) {
+            const postQuery = await Backendless.DataQueryBuilder.create()
+               .setPageSize(3)
+               .setSortBy(["created"])
+               .setOffset(allPostIdsLength - uploadedPostIdsLength - 3)
+               .setWhereClause(`userId = '${getPostsData.objectId}'`);
+
+            const posts: Post[] = await Backendless.Data.of("Posts").find(postQuery);
+
+            console.log("posts: ", posts)
+         }
+
+
+      } catch (err: any) {
+         console.log(err);
+         return rejectWithValue(err.message)
+      }
+   }
+)
 
 
 
