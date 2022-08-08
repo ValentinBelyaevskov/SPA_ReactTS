@@ -6,8 +6,8 @@ import React from 'react';
 export type Popup = {
    needToShowElement: boolean
    setContentLoaded: React.Dispatch<React.SetStateAction<boolean>>
-   showElementWithTimeout: (timeValue: number) => void
-   hideElementWithTimeout: (timeValue: number) => void
+   showElementWithAnimation: (timeValue: number) => void
+   hideElementWithAnimation: (timeValue: number) => void
    hideElementWithoutAnimation: () => void
 }
 
@@ -71,12 +71,12 @@ export const usePopupElement = (elementRef: React.RefObject<HTMLDivElement>, exp
       setShowElementTimeoutValue(null);
    }
 
-   const hiddingEndListener = (e: TransitionEvent): void => {
+   const hiddingEndListener = useCallback((e: TransitionEvent): void => {
       if (e.target !== e.currentTarget) return;
       setNeedToShowElement(false);
       setContentLoaded(false);
       setIsThereAnHiddingEndListener(false);
-   }
+   }, [])
 
    const showElement = (callbackToSetShowStatus: (status: boolean) => void): void => {
       callbackToSetShowStatus(true);
@@ -95,7 +95,7 @@ export const usePopupElement = (elementRef: React.RefObject<HTMLDivElement>, exp
       }
    }
 
-   const showElementWithTimeout = (timeValue: number): void => {
+   const showElementWithAnimation = (timeValue: number): void => {
       const time = !needToShowElement ? timeValue : 0;
       const timeout = setTimeout(() => {
          showElement(setNeedToShowElement);
@@ -104,7 +104,7 @@ export const usePopupElement = (elementRef: React.RefObject<HTMLDivElement>, exp
       setShowElementTimeoutValue(timeout);
    }
 
-   const hideElementWithTimeout = (timeValue: number): void => {
+   const hideElementWithAnimation = (timeValue: number): void => {
       if (
          ((!timeValue && isThereAnZeroHideTimeout)
             || (timeValue && theElementWillBeHidden))
@@ -139,8 +139,8 @@ export const usePopupElement = (elementRef: React.RefObject<HTMLDivElement>, exp
    return {
       needToShowElement,
       setContentLoaded,
-      showElementWithTimeout,
-      hideElementWithTimeout,
+      showElementWithAnimation,
+      hideElementWithAnimation,
       hideElementWithoutAnimation
    }
 }

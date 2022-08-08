@@ -25,26 +25,26 @@ export const useHoverAndTouchClassNames = (hoverClassName: string, touchClassNam
 
 
    const clickListener = () => {
-      console.log("clickListener");
+      // console.log("clickListener");
       setTouchHappened(false);
    }
 
    const mouseEnterListener = () => {
       // Событие срабатывает при первом touchstart после клика по элементу
-      console.log("mouseEnterListener");
+      // console.log("mouseEnterListener");
       if (hoverClassNameValue.length === 0) {
          setHoverClassNameValue(hoverClassName);
       }
    }
 
    const touchStartListener = () => {
-      console.log("touchStartListener");
+      // console.log("touchStartListener");
       setHoverClassNameValue("");
       setTouchClassNameValue(touchClassName);
    }
 
    const touchEndListener = () => {
-      console.log("touchEndListener");
+      // console.log("touchEndListener");
       setTouchClassNameValue("");
    }
 

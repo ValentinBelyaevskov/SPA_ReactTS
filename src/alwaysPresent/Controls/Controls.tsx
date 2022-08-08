@@ -9,12 +9,14 @@ import { useWindowSize } from 'hooks/useWindowSize';
 
 
 
+
 type Props = {
 }
 
 type PagesList = ("Profile" | "News" | "Messages" | "Friends" | "Communities" | "Settings")[];
 
 type ControlsListContainerStyle = { transform?: "translateX(100%)", display?: "none" };
+
 
 
 
@@ -39,24 +41,28 @@ const Controls = (props: Props) => {
 
 
    function hideControlsOnTouchEvent(): void {
-      popupContext.popupSwitcherlickListener!(popupContext.needToShowPopup!);
+      popupContext.setNeedToShowPopup!(false);
    }
 
 
+
+   // !
    const showControls = (): void => {
       console.log("showControls")
       popupContext.setIcon!('./icons/hide.svg');
       setControlsListContainerStyle({ transform: 'translateX(100%)' });
       touchEvents.addEventListener();
-      popupBackground.showElementWithTimeout(0);
+      popupBackground.showElementWithAnimation(0);
    }
 
    function hideControls(): void {
+      console.log("hideControls")
       popupContext.setIcon!('./icons/burger.svg');
       setControlsListContainerStyle({});
       touchEvents.enableEventSimulation();
-      popupBackground.hideElementWithTimeout(0);
+      popupBackground.hideElementWithAnimation(0);
    }
+   // !
 
 
 
@@ -110,6 +116,7 @@ const Controls = (props: Props) => {
       </div>
    )
 }
+
 
 
 

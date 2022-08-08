@@ -1,5 +1,8 @@
 import { useHoverAndTouchClassNames } from 'hooks/useHoverAndTouchClassNames';
+import { useState } from 'react';
+import { NavLink } from 'react-router-dom';
 import styles from './ControlsItem.module.scss';
+
 
 
 type Props = {
@@ -7,14 +10,27 @@ type Props = {
    icon: string
 }
 
+type IsActiveObj = {isActive: boolean}
+
+
 
 const ControlsItem = (props: Props) => {
    const itemHoverAndTouchClassNames = useHoverAndTouchClassNames(styles.hover, styles.touch);
 
+   const [itemClassName] = useState(`${styles.controlsListItem} ${itemHoverAndTouchClassNames.className} unselectable`);
+
+
+
+
+   const getItemClassName = ({isActive}: IsActiveObj): string => isActive ? `${itemClassName} ${styles.activeItem}`: itemClassName;
+
+
+
 
    return (
-      <li
-         className={`${styles.controlsListItem} ${itemHoverAndTouchClassNames.className} unselectable`}
+      <NavLink
+         to={props.buttonName}
+         className={getItemClassName}
          onClick={itemHoverAndTouchClassNames.clickListener}
          onMouseEnter={itemHoverAndTouchClassNames.mouseEnterListener}
          onTouchStart={itemHoverAndTouchClassNames.touchStartListener}
@@ -28,7 +44,7 @@ const ControlsItem = (props: Props) => {
          <span className={`${styles.buttonName} unselectable`}>
             {props.buttonName}
          </span>
-      </li>
+      </NavLink>
    )
 }
 

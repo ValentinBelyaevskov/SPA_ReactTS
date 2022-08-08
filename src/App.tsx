@@ -12,6 +12,8 @@ import { useRef } from 'react';
 import AudioElements from 'common/AudioPlayer/AudioElements';
 import GeneralPlayerInterface from 'common/GeneralPlayerInterfaces/GeneralPlayerInterface';
 import { AudioPlayerContext, useAudioPlayer } from 'common/AudioPlayer/useAudioPlayer';
+import { Route, Routes } from 'react-router-dom';
+import { NotFound } from 'pages/NotFound/NotFound';
 
 
 
@@ -102,7 +104,10 @@ const App = (props: Props) => {
                            <RightPanel />
                         </div>
                         <div className={`${styles.pagesContainer} ${showAudioPlayer ? styles.withAudioPlayer : ""}`} ref={pagesContainerRef}>
-                           <Profile />
+                           <Routes>
+                              <Route path='/Profile' element={<Profile />}/>
+                              <Route path='/notfoundpage' element={<NotFound />}/>
+                           </Routes>
                         </div>
                         <div className={styles.popupControlsContainer} style={popupControlsContext.popupStyle}>
                            <Controls />
