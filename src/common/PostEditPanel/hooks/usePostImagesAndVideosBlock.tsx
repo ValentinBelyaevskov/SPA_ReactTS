@@ -1,5 +1,5 @@
 import { compose } from "functions/compose";
-import { useWindowSize, WindowSize } from "hooks/useWindowSize";
+import { useScrollOrWindowSize, WindowSize } from "hooks/useScrollOrWindowSize";
 import { useEffect, useRef, useState } from "react";
 import { isTheFileTypeIsCorrect } from "../functions/isTheFileTypeIsCorrect";
 

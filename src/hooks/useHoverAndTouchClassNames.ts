@@ -14,9 +14,9 @@ export const useHoverAndTouchClassNames = (hoverClassName: string, touchClassNam
    // 2) При каждом касании элемента ему присваивается класс touch,
    // и затем снова сбрасывается, что бы элемент был готов
    // и к событию наведения и к событию касания
-   // 3) При первом касании после события
+   // 3) При первом касании после события 
 
-   // Разобраться с touchHappened. Почему false устанавливается в clickListener.
+// Разобраться с touchHappened. Почему false устанавливается в clickListener.
 
    // ! 1)
    // * При "первом" касании элемента (когда перед касанием этого элемента были касания до дргуих) происходит
@@ -25,26 +25,26 @@ export const useHoverAndTouchClassNames = (hoverClassName: string, touchClassNam
 
 
    const clickListener = () => {
-      console.log("clickListener");
+      // console.log("clickListener");
       setTouchHappened(false);
    }
 
    const mouseEnterListener = () => {
       // Событие срабатывает при первом touchstart после клика по элементу
-      console.log("mouseEnterListener");
+      // console.log("mouseEnterListener");
       if (hoverClassNameValue.length === 0) {
          setHoverClassNameValue(hoverClassName);
       }
    }
 
    const touchStartListener = () => {
-      console.log("touchStartListener");
+      // console.log("touchStartListener");
       setHoverClassNameValue("");
       setTouchClassNameValue(touchClassName);
    }
 
    const touchEndListener = () => {
-      console.log("touchEndListener");
+      // console.log("touchEndListener");
       setTouchClassNameValue("");
    }
 

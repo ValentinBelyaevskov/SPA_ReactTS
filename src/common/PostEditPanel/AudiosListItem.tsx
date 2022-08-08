@@ -22,7 +22,7 @@ type Props = {
    setShowAudioPlayer: React.Dispatch<React.SetStateAction<boolean>>
    setActiveTrackIdNumber: React.Dispatch<React.SetStateAction<number>>
    loadingStatus: boolean
-   updateLoadingStatusesItem: (itemIndex: number, newItemValue: boolean) => void
+   updateAudioLoadingStatusesItem: (itemIndex: number, newItemValue: boolean) => void
    numberOfLoadedStatuses: number
    setGeneralPlayerContext: () => void
 }
@@ -103,14 +103,14 @@ const AudiosListItem = (props: Props) => {
          if (isTheValueLong) {
             if (visibleParameterValue !== props.file.name) {
                if (props.loadingStatus === false) {
-                  props.updateLoadingStatusesItem(props.index, true);
+                  props.updateAudioLoadingStatusesItem(props.index, true);
                   setLoadingStatus(true);
                }
             }
 
          } else {
             if (props.loadingStatus === false) {
-               props.updateLoadingStatusesItem(props.index, true);
+               props.updateAudioLoadingStatusesItem(props.index, true);
                setLoadingStatus(true);
             }
          }

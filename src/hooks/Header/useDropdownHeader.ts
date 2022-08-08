@@ -1,12 +1,12 @@
 import getValueWithoutMeasure from "functions/getValueWithoutMeasure";
-import { useWindowSize } from "hooks/useWindowSize";
+import { useScrollOrWindowSize } from "hooks/useScrollOrWindowSize";
 import { useEffect, useState } from 'react';
 
 
 
 export const useDropdownHeader = (needToShowControls: boolean, headerElement: HTMLDivElement, appElement: HTMLDivElement) => {
-   const resize = useWindowSize("resize");
-   const scroll = useWindowSize("scroll");
+   const resize = useScrollOrWindowSize("resize");
+   const scroll = useScrollOrWindowSize("scroll");
    const [prevScrollTop, setPrevScrollTop] = useState<number>(0);
    const [scrollDirection, setScrollDirection] = useState<"up" | "down">("up");
    // * правильно реагировать на resize для sidebar

@@ -33,6 +33,7 @@ type ImageContainerStyle = {
 
 const PostImage = (props: Props) => {
    const contentRef = useRef<HTMLDivElement>(null);
+   const context = useContext(ImagesAndVideosBlockContext);
    const [playIconClassName, setPlayIconClassName] = useState<string>(styles.playIcon);
    const hideIconHoverAndTouchClassNames = useHoverAndTouchClassNames(styles.hover, styles.touch);
    const playIconHoverAndTouchClassNames = useHoverAndTouchClassNames(styles.hover, styles.touch);
@@ -140,6 +141,13 @@ const PostImage = (props: Props) => {
             additionalImageClass={styles.image}
             jsx={getHideIcon()}
             onImgClick={imageAndVideoClickHandler}
+            onLoad={() => {
+               if (context.updateLoadingStatusesItem) {
+                  context.updateLoadingStatusesItem(props.index, true, "image/video")
+               }
+
+               console.log("image was loaded")
+            }}
          />
          : <div className={`${styles.imageContainer} unselectable`} ref={contentRef} style={imageContainerStyle}>
             <div className={styles.videoContainer} style={iframeStyle} onClick={imageAndVideoClickHandler}>
@@ -148,6 +156,13 @@ const PostImage = (props: Props) => {
                   className={`${styles.video} unselectable`}
                   width={iframeStyle.width}
                   height={iframeStyle.height}
+                  onLoad={() => {
+                     if (context.updateLoadingStatusesItem) {
+                        context.updateLoadingStatusesItem(props.index, true, "image/video")
+                     }
+
+                     console.log("video was loaded")
+                  }}
                >
                </video>
             </div>

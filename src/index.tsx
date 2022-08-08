@@ -9,6 +9,7 @@ import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react'
 import Backendless from 'backendless'
 import { persistor, store } from 'redux/store';
+import { BrowserRouter } from 'react-router-dom';
 
 // init backendless
 Backendless.serverURL = "https://eu-api.backendless.com"
@@ -18,7 +19,9 @@ ReactDOM.render(
    <React.StrictMode>
       <Provider store={store}>
          <PersistGate loading={null} persistor={persistor}>
-            <App />
+            <BrowserRouter>
+               <App />
+            </BrowserRouter>
          </PersistGate>
       </Provider>
    </React.StrictMode>,

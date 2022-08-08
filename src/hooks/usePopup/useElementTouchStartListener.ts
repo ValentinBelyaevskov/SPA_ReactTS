@@ -14,20 +14,20 @@ export const useElementTouchStartListener = (touchClassname: string, hoverClassn
 
 
    function resetShowElementOnTouchEvent(): void {
-      if (popupObject) popupObject.hideElementWithTimeout(0);
+      if (popupObject) popupObject.hideElementWithAnimation(0);
 
       setShowElementOnTouchStart(true);
    }
 
    const showElementOnTouch = (): void => {
-      if (popupObject) popupObject.showElementWithTimeout(0);
+      if (popupObject) popupObject.showElementWithAnimation(0);
 
       setShowElementOnTouchStart(false);
       touchEvents.addEventListener()
    }
 
    const hideElementOnTouch = (): void => {
-      if (popupObject) popupObject.hideElementWithTimeout(0);
+      if (popupObject) popupObject.hideElementWithAnimation(0);
 
       setShowElementOnTouchStart(true);
       touchEvents.enableEventSimulation()
@@ -55,13 +55,13 @@ export const useElementTouchStartListener = (touchClassname: string, hoverClassn
    }
 
    const showElement = (): void => {
-      popupObject.showElementWithTimeout(showAndHideTimeouts[0]);
+      popupObject.showElementWithAnimation(showAndHideTimeouts[0]);
       setShowElementOnTouchStart(false);
       elementHoverAndTouchClassNames.mouseEnterListener();
    }
 
    const hideElement = (): void => {
-      popupObject.hideElementWithTimeout(showAndHideTimeouts[1]);
+      popupObject.hideElementWithAnimation(showAndHideTimeouts[1]);
       setShowElementOnTouchStart(true);
       touchEvents.enableEventSimulation();
       elementHoverAndTouchClassNames.resetHoverClassName()

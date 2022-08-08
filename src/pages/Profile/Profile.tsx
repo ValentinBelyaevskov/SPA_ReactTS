@@ -34,7 +34,6 @@ const Profile = () => {
    const errorTypes = useAppSelector(getErrorTypes);
    const profileMode: string = useAppSelector(getProfileMode);
    const [iconsLoaded, setIconsLoaded] = useState<boolean>(false);
-   const [showIconsThatAreLoaded, setShowIconsThatAreLoaded] = useState<boolean>(false);
    const showPreloader = useContext(AppContext).showPreloader!;
 
 
@@ -49,11 +48,9 @@ const Profile = () => {
    useEffect(() => {
       if (loading && !iconsLoaded) {
          setIconsLoaded(false);
-         setShowIconsThatAreLoaded(true);
-      } else if (iconsLoaded) {
-         setShowIconsThatAreLoaded(false);
       }
    }, [loading, iconsLoaded]);
+
 
 
 
@@ -89,14 +86,10 @@ const Profile = () => {
                            : null
                )
          }
-         {
-            showIconsThatAreLoaded ?
-               <IconsThatAreLoaded
-                  icons={icons}
-                  setIconsLoaded={setIconsLoaded}
-               />
-               : null
-         }
+         <IconsThatAreLoaded
+            icons={icons}
+            setIconsLoaded={setIconsLoaded}
+         />
       </div>
    )
 }

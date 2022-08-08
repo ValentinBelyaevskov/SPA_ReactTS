@@ -1,0 +1,14 @@
+.text {
+    grid-area: text;
+    margin-top: 1.3rem;
+
+    width: 100%;
+
+    font-size: 1.3rem;
+}
+
+@media (max-width: 460px) {
+    .text {
+        font-size: 1.5rem;
+    }
+}

@@ -7,10 +7,7 @@ export const usePopupControlsContext = () => {
    const [popupLoaded, setPopupLoaded] = useState<boolean>(false);
    const [popupStyle, setPopupStyle] = useState<PopupStyle>({ display: 'none' });
    const [needToShowPopup, setNeedToShowPopup] = useState<boolean>(false);
-   const [needToShowBackground, setNeedToShowBackground] = useState<boolean>(false)
-   const popupSwitcherlickListener = (needToShowPopup: boolean): void => {
-      setNeedToShowPopup(!needToShowPopup);
-   }
+   const [needToShowBackground, setNeedToShowBackground] = useState<boolean>(false);
 
 
 
@@ -25,7 +22,6 @@ export const usePopupControlsContext = () => {
       needToShowBackground,
       setNeedToShowBackground,
       setPopupLoaded,
-      popupSwitcherlickListener,
    }
 
 

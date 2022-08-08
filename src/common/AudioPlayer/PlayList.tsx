@@ -40,7 +40,7 @@ const PlayList = (props: Props) => {
 
 
 
-   const updateLoadingStatusesItem = (itemIndex: number, newItemValue: boolean): void => {
+   const updateAudioLoadingStatusesItem = (itemIndex: number, newItemValue: boolean): void => {
       setLoadingStatuses(getArrayWithUpdatedItemValue<boolean>(loadingStatuses, itemIndex, newItemValue));
    }
 
@@ -91,7 +91,7 @@ const PlayList = (props: Props) => {
                      audioFile={audioFiles[id]}
                      activeTrackId={state.activeTrackId}
                      setActiveTrackId={stateAPI.setActiveTrackId}
-                     updateLoadingStatusesItem={updateLoadingStatusesItem}
+                     updateAudioLoadingStatusesItem={updateAudioLoadingStatusesItem}
                      loadingStatus={loadingStatuses[index]}
                      numberOfLoadedStatuses={numberOfLoadedStatuses}
                      audioIsPlaying={state.isPlaying}

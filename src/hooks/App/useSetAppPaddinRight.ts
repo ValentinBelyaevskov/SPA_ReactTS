@@ -1,4 +1,4 @@
-import { WindowSize } from "hooks/useWindowSize";
+import { WindowSize } from "hooks/useScrollOrWindowSize";
 import { useEffect, useState } from "react";
 
 

@@ -2,7 +2,7 @@ import styles from './PostEditPanel.module.scss';
 import React, { useRef, useState, useEffect, useContext } from 'react';
 import { Button, RoundAvatar } from 'common';
 import { useAppDispatch, useAppSelector } from 'hooks/redux';
-import { getProfileInfo, profileActions, createAPost, getLoadInfo, getProfileInfoMode, getPostIds } from 'pages/Profile/redux/profileReducer';
+import { getProfileInfo, profileActions, createAPost, getLoadInfo, getProfileInfoMode, getUploadedPostIds, getPostsLoadInfo } from 'pages/Profile/redux/profileReducer';
 import { AppContext, PopupContext } from 'App';
 import AddContentIcon from './AddContentIcon';
 import SelectAndEditAnImageForm from 'common/UploadFormsAndLightbox/SelectAndEditAnImageForm';
@@ -16,18 +16,22 @@ import FileUploader from 'common/UploadFormsAndLightbox/FileUploader';
 import FilesListItem from './FilesListItem';
 import AudiosListItem from './AudiosListItem';
 import AudioUploader from 'common/UploadFormsAndLightbox/AudioUploader';
-import { useWindowSize } from 'hooks/useWindowSize';
+import { useScrollOrWindowSize } from 'hooks/useScrollOrWindowSize';
 import { AudioFile } from 'common/AudioPlayer/types/types';
 import { useFilesBlock } from './hooks/useFilesBlock';
 import { useAudiosBlock } from './hooks/useAudiosBlock';
 import TextEditor from 'common/TextEditor/TextEditor';
 import { Post } from 'pages/Profile/types/types';
 import getFormattedDate from 'functions/createCivilDate/getFormattedDate';
+import { InnerHTML } from './InnerHTML';
+import { DataType, usePostLoadingStatus } from './hooks/usePostLoadingStatus';
 
 
 
 
 type EditMode = "textEdit" | "imageEdit" | "fileSelection" | "audioSelection" | "videoSelection" | undefined;
+
+export type PostMode = "edit" | "view"
 
 type AddContentButtonClickListeners = {
    image: () => void
@@ -38,16 +42,20 @@ type AddContentButtonClickListeners = {
 }
 
 type Props = {
+   postIndex?: number
    containerClassName: string
-   mode: "edit" | "view"
+   mode: PostMode
    audioPlayerContext: string
    post?: Post
+   id?: string
+   updatePostLoadingStatuses?: (id: string, value: boolean) => void
 }
 
 type ImagesAndVideosBlockCtxt = {
    setShowVideoAndImageSlider?: React.Dispatch<React.SetStateAction<boolean>>
    setSliderStartIndex?: React.Dispatch<React.SetStateAction<number>>
-   mode?: "edit" | "view"
+   mode?: PostMode
+   updateLoadingStatusesItem?: (index: number, newItemValue: boolean, dataType: DataType) => void
 }
 
 
@@ -67,7 +75,7 @@ export const icons: string[] = [
    "./icons/files.svg",
    "./icons/music.svg",
    "./icons/video.svg",
-]
+];
 
 const iconsThatAreLoaded: string[] = [
    "./icons/image.svg",
@@ -100,9 +108,9 @@ const PostEditPanel = (props: Props) => {
    const profile = useAppSelector(getProfileInfo);
    const loadInfo = useAppSelector(getLoadInfo);
    const profileInfoMode = useAppSelector(getProfileInfoMode);
-   const postIds = useAppSelector(getPostIds);
+   const postIds = useAppSelector(getUploadedPostIds);
 
-   const resize = useWindowSize("resize");
+   const resize = useScrollOrWindowSize("resize");
    const [editMode, setEditMode] = useState<EditMode>(undefined);
    const popupContext = useContext(PopupContext);
    const appContext = useContext(AppContext);
@@ -117,6 +125,7 @@ const PostEditPanel = (props: Props) => {
    const [postIsLoading, setPostIsLoading] = useState<boolean>(false);
    const [postIsBeingCreated, setPostIsBeingCreated] = useState<boolean>(false);
    const [resetInnerHTML, setResetInnerHTML] = useState<boolean>(false);
+
 
    const {
       imagesAndVideos,
@@ -159,7 +168,7 @@ const PostEditPanel = (props: Props) => {
       audioLoadingStatuses,
       numberOfAudioLoadedStatuses,
       setShowAudioPlayer,
-      updateLoadingStatusesItem,
+      updateAudioLoadingStatusesItem,
       addAudio,
       deleteAudio,
       resetAudios,
@@ -168,6 +177,15 @@ const PostEditPanel = (props: Props) => {
    } = useAudiosBlock(appContext, resize, props.audioPlayerContext, props.mode, props.post);
 
 
+   const {
+      setInnerHTMLHaveBeenLoaded,
+      updateLoadingStatusesItem
+
+   } = usePostLoadingStatus(
+      props.mode,
+      props.post,
+      props.updatePostLoadingStatuses
+   )
 
 
    const finishWatching = (): void => setShowVideoAndImageSlider(false);
@@ -419,13 +437,20 @@ const PostEditPanel = (props: Props) => {
                            />
                            : props.mode === 'view' && props.post && props.post.innerHTML
                               ?
-                              <div className={styles.text}>
-                                 {props.post.innerHTML}
-                              </div>
+                              <InnerHTML innerHTML={props.post.innerHTML} setInnerHTMLHaveBeenLoaded={setInnerHTMLHaveBeenLoaded} />
                               : undefined
                      }
                      <div className={styles.imagesBlock} style={imagesAndVideosBlockStyle}>
-                        <ImagesAndVideosBlockContext.Provider value={{ setShowVideoAndImageSlider, setSliderStartIndex, mode: props.mode }}>
+                        <ImagesAndVideosBlockContext.Provider
+                           value={
+                              {
+                                 setShowVideoAndImageSlider,
+                                 setSliderStartIndex,
+                                 mode: props.mode,
+                                 updateLoadingStatusesItem
+                              }
+                           }
+                        >
                            <ImagesAndVideosBlockContainer
                               config={
                                  {
@@ -474,7 +499,7 @@ const PostEditPanel = (props: Props) => {
                                  setShowAudioPlayer={setShowAudioPlayer}
                                  setActiveTrackIdNumber={setActiveTrackIdNumber}
                                  loadingStatus={audioLoadingStatuses[index]}
-                                 updateLoadingStatusesItem={updateLoadingStatusesItem}
+                                 updateAudioLoadingStatusesItem={updateAudioLoadingStatusesItem}
                                  numberOfLoadedStatuses={numberOfAudioLoadedStatuses}
                                  setGeneralPlayerContext={setGeneralPlayerContext}
                               />

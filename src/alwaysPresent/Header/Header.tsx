@@ -44,7 +44,7 @@ const Header = (props: Props) => {
 
    const burgerClickListener = () => {
       burgerIconHoverAndTouchClassNames.clickListener();
-      if (loadInfo.loaded && (profileMode === 'loggedIn')) popupContext.popupSwitcherlickListener!(popupContext.needToShowPopup!)
+      if (loadInfo.loaded && (profileMode === 'loggedIn')) popupContext.setNeedToShowPopup!(!popupContext.needToShowPopup!)
    }
 
 
