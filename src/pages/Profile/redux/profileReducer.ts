@@ -103,6 +103,7 @@ const profileSlice = createSlice({
             }
             if (key === "avatar") state.profileInfo.avatar = state.profileInfo.avatar
          }
+
          state.profileMode = action.payload
       }
    },
@@ -206,41 +207,51 @@ const profileSlice = createSlice({
             state.loadInfo.errorType = undefined
          })
          .addCase(logout.fulfilled, (state, action) => {
-            state.profileMode = "loggedOut"
-            state.loadInfo.loading = false
-            state.loadInfo.loaded = true
-            state.loadInfo.error = undefined
-            state.loadInfo.errorType = undefined
+            state.profileMode = "loggedOut";
+            state.loadInfo.loading = false;
+            state.loadInfo.loaded = true;
+            state.loadInfo.error = undefined;
+            state.loadInfo.errorType = undefined;
          })
          .addCase(passwordReset.fulfilled, (state, action) => {
-            state.loadInfo.loading = false
-            state.loadInfo.loaded = true
-            state.loadInfo.error = undefined
-            state.loadInfo.errorType = undefined
+            state.loadInfo.loading = false;
+            state.loadInfo.loaded = true;
+            state.loadInfo.error = undefined;
+            state.loadInfo.errorType = undefined;
          })
          .addCase(createAPost.fulfilled, (state, action) => {
             console.log("createAPost responce: ", action.payload);
             state.uploadedPosts.entities[action.payload.objectId] = action.payload;
             state.uploadedPosts.ids.unshift(action.payload.objectId);
 
-            state.profileInfo.posts.unshift(action.payload.objectId)
+            state.profileInfo.posts.unshift(action.payload.objectId);
 
-            state.profileInfoMode = "view"
+            state.profileInfoMode = "view";
 
 
-            state.postsLoadInfo.loading = false
-            state.postsLoadInfo.loaded = true
+            state.postsLoadInfo.loading = false;
+            state.postsLoadInfo.loaded = true;
 
             state.loadInfo.loading = false;
             state.loadInfo.loaded = true;
             state.loadInfo.error = undefined;
             state.loadInfo.errorType = undefined;
          })
+         .addCase(getPosts.fulfilled, (state, action) => {
+            console.log("getPosts responce: ", action.payload);
+
+            if (action.payload) {
+               action.payload.forEach(post => {
+                  state.uploadedPosts.entities[post.objectId] = post;
+                  state.uploadedPosts.ids.push(post.objectId);
+               });
+            }
+
+            state.postsLoadInfo.loading = false;
+            state.postsLoadInfo.loaded = true;
+         })
          .addMatcher((action) => action.type.startsWith('profile/') && action.type.endsWith('/pending'),
             (state, action) => {
-               state.loadInfo.loading = true
-               state.loadInfo.loaded = false
-
                if (
                   action.type === "profile/getProfileProps/pending"
                   || action.type === "profile/login/pending"
@@ -249,7 +260,13 @@ const profileSlice = createSlice({
                ) {
                   state.postsLoadInfo.loading = true
                   state.postsLoadInfo.loaded = false
+
+                  return
                }
+
+               state.loadInfo.loading = true
+               state.loadInfo.loaded = false
+
             })
          .addMatcher((action) => action.type.startsWith('profile/') && action.type.endsWith('/rejected'),
             (state, action: BackendlessError) => {
@@ -359,11 +376,19 @@ export const getProfileProps = createAsyncThunk(
 
 
 
+            const offset = profile.posts.length - 3 > 0
+               ? profile.posts.length - 3
+               : profile.posts.length;
+
+            const pageSize = profile.posts.length >= 3
+               ? 3
+               : profile.posts.length;
+
             const postQuery = await Backendless.DataQueryBuilder.create()
-               .setPageSize(3)
+               .setPageSize(pageSize)
                // .setPageSize(profile.posts.length)
                .setSortBy(["created"])
-               .setOffset(profile.posts.length - 3)
+               .setOffset(offset)
                .setWhereClause(`userId = '${objectId}'`);
 
             const posts: Post[] = await Backendless.Data.of("Posts").find(postQuery);
@@ -505,10 +530,18 @@ export const login = createAsyncThunk(
       try {
          const profile: Profile = await Backendless.UserService.login(loginParams.email, loginParams.password, loginParams.rememberMe);
 
+         const offset = profile.posts.length - 3 > 0
+            ? profile.posts.length - 3
+            : 0
+
+         const pageSize = profile.posts.length >= 3
+            ? 3
+            : profile.posts.length
+
          const postQuery = await Backendless.DataQueryBuilder.create()
-            .setPageSize(3)
+            .setPageSize(pageSize)
             .setSortBy(["created"])
-            .setOffset(profile.posts.length - 3)
+            .setOffset(offset)
             .setWhereClause(`userId = '${profile.objectId}'`);
 
          const posts: Post[] = await Backendless.Data.of("Posts").find(postQuery);
@@ -654,22 +687,31 @@ export const createAPost = createAsyncThunk(
 
 export const getPosts = createAsyncThunk(
    "profile/getPosts",
-   async (getPostsData: GetPostsData, { rejectWithValue }) => {
+   async (PostsData: GetPostsData, { rejectWithValue }) => {
       try {
-         const allPostIdsLength = getPostsData.allPostIdsLength;
-         const uploadedPostIdsLength = getPostsData.uploadedPostIdsLength;
+         const allPostIdsLength = PostsData.allPostIdsLength;
+         const uploadedPostIdsLength = PostsData.uploadedPostIdsLength;
 
+         if (allPostIdsLength === uploadedPostIdsLength) {
+            throw new Error("All posts have been loaded")
+         }
+
+         console.log("getPostsData call. PostsData: ", PostsData);
+
+         const pageSize = allPostIdsLength - uploadedPostIdsLength - 3 >= 3
+            ? 3
+            : allPostIdsLength - uploadedPostIdsLength;
 
          if (allPostIdsLength > uploadedPostIdsLength) {
             const postQuery = await Backendless.DataQueryBuilder.create()
-               .setPageSize(3)
+               .setPageSize(pageSize)
                .setSortBy(["created"])
                .setOffset(allPostIdsLength - uploadedPostIdsLength - 3)
-               .setWhereClause(`userId = '${getPostsData.objectId}'`);
+               .setWhereClause(`userId = '${PostsData.objectId}'`);
 
             const posts: Post[] = await Backendless.Data.of("Posts").find(postQuery);
 
-            // console.log("posts: ", posts)
+            return posts.reverse()
          }
 
 

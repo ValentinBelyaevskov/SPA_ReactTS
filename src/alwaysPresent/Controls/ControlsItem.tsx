@@ -1,4 +1,6 @@
+import { useAppSelector } from 'hooks/redux';
 import { useHoverAndTouchClassNames } from 'hooks/useHoverAndTouchClassNames';
+import { getProfileInfoMode } from 'pages/Profile/redux/profileReducer';
 import { useEffect, useState } from 'react';
 import { NavLink, useMatch } from 'react-router-dom';
 import styles from './ControlsItem.module.scss';
@@ -16,6 +18,7 @@ type IsActiveObj = { isActive: boolean }
 
 
 const ControlsItem = (props: Props) => {
+   const profileInfoMode = useAppSelector(getProfileInfoMode);
    const itemHoverAndTouchClassNames = useHoverAndTouchClassNames(styles.hover, styles.touch);
    const [path] = useState<string>(
       props.buttonName === 'Profile'
@@ -31,12 +34,15 @@ const ControlsItem = (props: Props) => {
 
    const getItemClassName = ({ isActive }: IsActiveObj): string => isActive ? `${itemClassName} ${styles.activeItem}` : itemClassName;
 
+   const getTo = (): string => profileInfoMode !== "addContent"
+      ? props.buttonName
+      : 'Profile'
 
 
 
    return (
       <NavLink
-         to={props.buttonName}
+         to={getTo()}
          className={getItemClassName}
          onClick={itemHoverAndTouchClassNames.clickListener}
          onMouseEnter={itemHoverAndTouchClassNames.mouseEnterListener}

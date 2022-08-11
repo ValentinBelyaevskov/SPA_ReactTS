@@ -81,6 +81,12 @@ const App = (props: Props) => {
 
 
 
+// !
+   useEffect(() => {
+      console.log("popup: ", popup);
+   }, [popup])
+// !
+
 
    useEffect(() => {
       dispatch(profileActions.setProfileInfoMode("view"));

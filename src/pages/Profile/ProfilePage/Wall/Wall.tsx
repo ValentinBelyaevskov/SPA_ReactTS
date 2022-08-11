@@ -36,6 +36,8 @@ const Wall = (props: Props) => {
 
 
    const updatePostLoadingStatuses = (id: string, value: boolean): void => {
+      // console.log("updatePostLoadingStatuses")
+
       const loadingStatuses = { ...postCompLoadingStatuses };
       loadingStatuses[id] = value;
 
@@ -45,19 +47,9 @@ const Wall = (props: Props) => {
 
 
 
-   // // !
-   // useEffect(() => {
-   //    console.log("postCompLoadingStatuses: ", postCompLoadingStatuses);
-   // }, [postCompLoadingStatuses])
-
-   // useEffect(() => {
-   //    console.log("allPostCompsHaveBeenLoaded: ", allPostCompsHaveBeenLoaded);
-   // }, [allPostCompsHaveBeenLoaded])
-
-   // useEffect(() => {
-   //    console.log("postsLoadInfo: ", postsLoadInfo);
-   // }, [postsLoadInfo])
-   // // !
+   useEffect(() => {
+      // console.log("postCompLoadingStatuses: ", postCompLoadingStatuses);
+   }, [postCompLoadingStatuses])
 
 
    useEffect(() => {
@@ -72,7 +64,7 @@ const Wall = (props: Props) => {
 
 
    useEffect(() => {
-      console.log("1", allPostCompsHaveBeenLoaded, profileInfo.posts.length, uploadedPostIds.length)
+      // console.log("1", allPostCompsHaveBeenLoaded, profileInfo.posts.length, uploadedPostIds.length)
 
       if (
          allPostCompsHaveBeenLoaded
@@ -84,7 +76,7 @@ const Wall = (props: Props) => {
       ) {
          let scrollBottom = document.documentElement.scrollHeight - (resize.value[1] + scroll.value[1]);
 
-         console.log("scrollBottom: ", scrollBottom)
+         // console.log("scrollBottom: ", scrollBottom)
 
          if (scrollBottom < 200) {
             dispatch(getPosts(
@@ -98,14 +90,26 @@ const Wall = (props: Props) => {
             setAllPostCompsHaveBeenLoaded(false);
          }
       }
-   }, [postsLoadInfo.loading, postsLoadInfo.loaded, allPostCompsHaveBeenLoaded, uploadedPostIds.length, profileInfo.posts.length])
+   }, [scroll.value[1], postsLoadInfo.loading, postsLoadInfo.loaded, allPostCompsHaveBeenLoaded, uploadedPostIds.length, profileInfo.posts.length])
 
 
+   // * setPostCompLoadingStatuses
    useEffect(() => {
       if (!postsLoadInfo.loading && postsLoadInfo.loaded) {
-         const loadingStatusEqualToFalse = uploadedPostIds.find(id => postCompLoadingStatuses[id] === false);
+         const loadingStatuses: PostLoadingStatuses = { ...postCompLoadingStatuses };
 
-         console.log("2", postCompLoadingStatuses, loadingStatusEqualToFalse)
+         let i = 0;
+
+         uploadedPostIds.forEach((id => {
+            if (loadingStatuses[id] === undefined) {
+               loadingStatuses[id] = false;
+               i++;
+            }
+         }))
+
+         if (i > 0) setPostCompLoadingStatuses(loadingStatuses);
+
+         const loadingStatusEqualToFalse = uploadedPostIds.find(id => loadingStatuses[id] === false);
 
          if (loadingStatusEqualToFalse === undefined) {
             setAllPostCompsHaveBeenLoaded(true);
@@ -113,100 +117,13 @@ const Wall = (props: Props) => {
             setAllPostCompsHaveBeenLoaded(false);
          }
       }
-   }, [postCompLoadingStatuses, postsLoadInfo.loading, postsLoadInfo.loaded])
+
+   }, [postCompLoadingStatuses, uploadedPostIds.length, postsLoadInfo.loading, postsLoadInfo.loaded])
 
 
-   // * setPostCompLoadingStatuses
    useEffect(() => {
-      if (!postsLoadInfo.loading && postsLoadInfo.loaded) {
-         const loadingStatuses: PostLoadingStatuses = {}
-
-         uploadedPostIds.forEach((id => {
-            if (loadingStatuses[id] === undefined) {
-               loadingStatuses[id] = false;
-            }
-         }))
-
-         setPostCompLoadingStatuses(loadingStatuses);
-
-         console.log("3", "loadingStatuses: ", loadingStatuses)
-      }
-
-   }, [uploadedPostIds.length, postsLoadInfo.loading, postsLoadInfo.loaded])
-
-
-   // * setAllPostCompsHaveBeenLoaded
-   // useEffect(() => {
-   //    console.log(Object.keys(postCompLoadingStatuses).length, uploadedPostIds.length);
-
-   //    if (Object.keys(postCompLoadingStatuses).length === uploadedPostIds.length) {
-   //       const loadingStatusEqualToFalse = uploadedPostIds.find(id => postCompLoadingStatuses[id] === false);
-
-
-   //       if (loadingStatusEqualToFalse === undefined) {
-   //          setAllPostCompsHaveBeenLoaded(true);
-   //       } else {
-   //          setAllPostCompsHaveBeenLoaded(false);
-   //       }
-
-   //    } else if (Object.keys(postCompLoadingStatuses).length < uploadedPostIds.length) {
-   //       setAllPostCompsHaveBeenLoaded(false);
-   //    }
-
-   // }, [postCompLoadingStatuses, uploadedPostIds.length])
-
-
-
-
-
-
-
-
-   // * запрос на получение новых постов getPosts
-   // useEffect(() => {
-   //    console.log("allPostCompsHaveBeenLoaded: ", allPostCompsHaveBeenLoaded, uploadedPostIds.length)
-
-   //    const allPostIdsLength = profileInfo.posts.length;
-   //    const uploadedPostIdsLength = uploadedPostIds.length;
-
-
-   //    if (
-   //       !allPostCompsHaveBeenLoaded
-   //       || uploadedPostIdsLength < 3
-   //       || uploadedPostIdsLength === allPostIdsLength
-   //       || Object.keys(postCompLoadingStatuses).length !== uploadedPostIdsLength
-   //    ) return;
-
-
-   //    console.log("getPosts call")
-
-
-   //    let scrollBottom = document.documentElement.scrollHeight - (resize.value[1] + scroll.value[1]);
-
-   //    console.log("scrollBottom: ", scrollBottom)
-
-   //    if (scrollBottom < 200) {
-   //       dispatch(getPosts(
-   //          {
-   //             allPostIdsLength,
-   //             uploadedPostIdsLength,
-   //             objectId: profileInfo.objectId
-   //          }
-   //       ))
-
-   //       setAllPostCompsHaveBeenLoaded(false);
-   //    }
-
-   // }, [
-   //    resize.value,
-   //    scroll.value,
-   //    uploadedPostIds.length,
-   //    profileInfo.posts.length,
-   //    profileInfo.objectId,
-   //    allPostCompsHaveBeenLoaded,
-   //    postCompLoadingStatuses
-   // ])
-
+      console.log("uploadedPostIds: ", uploadedPostIds)
+   }, [uploadedPostIds])
 
 
 
@@ -227,6 +144,13 @@ const Wall = (props: Props) => {
                      />
                   </div>
                ))
+            }
+            {
+               postsLoadInfo.loading && (
+                  <div className={styles.postPreloaderContainer}>
+                     <img src='./image/defaultAvatar.jpg' />
+                  </div>
+               )
             }
          </>
       )

@@ -147,8 +147,6 @@ const PostImage = (props: Props) => {
                if (context.updateLoadingStatusesItem) {
                   context.updateLoadingStatusesItem(props.index, true, "image/video")
                }
-
-               // console.log("image was loaded")
             }}
          />
          : <div className={`${styles.imageContainer} unselectable`} ref={contentRef} style={imageContainerStyle}>
@@ -158,12 +156,10 @@ const PostImage = (props: Props) => {
                   className={`${styles.video} unselectable`}
                   width={iframeStyle.width}
                   height={iframeStyle.height}
-                  onLoad={() => {
+                  onLoadedData={() => {
                      if (context.updateLoadingStatusesItem) {
-                        context.updateLoadingStatusesItem(props.index, true, "image/video")
+                        context.updateLoadingStatusesItem(props.index, true, "image/video");
                      }
-
-                     console.log("video was loaded")
                   }}
                >
                </video>

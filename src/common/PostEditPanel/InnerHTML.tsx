@@ -1,5 +1,5 @@
-import React, { useEffect } from "react"
-import styles from "./InnerHTML.module.scss"
+import React, { useEffect } from "react";
+import styles from "./InnerHTML.module.scss";
 import { useRef } from 'react';
 
 
@@ -32,7 +32,6 @@ export const InnerHTML = (props: Props) => {
 
     return (
         <div ref={textRef} className={styles.text}>
-            {/* {props.innerHTML} */}
         </div >
     )
 } 

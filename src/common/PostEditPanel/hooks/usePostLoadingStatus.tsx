@@ -48,61 +48,62 @@ export const usePostLoadingStatus = (
 
 
    useEffect(() => {
-      if (mode === "view") return
+      if (mode === "edit") return;
+
+      if (post!.imagesAndVideos.length === 0) setAllAudiosHaveBeenLoaded(true);
+      if (post!.audios.length === 0) setAllAudiosHaveBeenLoaded(true);
+      if (post!.files.length === 0) setAllAudiosHaveBeenLoaded(true);
+      if (post!.innerHTML.length === 0) setInnerHTMLHaveBeenLoaded(true);
+   }, [mode, post])
+
+
+   useEffect(() => {
+      if (mode === "edit") return
 
       if (allImagesHaveBeenLoaded && allAudiosHaveBeenLoaded && allFilesHaveBeenLoaded && innerHTMLHaveBeenLoaded) {
-
-         // console.log(`post ${post!.objectId} have been loaded`);
-
          updatePostLoadingStatuses!(post!.objectId, true)
       }
    }, [mode, allImagesHaveBeenLoaded, allAudiosHaveBeenLoaded, allFilesHaveBeenLoaded, innerHTMLHaveBeenLoaded]);
 
 
    useEffect(() => {
-      if (mode === "view") return
-
-      // console.log("imagesLoadingStatuses: ", imagesLoadingStatuses);
+      if (mode === "edit") return
 
       if (!imagesLoadingStatuses.includes(false)) {
          setAllImagesHaveBeenLoaded(true);
       }
-   }, [mode, imagesLoadingStatuses]);
+   }, [mode, imagesLoadingStatuses, post]);
 
 
    useEffect(() => {
-      if (mode === "view") return
-
-      // console.log("audiosLoadingStatuses: ", audiosLoadingStatuses);
+      if (mode === "edit") return
 
       if (!audiosLoadingStatuses.includes(false)) {
          setAllAudiosHaveBeenLoaded(true);
       }
-   }, [mode, audiosLoadingStatuses]);
+   }, [mode, audiosLoadingStatuses, post]);
 
 
    useEffect(() => {
-      if (mode === "view") return
-
-      // console.log("filesLoadingStatuses: ", filesLoadingStatuses);
+      if (mode === "edit") return
 
       if (!filesLoadingStatuses.includes(false)) {
          setAllFilesHaveBeenLoaded(true);
       }
-   }, [mode, filesLoadingStatuses]);
+   }, [mode, filesLoadingStatuses, post]);
 
 
 
 
-   if (mode === "view") {
-      return {
-         setInnerHTMLHaveBeenLoaded,
-         updateLoadingStatusesItem
-      }
-   } else {
+   if (mode === "edit") {
       return {
          setInnerHTMLHaveBeenLoaded: undefined,
          updateLoadingStatusesItem: undefined
+      }
+   } else {
+      return {
+         setInnerHTMLHaveBeenLoaded,
+         updateLoadingStatusesItem
       }
    }
 }

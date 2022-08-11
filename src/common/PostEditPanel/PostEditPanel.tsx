@@ -259,6 +259,8 @@ const PostEditPanel = (props: Props) => {
 
 
    useEffect(() => {
+      // ! сброс аудиоплеера
+
       if (!loadInfo.loading && profileInfoMode === 'view') {
          if (postIsBeingCreated) {
             resetImagesBlock();
@@ -287,7 +289,7 @@ const PostEditPanel = (props: Props) => {
    useEffect(() => {
       if ((editMode && editMode !== 'textEdit') || showVideoAndImageSlider) {
          popupContext.setNeedToShowPopup!(true);
-      } else {
+      } else if (editMode) {
          popupContext.setNeedToShowPopup!(false);
       }
    }, [editMode, showVideoAndImageSlider]);
@@ -338,7 +340,8 @@ const PostEditPanel = (props: Props) => {
                popupText='Add audio to post'
                setOtherAudioIsPlaying={() => audioPlayerStateAPI.setIsPlaying(false)}
             />);
-         } else {
+         } else if (editMode === undefined && !popupContext.needToShowPopup) {
+            console.log("setPopup(undefined). popupContext.needToShowPopup: ", popupContext.needToShowPopup);
             appContext.setPopup!(undefined);
          }
       } else {
@@ -349,7 +352,7 @@ const PostEditPanel = (props: Props) => {
             playVideoListener={stopAudio}
          />);
       }
-   }, [editMode, showVideoAndImageSlider, sliderStartIndex, imagesAndVideos.length]);
+   }, [editMode, showVideoAndImageSlider, sliderStartIndex, imagesAndVideos.length, popupContext.needToShowPopup]);
 
 
    useEffect(() => {
@@ -360,6 +363,17 @@ const PostEditPanel = (props: Props) => {
       };
    }, [imagesAndVideos.length, files.length, audioFiles.length, activeContentIcon]);
 
+   // useEffect(() => {
+   //    if (props.post) {
+   //       console.log("post id: ", props.post.objectId);
+   //    }
+   // }, [props.post])
+
+   useEffect(() => {
+      if (props.mode === 'edit') {
+         console.log("editMode: ", editMode, "popupContext.needToShowPopup: ", popupContext.needToShowPopup)
+      }
+   }, [props.mode, editMode, popupContext.needToShowPopup])
 
 
 
