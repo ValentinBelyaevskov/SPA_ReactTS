@@ -51,7 +51,6 @@ const Controls = (props: Props) => {
 
    // !
    const showControls = (): void => {
-      console.log("showControls")
       popupContext.setIcon!('./icons/hide.svg');
       setControlsListContainerStyle({ transform: 'translateX(100%)' });
       touchEvents.addEventListener();
@@ -59,7 +58,6 @@ const Controls = (props: Props) => {
    }
 
    function hideControls(): void {
-      console.log("hideControls")
       popupContext.setIcon!('./icons/burger.svg');
       setControlsListContainerStyle({});
       touchEvents.enableEventSimulation();

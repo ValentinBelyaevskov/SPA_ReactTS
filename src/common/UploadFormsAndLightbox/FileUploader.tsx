@@ -5,6 +5,7 @@ import Button from "common/Button/Button";
 import { usePopupForm } from "hooks/usePopup/usePopupForm";
 import { LoadInfo } from "types/types";
 import { useHoverAndTouchClassNames } from "hooks/useHoverAndTouchClassNames";
+import { convertFileSizeToMb } from "functions/convertFileSizeToMB";
 
 
 
@@ -35,6 +36,8 @@ const FileUploader = (props: Props) => {
    const fileLabelButtonHoverAndTouchClassNames = useHoverAndTouchClassNames(styles.hover, styles.touch);
    const popupForm = usePopupForm(props.finishEditing);
    const fieldsRef = useRef<HTMLDivElement>(null);
+   const [errorString, setErrorString] = useState<string | undefined>(undefined);
+
 
 
 
@@ -42,6 +45,11 @@ const FileUploader = (props: Props) => {
       const inputFile: File = watch("fileList")[0];
 
       if (inputFile) {
+         if (!fileSizeDoesNotExceedTheAllowable(inputFile)) {
+            setErrorString('file size should not exceed 20 mb');
+            return;
+         }
+
          const src: string = URL.createObjectURL(inputFile);
 
          setTextSrc(src);
@@ -52,16 +60,20 @@ const FileUploader = (props: Props) => {
       }
    }
 
+
    const closeButtonClickHandler = (e: React.MouseEvent): void => {
       popupForm.hideEditorStyle();
       popupForm.setClickedButtonName(e);
    }
 
 
-
    const { register, watch } = useForm<Inputs>({
       mode: "onBlur",
    });
+
+
+   const fileSizeDoesNotExceedTheAllowable = (file: File) => convertFileSizeToMb(file.size) <= 20 ? true : false
+
 
 
 
@@ -72,12 +84,15 @@ const FileUploader = (props: Props) => {
       }
 
       if (textFile) {
+         if (!fileSizeDoesNotExceedTheAllowable(textFile)) return;
+
          props.submitListener(textFile, callback, "file");
       }
    }, [textFile]);
 
 
-   
+
+
    return (
       <div style={popupForm.editorStyle} onTransitionEnd={popupForm.transitionEndListener} className={`${styles.editor} ${styles.changeAvatarEditor}`}>
          <div className={`${styles.formContainer}`}>
@@ -102,6 +117,7 @@ const FileUploader = (props: Props) => {
                      id="file"
                      {...register("fileList", { onChange: setImageSrc })}
                   />
+                  <p className={styles.validationError}>{errorString ? errorString : null}</p>
                </div>
                <div className={styles.buttons}>
                   <Button

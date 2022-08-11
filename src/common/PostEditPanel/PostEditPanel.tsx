@@ -2,7 +2,7 @@ import styles from './PostEditPanel.module.scss';
 import React, { useRef, useState, useEffect, useContext } from 'react';
 import { Button, RoundAvatar } from 'common';
 import { useAppDispatch, useAppSelector } from 'hooks/redux';
-import { getProfileInfo, profileActions, createAPost, getLoadInfo, getProfileInfoMode, getUploadedPostIds } from 'pages/Profile/redux/profileReducer';
+import { getProfileInfo, profileActions, createAPost, getLoadInfo, getProfileInfoMode, getUploadedPostIds, getPostsLoadInfo } from 'pages/Profile/redux/profileReducer';
 import { AppContext, PopupContext } from 'App';
 import AddContentIcon from './AddContentIcon';
 import SelectAndEditAnImageForm from 'common/UploadFormsAndLightbox/SelectAndEditAnImageForm';
@@ -23,6 +23,8 @@ import { useAudiosBlock } from './hooks/useAudiosBlock';
 import TextEditor from 'common/TextEditor/TextEditor';
 import { Post } from 'pages/Profile/types/types';
 import getFormattedDate from 'functions/createCivilDate/getFormattedDate';
+import { InnerHTML } from './InnerHTML';
+import { DataType, usePostLoadingStatus } from './hooks/usePostLoadingStatus';
 
 
 
@@ -53,6 +55,7 @@ type ImagesAndVideosBlockCtxt = {
    setShowVideoAndImageSlider?: React.Dispatch<React.SetStateAction<boolean>>
    setSliderStartIndex?: React.Dispatch<React.SetStateAction<number>>
    mode?: PostMode
+   updateLoadingStatusesItem?: (index: number, newItemValue: boolean, dataType: DataType) => void
 }
 
 
@@ -105,7 +108,6 @@ const PostEditPanel = (props: Props) => {
    const profile = useAppSelector(getProfileInfo);
    const loadInfo = useAppSelector(getLoadInfo);
    const profileInfoMode = useAppSelector(getProfileInfoMode);
-   const postIds = useAppSelector(getUploadedPostIds);
 
    const resize = useScrollOrWindowSize("resize");
    const [editMode, setEditMode] = useState<EditMode>(undefined);
@@ -165,7 +167,7 @@ const PostEditPanel = (props: Props) => {
       audioLoadingStatuses,
       numberOfAudioLoadedStatuses,
       setShowAudioPlayer,
-      updateLoadingStatusesItem,
+      updateAudioLoadingStatusesItem,
       addAudio,
       deleteAudio,
       resetAudios,
@@ -174,6 +176,15 @@ const PostEditPanel = (props: Props) => {
    } = useAudiosBlock(appContext, resize, props.audioPlayerContext, props.mode, props.post);
 
 
+   const {
+      setInnerHTMLHaveBeenLoaded,
+      updateLoadingStatusesItem
+
+   } = usePostLoadingStatus(
+      props.mode,
+      props.post,
+      props.updatePostLoadingStatuses
+   )
 
 
    const finishWatching = (): void => setShowVideoAndImageSlider(false);
@@ -223,7 +234,7 @@ const PostEditPanel = (props: Props) => {
 
       dispatch(createAPost({
          profileId: profile.objectId,
-         profilePosts: postIds,
+         profilePosts: profile.posts,
          innerHTML: textEditorInnerHTML ? textEditorInnerHTML : "",
          files: [...files],
          audios: [...audioFiles],
@@ -425,13 +436,20 @@ const PostEditPanel = (props: Props) => {
                            />
                            : props.mode === 'view' && props.post && props.post.innerHTML
                               ?
-                              <div className={styles.text}>
-                                 {props.post.innerHTML}
-                              </div>
+                              <InnerHTML innerHTML={props.post.innerHTML} setInnerHTMLHaveBeenLoaded={setInnerHTMLHaveBeenLoaded} />
                               : undefined
                      }
                      <div className={styles.imagesBlock} style={imagesAndVideosBlockStyle}>
-                        <ImagesAndVideosBlockContext.Provider value={{ setShowVideoAndImageSlider, setSliderStartIndex, mode: props.mode }}>
+                        <ImagesAndVideosBlockContext.Provider
+                           value={
+                              {
+                                 setShowVideoAndImageSlider,
+                                 setSliderStartIndex,
+                                 mode: props.mode,
+                                 updateLoadingStatusesItem
+                              }
+                           }
+                        >
                            <ImagesAndVideosBlockContainer
                               config={
                                  {
@@ -460,6 +478,7 @@ const PostEditPanel = (props: Props) => {
                                  file={item}
                                  deleteFile={deleteFile}
                                  index={index}
+                                 updateLoadingStatusesItem={updateLoadingStatusesItem}
                               />
                            )
                         }
@@ -480,9 +499,10 @@ const PostEditPanel = (props: Props) => {
                                  setShowAudioPlayer={setShowAudioPlayer}
                                  setActiveTrackIdNumber={setActiveTrackIdNumber}
                                  loadingStatus={audioLoadingStatuses[index]}
-                                 updateLoadingStatusesItem={updateLoadingStatusesItem}
+                                 updateAudioLoadingStatusesItem={updateAudioLoadingStatusesItem}
                                  numberOfLoadedStatuses={numberOfAudioLoadedStatuses}
                                  setGeneralPlayerContext={setGeneralPlayerContext}
+                                 updateLoadingStatusesItem={updateLoadingStatusesItem}
                               />
                            )
                         }

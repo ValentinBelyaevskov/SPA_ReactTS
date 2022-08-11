@@ -6,6 +6,7 @@ import { useState } from 'react';
 import { useEffect } from 'react';
 import getFileNameAndFormat from 'functions/getFileNameAndFormat';
 import { FilesItem } from './hooks/useFilesBlock';
+import { DataType } from './hooks/usePostLoadingStatus';
 
 
 
@@ -14,6 +15,7 @@ type Props = {
    mode: "edit" | "view"
    deleteFile: (index: number) => void
    index: number
+   updateLoadingStatusesItem?: (index: number, newItemValue: boolean, dataType: DataType) => void
 }
 
 
@@ -65,7 +67,7 @@ const FilesListItem = (props: Props) => {
 
 
    return (
-      <div className={styles.filesListItem}>
+      <div className={`${styles.filesListItem} ${styles[props.mode]}`}>
          <div
             className={`${styles.fileLinkContainer} ${fileLinkHoverAndTouchClassNames.className}`}
             onClick={fileLinkHoverAndTouchClassNames.clickListener}
@@ -86,6 +88,9 @@ const FilesListItem = (props: Props) => {
             onMouseEnter={hideIconHoverAndTouchClassNames.mouseEnterListener}
             onTouchStart={hideIconHoverAndTouchClassNames.touchStartListener}
             onTouchEnd={hideIconHoverAndTouchClassNames.touchEndListener}
+            onLoad={() => {
+               if (props.updateLoadingStatusesItem) props.updateLoadingStatusesItem(props.index, true, "file");
+            }}
          />
          <NotVisibleParameterValue
             parameterValue={props.file.name}

@@ -6,6 +6,7 @@ export type ProfileState = {
    profileInfoMode: ProfileInfoMode
    signInMode: SignInMode
    loadInfo: LoadInfo
+   postsLoadInfo: LoadInfo
    errorTypes: string[]
    uploadedPosts: {
       entities: Entities<Post>
