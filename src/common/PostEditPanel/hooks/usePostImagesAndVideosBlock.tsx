@@ -134,13 +134,24 @@ export const usePostImagesAndVideosBlock = (resize: WindowSize) => {
 
 
 
+   // useEffect(() => {
+   //    setImagesAndVideosBlockStyle({
+   //       ...imagesAndVideosBlockStyle,
+   //       maxHeight: `${containerSizes[1]}px`
+   //    })
+   // }, [containerSizes[1], imagesAndVideosBlockStyle.marginTop])
+
+
    useEffect(() => {
-      if (imagesAndVideos.length) {
-         setImagesAndVideosBlockStyle({ marginTop: "15px" });
+      if (imagesAndVideos.length > 0) {
+         setImagesAndVideosBlockStyle({
+            marginTop: "15px",
+            maxHeight: `${containerSizes[1]}px`
+         });
       } else {
-         setImagesAndVideosBlockStyle({});
+         setImagesAndVideosBlockStyle({ maxHeight: `${containerSizes[1]}px` });
       }
-   }, [imagesAndVideos.length]);
+   }, [containerSizes[1], imagesAndVideos.length]);
 
 
    useEffect(() => {
@@ -158,14 +169,6 @@ export const usePostImagesAndVideosBlock = (resize: WindowSize) => {
          setContainerSizes([panelWidth, panelWidth * containerAspect]);
       }
    }, [panelRef.current, resize.value[0], containerAspect])
-
-
-   useEffect(() => {
-      setImagesAndVideosBlockStyle({
-         ...imagesAndVideosBlockStyle,
-         maxHeight: `${containerSizes[1]}px`
-      })
-   }, [containerSizes[1], imagesAndVideosBlockStyle.marginTop])
 
 
    useEffect(() => {

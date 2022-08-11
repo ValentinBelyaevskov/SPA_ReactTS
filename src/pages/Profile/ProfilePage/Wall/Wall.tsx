@@ -1,10 +1,11 @@
 import { useAppSelector } from 'hooks/redux'
 import styles from './Wall.module.scss'
-import { getUploadedPostIds, getPostEntities, getProfileInfo, getPosts } from '../../redux/profileReducer';
+import { getUploadedPostIds, getPostEntities, getProfileInfo, getPosts, getPostsLoadInfo } from '../../redux/profileReducer';
 import PostEditPanel from 'common/PostEditPanel/PostEditPanel';
 import { useEffect, useState } from 'react';
 import { useScrollOrWindowSize } from '../../../../hooks/useScrollOrWindowSize';
 import { useAppDispatch } from '../../../../hooks/redux';
+import { ErrorGettingPost } from './ErrorGettingPost';
 
 
 
@@ -24,6 +25,7 @@ const Wall = (props: Props) => {
    const profileInfo = useAppSelector(getProfileInfo);
    const uploadedPostIds = useAppSelector(getUploadedPostIds);
    const postEntities = useAppSelector(getPostEntities);
+   const postsLoadInfo = useAppSelector(getPostsLoadInfo);
    const resize = useScrollOrWindowSize("resize");
    const scroll = useScrollOrWindowSize("scroll");
 
@@ -34,6 +36,8 @@ const Wall = (props: Props) => {
 
 
    const updatePostLoadingStatuses = (id: string, value: boolean): void => {
+      console.log("updatePostLoadingStatuses")
+
       const loadingStatuses = { ...postCompLoadingStatuses };
       loadingStatuses[id] = value;
 
@@ -43,40 +47,9 @@ const Wall = (props: Props) => {
 
 
 
-   // * setPostCompLoadingStatuses
    useEffect(() => {
-      const loadingStatuses: PostLoadingStatuses = {}
-
-      uploadedPostIds.forEach((id => {
-         if (loadingStatuses[id] === undefined) {
-            loadingStatuses[id] = false
-         }
-      }))
-
-      setPostCompLoadingStatuses(loadingStatuses)
-
-   }, [uploadedPostIds.length])
-
-
-   // * setAllPostCompsHaveBeenLoaded
-   useEffect(() => {
-      console.log(Object.keys(postCompLoadingStatuses).length, uploadedPostIds.length);
-
-      if (Object.keys(postCompLoadingStatuses).length === uploadedPostIds.length) {
-         const loadingStatusEqualToFalse = uploadedPostIds.find(id => postCompLoadingStatuses[id] === false);
-
-
-         if (loadingStatusEqualToFalse === undefined) {
-            setAllPostCompsHaveBeenLoaded(true);
-         } else {
-            setAllPostCompsHaveBeenLoaded(false);
-         }
-
-      } else if (Object.keys(postCompLoadingStatuses).length < uploadedPostIds.length) {
-         setAllPostCompsHaveBeenLoaded(false);
-      }
-
-   }, [postCompLoadingStatuses, uploadedPostIds.length])
+      console.log("postCompLoadingStatuses: ", postCompLoadingStatuses);
+   }, [postCompLoadingStatuses])
 
 
    useEffect(() => {
@@ -90,55 +63,67 @@ const Wall = (props: Props) => {
    }, []);
 
 
-   // * запрос на получение новых постов getPosts
    useEffect(() => {
-      console.log("allPostCompsHaveBeenLoaded: ", allPostCompsHaveBeenLoaded, uploadedPostIds.length)
-
-      const allPostIdsLength = profileInfo.posts.length;
-      const uploadedPostIdsLength = uploadedPostIds.length;
-
+      console.log("1", allPostCompsHaveBeenLoaded, profileInfo.posts.length, uploadedPostIds.length)
 
       if (
-         !allPostCompsHaveBeenLoaded
-         || uploadedPostIdsLength < 3
-         || uploadedPostIdsLength === allPostIdsLength
-         || Object.keys(postCompLoadingStatuses).length !== uploadedPostIdsLength
-      ) return;
+         allPostCompsHaveBeenLoaded
+         && !postsLoadInfo.loading
+         && postsLoadInfo.loaded
+         && profileInfo.posts.length > 3
+         && uploadedPostIds.length >= 3
+         && uploadedPostIds.length < profileInfo.posts.length
+      ) {
+         let scrollBottom = document.documentElement.scrollHeight - (resize.value[1] + scroll.value[1]);
+
+         console.log("scrollBottom: ", scrollBottom)
+
+         if (scrollBottom < 200) {
+            dispatch(getPosts(
+               {
+                  allPostIdsLength: profileInfo.posts.length,
+                  uploadedPostIdsLength: uploadedPostIds.length,
+                  objectId: profileInfo.objectId
+               }
+            ))
+
+            setAllPostCompsHaveBeenLoaded(false);
+         }
+      }
+   }, [scroll.value[1], postsLoadInfo.loading, postsLoadInfo.loaded, allPostCompsHaveBeenLoaded, uploadedPostIds.length, profileInfo.posts.length])
 
 
-      console.log("getPosts call")
+   // * setPostCompLoadingStatuses
+   useEffect(() => {
+      if (!postsLoadInfo.loading && postsLoadInfo.loaded) {
+         const loadingStatuses: PostLoadingStatuses = { ...postCompLoadingStatuses };
 
+         let i = 0;
 
-      let scrollBottom = document.documentElement.scrollHeight - (resize.value[1] + scroll.value[1]);
-
-      console.log("scrollBottom: ", scrollBottom)
-
-      if (scrollBottom < 200) {
-         dispatch(getPosts(
-            {
-               allPostIdsLength,
-               uploadedPostIdsLength,
-               objectId: profileInfo.objectId
+         uploadedPostIds.forEach((id => {
+            if (loadingStatuses[id] === undefined) {
+               loadingStatuses[id] = false;
+               i++;
             }
-         ))
+         }))
 
-         setAllPostCompsHaveBeenLoaded(false);
+         if (i > 0) setPostCompLoadingStatuses(loadingStatuses);
+
+         const loadingStatusEqualToFalse = uploadedPostIds.find(id => loadingStatuses[id] === false);
+
+         if (loadingStatusEqualToFalse === undefined) {
+            setAllPostCompsHaveBeenLoaded(true);
+         } else {
+            setAllPostCompsHaveBeenLoaded(false);
+         }
       }
 
-   }, [
-      resize.value,
-      scroll.value,
-      uploadedPostIds.length,
-      profileInfo.posts.length,
-      profileInfo.objectId,
-      allPostCompsHaveBeenLoaded,
-      postCompLoadingStatuses
-   ])
+   }, [postCompLoadingStatuses, uploadedPostIds.length, postsLoadInfo.loading, postsLoadInfo.loaded])
 
 
 
 
-   return uploadedPostIds.length > 0
+   return !postsLoadInfo.error && uploadedPostIds.length > 0
       ? (
          <>
             {
@@ -158,7 +143,9 @@ const Wall = (props: Props) => {
             }
          </>
       )
-      : <></>
+      : postsLoadInfo.error
+         ? <ErrorGettingPost />
+         : <></>
 }
 
 

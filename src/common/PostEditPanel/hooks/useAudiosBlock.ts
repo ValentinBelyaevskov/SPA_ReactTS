@@ -95,7 +95,7 @@ export const useAudiosBlock = (appContext: AppCtxt, resize: WindowSize, panelAud
    const getActiveTrackIdNumber = (activeTrackId: number): number => audioIds.findIndex(id => id === activeTrackId);
 
 
-   const updateLoadingStatusesItem = (index: number, newItemValue: boolean): void => {
+   const updateAudioLoadingStatusesItem = (index: number, newItemValue: boolean): void => {
       setAudioLoadingStatuses(getArrayWithUpdatedItemValue<boolean>(audioLoadingStatuses, index, newItemValue));
    }
 
@@ -322,7 +322,7 @@ export const useAudiosBlock = (appContext: AppCtxt, resize: WindowSize, panelAud
       audioLoadingStatuses,
       numberOfAudioLoadedStatuses,
       setShowAudioPlayer,
-      updateLoadingStatusesItem,
+      updateAudioLoadingStatusesItem,
       addAudio,
       deleteAudio,
       resetAudios,

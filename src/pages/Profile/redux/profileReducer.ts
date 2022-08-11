@@ -41,6 +41,12 @@ const initialState: ProfileState = {
       error: undefined,
       errorType: undefined,
    },
+   postsLoadInfo: {
+      loaded: false,
+      loading: true,
+      error: undefined,
+      errorType: undefined,
+   },
    errorTypes: [
       "login",
       "loginAsGuest",
@@ -97,6 +103,7 @@ const profileSlice = createSlice({
             }
             if (key === "avatar") state.profileInfo.avatar = state.profileInfo.avatar
          }
+
          state.profileMode = action.payload
       }
    },
@@ -123,12 +130,19 @@ const profileSlice = createSlice({
                state.profileMode = "signIn"
             };
 
+            state.uploadedPosts.entities = {}
+            state.uploadedPosts.ids = []
+
             if (action.payload.posts) {
                action.payload.posts.forEach(post => {
                   state.uploadedPosts.entities[post.objectId] = post;
                   state.uploadedPosts.ids.push(post.objectId);
                });
             }
+
+
+            state.postsLoadInfo.loading = false
+            state.postsLoadInfo.loaded = true
 
             state.loadInfo.loading = false
             state.loadInfo.loaded = true
@@ -168,42 +182,91 @@ const profileSlice = createSlice({
          .addCase(login.fulfilled, (state, action) => {
             state.profileInfo = {
                ...state,
-               ...action.payload
+               ...action.payload.profile
             }
+
+            state.uploadedPosts.entities = {}
+            state.uploadedPosts.ids = []
+
+            if (action.payload.posts) {
+               action.payload.posts.forEach(post => {
+                  state.uploadedPosts.entities[post.objectId] = post;
+                  state.uploadedPosts.ids.push(post.objectId);
+               });
+            }
+
             state.profileMode = "loggedIn"
+
+
+            state.postsLoadInfo.loading = false
+            state.postsLoadInfo.loaded = true
+
             state.loadInfo.loading = false
             state.loadInfo.loaded = true
             state.loadInfo.error = undefined
             state.loadInfo.errorType = undefined
          })
          .addCase(logout.fulfilled, (state, action) => {
-            state.profileMode = "loggedOut"
-            state.loadInfo.loading = false
-            state.loadInfo.loaded = true
-            state.loadInfo.error = undefined
-            state.loadInfo.errorType = undefined
+            state.profileMode = "loggedOut";
+            state.loadInfo.loading = false;
+            state.loadInfo.loaded = true;
+            state.loadInfo.error = undefined;
+            state.loadInfo.errorType = undefined;
          })
          .addCase(passwordReset.fulfilled, (state, action) => {
-            state.loadInfo.loading = false
-            state.loadInfo.loaded = true
-            state.loadInfo.error = undefined
-            state.loadInfo.errorType = undefined
+            state.loadInfo.loading = false;
+            state.loadInfo.loaded = true;
+            state.loadInfo.error = undefined;
+            state.loadInfo.errorType = undefined;
          })
          .addCase(createAPost.fulfilled, (state, action) => {
             console.log("createAPost responce: ", action.payload);
             state.uploadedPosts.entities[action.payload.objectId] = action.payload;
             state.uploadedPosts.ids.unshift(action.payload.objectId);
 
-            state.profileInfoMode = "view"
+            state.profileInfo.posts.unshift(action.payload.objectId);
+
+            state.profileInfoMode = "view";
+
+
+            state.postsLoadInfo.loading = false;
+            state.postsLoadInfo.loaded = true;
+
             state.loadInfo.loading = false;
             state.loadInfo.loaded = true;
             state.loadInfo.error = undefined;
             state.loadInfo.errorType = undefined;
          })
+         .addCase(getPosts.fulfilled, (state, action) => {
+            console.log("getPosts responce: ", action.payload);
+
+            if (action.payload) {
+               action.payload.forEach(post => {
+                  state.uploadedPosts.entities[post.objectId] = post;
+                  state.uploadedPosts.ids.push(post.objectId);
+               });
+            }
+
+            state.postsLoadInfo.loading = false;
+            state.postsLoadInfo.loaded = true;
+         })
          .addMatcher((action) => action.type.startsWith('profile/') && action.type.endsWith('/pending'),
             (state, action) => {
+               if (
+                  action.type === "profile/getProfileProps/pending"
+                  || action.type === "profile/login/pending"
+                  || action.type === "profile/createAPost/pending"
+                  || action.type === "profile/getPosts/pending"
+               ) {
+                  state.postsLoadInfo.loading = true
+                  state.postsLoadInfo.loaded = false
+
+                  return
+               }
+
                state.loadInfo.loading = true
                state.loadInfo.loaded = false
+
             })
          .addMatcher((action) => action.type.startsWith('profile/') && action.type.endsWith('/rejected'),
             (state, action: BackendlessError) => {
@@ -218,6 +281,19 @@ const profileSlice = createSlice({
                } else {
                   state.loadInfo.errorType = action.type.split("").slice(8, -9).join("")
                }
+
+               if (
+                  action.type === "profile/getProfileProps/rejected"
+                  || action.type === "profile/login/rejected"
+                  || action.type === "profile/createAPost/rejected"
+                  || action.type === "profile/getPosts/rejected"
+               ) {
+                  state.postsLoadInfo.error = "An error occurred while loading posts. Try reloading the app."
+                  state.postsLoadInfo.errorType = action.type.split("").slice(8, -9).join("")
+
+                  console.log("An error occurred while loading posts. Try reloading the app.")
+               }
+
                console.log(state.loadInfo.errorType)
             })
    }
@@ -229,6 +305,11 @@ const profileSlice = createSlice({
 export const getLoadInfo = createSelector(
    (state: RootState) => state.profile.loadInfo,
    loadInfo => loadInfo
+)
+
+export const getPostsLoadInfo = createSelector(
+   (state: RootState) => state.profile.postsLoadInfo,
+   postsLoadInfo => postsLoadInfo
 )
 
 export const getProfileInfo = createSelector(
@@ -294,17 +375,44 @@ export const getProfileProps = createAsyncThunk(
             }
 
 
+
+            const offset = profile.posts.length - 3 > 0
+               ? profile.posts.length - 3
+               : profile.posts.length;
+
+            const pageSize = profile.posts.length >= 3
+               ? 3
+               : profile.posts.length;
+
             const postQuery = await Backendless.DataQueryBuilder.create()
-               .setPageSize(3)
+               .setPageSize(pageSize)
+               // .setPageSize(profile.posts.length)
                .setSortBy(["created"])
-               .setOffset(profile.posts.length - 3)
+               .setOffset(offset)
                .setWhereClause(`userId = '${objectId}'`);
 
             const posts: Post[] = await Backendless.Data.of("Posts").find(postQuery);
 
-            console.log("posts: ", posts)
 
-            return { profile, guestMode: false, posts: posts.reverse() }
+            // await Backendless.UserService.update({
+            //    ...profile,
+            //    posts: posts.map(post => post.objectId)
+            // })
+
+
+            //    !
+            // console.log("profile", profile)
+            // console.log("posts: ", posts)
+            //    !
+
+
+            return {
+               profile: {
+                  ...profile, posts: profile.posts.reverse()
+               },
+               guestMode: false,
+               posts: posts.reverse()
+            }
 
          } else {
             return { profile: undefined, guestMode: false }
@@ -420,8 +528,28 @@ export const login = createAsyncThunk(
    "profile/login",
    async (loginParams: LoginParams, { rejectWithValue }) => {
       try {
-         const responce: Profile = await Backendless.UserService.login(loginParams.email, loginParams.password, loginParams.rememberMe);
-         return responce;
+         const profile: Profile = await Backendless.UserService.login(loginParams.email, loginParams.password, loginParams.rememberMe);
+
+         const offset = profile.posts.length - 3 > 0
+            ? profile.posts.length - 3
+            : 0
+
+         const pageSize = profile.posts.length >= 3
+            ? 3
+            : profile.posts.length
+
+         const postQuery = await Backendless.DataQueryBuilder.create()
+            .setPageSize(pageSize)
+            .setSortBy(["created"])
+            .setOffset(offset)
+            .setWhereClause(`userId = '${profile.objectId}'`);
+
+         const posts: Post[] = await Backendless.Data.of("Posts").find(postQuery);
+
+         console.log("posts: ", posts)
+
+         return { profile, posts: posts.reverse() }
+
       } catch (err: any) {
          console.log(err);
          return rejectWithValue(err.message);
@@ -559,22 +687,31 @@ export const createAPost = createAsyncThunk(
 
 export const getPosts = createAsyncThunk(
    "profile/getPosts",
-   async (getPostsData: GetPostsData, { rejectWithValue }) => {
+   async (PostsData: GetPostsData, { rejectWithValue }) => {
       try {
-         const allPostIdsLength = getPostsData.allPostIdsLength;
-         const uploadedPostIdsLength = getPostsData.uploadedPostIdsLength;
+         const allPostIdsLength = PostsData.allPostIdsLength;
+         const uploadedPostIdsLength = PostsData.uploadedPostIdsLength;
 
+         if (allPostIdsLength === uploadedPostIdsLength) {
+            throw new Error("All posts have been loaded")
+         }
+
+         console.log("getPostsData call. PostsData: ", PostsData);
+
+         const pageSize = allPostIdsLength - uploadedPostIdsLength - 3 >= 3
+            ? allPostIdsLength - uploadedPostIdsLength - 3
+            : allPostIdsLength - uploadedPostIdsLength;
 
          if (allPostIdsLength > uploadedPostIdsLength) {
             const postQuery = await Backendless.DataQueryBuilder.create()
-               .setPageSize(3)
+               .setPageSize(pageSize)
                .setSortBy(["created"])
                .setOffset(allPostIdsLength - uploadedPostIdsLength - 3)
-               .setWhereClause(`userId = '${getPostsData.objectId}'`);
+               .setWhereClause(`userId = '${PostsData.objectId}'`);
 
             const posts: Post[] = await Backendless.Data.of("Posts").find(postQuery);
 
-            console.log("posts: ", posts)
+            return posts.reverse()
          }
 
 

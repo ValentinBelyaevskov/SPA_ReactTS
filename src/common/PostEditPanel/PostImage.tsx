@@ -33,6 +33,7 @@ type ImageContainerStyle = {
 
 const PostImage = (props: Props) => {
    const contentRef = useRef<HTMLDivElement>(null);
+   const context = useContext(ImagesAndVideosBlockContext);
    const [playIconClassName, setPlayIconClassName] = useState<string>(styles.playIcon);
    const hideIconHoverAndTouchClassNames = useHoverAndTouchClassNames(styles.hover, styles.touch);
    const playIconHoverAndTouchClassNames = useHoverAndTouchClassNames(styles.hover, styles.touch);
@@ -40,6 +41,7 @@ const PostImage = (props: Props) => {
    const [iframeStyle, setIframeStyle] = useState<IframeStyle>({});
    const [imageContainerStyle, setImageContainerStyle] = useState<ImageContainerStyle>({});
    const imagesAndVideosBlockContext = useContext(ImagesAndVideosBlockContext);
+
 
 
 
@@ -67,6 +69,7 @@ const PostImage = (props: Props) => {
          </div>
       )
       : undefined
+
 
 
 
@@ -141,6 +144,10 @@ const PostImage = (props: Props) => {
             jsx={getHideIcon()}
             onImgClick={imageAndVideoClickHandler}
             onLoad={() => {
+               if (context.updateLoadingStatusesItem) {
+                  context.updateLoadingStatusesItem(props.index, true, "image/video")
+               }
+
                console.log("image was loaded")
             }}
          />
@@ -151,8 +158,19 @@ const PostImage = (props: Props) => {
                   className={`${styles.video} unselectable`}
                   width={iframeStyle.width}
                   height={iframeStyle.height}
-                  onLoad={() => {
-                     console.log("video was loaded")
+                  // onLoad={() => {
+                  //    if (context.updateLoadingStatusesItem) {
+                  //       context.updateLoadingStatusesItem(props.index, true, "image/video")
+                  //    }
+
+                  //    console.log("video was loaded")
+                  // }}
+                  onLoadedData={() => {
+                     if (context.updateLoadingStatusesItem) {
+                        context.updateLoadingStatusesItem(props.index, true, "image/video");
+                     }
+
+                     console.log("video was loaded");
                   }}
                >
                </video>
