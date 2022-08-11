@@ -44,6 +44,7 @@ const PostImage = (props: Props) => {
 
 
 
+
    const imageAndVideoClickHandler = (): void => {
       playIconHoverAndTouchClassNames.clickListener();
       imagesAndVideosBlockContext.setShowVideoAndImageSlider!(true);
@@ -68,6 +69,7 @@ const PostImage = (props: Props) => {
          </div>
       )
       : undefined
+
 
 
 
@@ -146,7 +148,11 @@ const PostImage = (props: Props) => {
                   context.updateLoadingStatusesItem(props.index, true, "image/video")
                }
 
+<<<<<<< HEAD
                console.log("image was loaded")
+=======
+               // console.log("image was loaded")
+>>>>>>> 7e108e21dac936826c41b6704e0634af542bc4fc
             }}
          />
          : <div className={`${styles.imageContainer} unselectable`} ref={contentRef} style={imageContainerStyle}>

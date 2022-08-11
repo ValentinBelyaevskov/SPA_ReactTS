@@ -52,15 +52,15 @@ const VideoUploader = (props: Props) => {
          if (!isTheFileAnVideo(inputFile)) {
             setErrorString('The file must be an video');
             setVideoFile(null);
-            setVideoSrc("")
+            setVideoSrc("");
             return;
          } else if (!fileSizeDoesNotExceedTheAllowable(inputFile)) {
             setErrorString('file size should not exceed 20 mb');
             setVideoFile(null);
-            setVideoSrc("")
+            setVideoSrc("");
             return;
          } else {
-            setErrorString(undefined)
+            setErrorString(undefined);
          }
       }
 

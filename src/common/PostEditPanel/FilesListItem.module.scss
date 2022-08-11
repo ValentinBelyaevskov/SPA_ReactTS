@@ -53,16 +53,24 @@
       white-space: nowrap;
    }
 
-   .hideIcon {
-      width: 1.1rem;
+   &.view {
+      .hideIcon {
+         display: none;
+      }
+   }
 
-      transition-property: opacity;
-      transition-duration: 0.1s;
+   &.edit {
+      .hideIcon {
+         width: 1.1rem;
 
-      &.hover:hover,
-      &.touch {
-         opacity: 0.6;
-         cursor: pointer;
+         transition-property: opacity;
+         transition-duration: 0.1s;
+
+         &.hover:hover,
+         &.touch {
+            opacity: 0.6;
+            cursor: pointer;
+         }
       }
    }
 }

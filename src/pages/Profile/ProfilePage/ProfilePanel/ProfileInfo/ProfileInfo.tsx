@@ -48,6 +48,10 @@ const ProfileInfo = (props: Props) => {
       setProfileInfoClassname,
 
    } = useCreateInfoConfiguration(props.profileInfo, loadInfo.loaded, styles, allPostIds.length);
+<<<<<<< HEAD
+=======
+
+>>>>>>> 7e108e21dac936826c41b6704e0634af542bc4fc
 
    console.log("allPostIds", allPostIds)
 

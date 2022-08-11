@@ -108,7 +108,10 @@ const PostEditPanel = (props: Props) => {
    const profile = useAppSelector(getProfileInfo);
    const loadInfo = useAppSelector(getLoadInfo);
    const profileInfoMode = useAppSelector(getProfileInfoMode);
+<<<<<<< HEAD
    const postIds = useAppSelector(getUploadedPostIds);
+=======
+>>>>>>> 7e108e21dac936826c41b6704e0634af542bc4fc
 
    const resize = useScrollOrWindowSize("resize");
    const [editMode, setEditMode] = useState<EditMode>(undefined);
@@ -235,7 +238,7 @@ const PostEditPanel = (props: Props) => {
 
       dispatch(createAPost({
          profileId: profile.objectId,
-         profilePosts: postIds,
+         profilePosts: profile.posts,
          innerHTML: textEditorInnerHTML ? textEditorInnerHTML : "",
          files: [...files],
          audios: [...audioFiles],
@@ -479,6 +482,7 @@ const PostEditPanel = (props: Props) => {
                                  file={item}
                                  deleteFile={deleteFile}
                                  index={index}
+                                 updateLoadingStatusesItem={updateLoadingStatusesItem}
                               />
                            )
                         }
@@ -502,6 +506,7 @@ const PostEditPanel = (props: Props) => {
                                  updateAudioLoadingStatusesItem={updateAudioLoadingStatusesItem}
                                  numberOfLoadedStatuses={numberOfAudioLoadedStatuses}
                                  setGeneralPlayerContext={setGeneralPlayerContext}
+                                 updateLoadingStatusesItem={updateLoadingStatusesItem}
                               />
                            )
                         }

@@ -6,6 +6,7 @@ import { useEffect } from 'react';
 import getFileNameAndFormat from 'functions/getFileNameAndFormat';
 import { AudioFilesItem } from './hooks/useAudiosBlock';
 import { convertSecondsToMs } from 'common/AudioPlayer/functions.ts/convertSecondsToMs';
+import { DataType } from './hooks/usePostLoadingStatus';
 
 
 
@@ -25,6 +26,7 @@ type Props = {
    updateAudioLoadingStatusesItem: (itemIndex: number, newItemValue: boolean) => void
    numberOfLoadedStatuses: number
    setGeneralPlayerContext: () => void
+   updateLoadingStatusesItem?: (index: number, newItemValue: boolean, dataType: DataType) => void
 }
 
 
@@ -83,6 +85,9 @@ const AudiosListItem = (props: Props) => {
    const audioLoadListener = () => {
       if (audioRef.current) {
          setTrackDuration(convertSecondsToMs(+audioRef.current.duration.toFixed(2)))
+         if (props.updateLoadingStatusesItem) {
+            props.updateLoadingStatusesItem(props.index, true, "audio");
+         }
       }
    }
 

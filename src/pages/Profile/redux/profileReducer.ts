@@ -222,6 +222,11 @@ const profileSlice = createSlice({
             console.log("createAPost responce: ", action.payload);
             state.uploadedPosts.entities[action.payload.objectId] = action.payload;
             state.uploadedPosts.ids.unshift(action.payload.objectId);
+<<<<<<< HEAD
+=======
+
+            state.profileInfo.posts.unshift(action.payload.objectId)
+>>>>>>> 7e108e21dac936826c41b6704e0634af542bc4fc
 
             state.profileInfoMode = "view"
 
@@ -358,22 +363,50 @@ export const getProfileProps = createAsyncThunk(
 
 
             const postQuery = await Backendless.DataQueryBuilder.create()
+<<<<<<< HEAD
                .setPageSize(15)
                .setSortBy(["created"])
                // .setOffset(profile.posts.length - 3)
+=======
+               .setPageSize(3)
+               // .setPageSize(profile.posts.length)
+               .setSortBy(["created"])
+               .setOffset(profile.posts.length - 3)
+>>>>>>> 7e108e21dac936826c41b6704e0634af542bc4fc
                .setWhereClause(`userId = '${objectId}'`);
 
             const posts: Post[] = await Backendless.Data.of("Posts").find(postQuery);
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 7e108e21dac936826c41b6704e0634af542bc4fc
             // await Backendless.UserService.update({
             //    ...profile,
             //    posts: posts.map(post => post.objectId)
             // })
 
+<<<<<<< HEAD
             console.log("profile", profile)
             console.log("posts: ", posts)
 
             return { profile, guestMode: false, posts: posts.reverse() }
+=======
+
+            //    !
+            // console.log("profile", profile)
+            // console.log("posts: ", posts)
+            //    !
+
+
+            return {
+               profile: {
+                  ...profile, posts: profile.posts.reverse()
+               },
+               guestMode: false,
+               posts: posts.reverse()
+            }
+>>>>>>> 7e108e21dac936826c41b6704e0634af542bc4fc
 
          } else {
             return { profile: undefined, guestMode: false }
@@ -655,7 +688,11 @@ export const getPosts = createAsyncThunk(
 
             const posts: Post[] = await Backendless.Data.of("Posts").find(postQuery);
 
+<<<<<<< HEAD
             console.log("posts: ", posts)
+=======
+            // console.log("posts: ", posts)
+>>>>>>> 7e108e21dac936826c41b6704e0634af542bc4fc
          }
 
 

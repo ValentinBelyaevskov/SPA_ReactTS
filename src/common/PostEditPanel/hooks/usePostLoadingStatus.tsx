@@ -51,6 +51,7 @@ export const usePostLoadingStatus = (
       if (mode === "view") return
 
       if (allImagesHaveBeenLoaded && allAudiosHaveBeenLoaded && allFilesHaveBeenLoaded && innerHTMLHaveBeenLoaded) {
+<<<<<<< HEAD
          updatePostLoadingStatuses!(post!.objectId, true)
       }
    }, [mode, allImagesHaveBeenLoaded, allAudiosHaveBeenLoaded, allFilesHaveBeenLoaded, innerHTMLHaveBeenLoaded])
@@ -77,6 +78,47 @@ export const usePostLoadingStatus = (
          setAllFilesHaveBeenLoaded(true)
       }
    }, [filesLoadingStatuses])
+=======
+
+         // console.log(`post ${post!.objectId} have been loaded`);
+
+         updatePostLoadingStatuses!(post!.objectId, true)
+      }
+   }, [mode, allImagesHaveBeenLoaded, allAudiosHaveBeenLoaded, allFilesHaveBeenLoaded, innerHTMLHaveBeenLoaded]);
+
+
+   useEffect(() => {
+      if (mode === "view") return
+
+      // console.log("imagesLoadingStatuses: ", imagesLoadingStatuses);
+
+      if (!imagesLoadingStatuses.includes(false)) {
+         setAllImagesHaveBeenLoaded(true);
+      }
+   }, [mode, imagesLoadingStatuses]);
+
+
+   useEffect(() => {
+      if (mode === "view") return
+
+      // console.log("audiosLoadingStatuses: ", audiosLoadingStatuses);
+
+      if (!audiosLoadingStatuses.includes(false)) {
+         setAllAudiosHaveBeenLoaded(true);
+      }
+   }, [mode, audiosLoadingStatuses]);
+
+
+   useEffect(() => {
+      if (mode === "view") return
+
+      // console.log("filesLoadingStatuses: ", filesLoadingStatuses);
+
+      if (!filesLoadingStatuses.includes(false)) {
+         setAllFilesHaveBeenLoaded(true);
+      }
+   }, [mode, filesLoadingStatuses]);
+>>>>>>> 7e108e21dac936826c41b6704e0634af542bc4fc
 
 
 

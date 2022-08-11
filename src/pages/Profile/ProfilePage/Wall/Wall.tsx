@@ -45,14 +45,90 @@ const Wall = (props: Props) => {
 
 
 
+<<<<<<< HEAD
    useEffect(() => {
       console.log("postsLoadInfo: ", postsLoadInfo);
    }, [postsLoadInfo])
+=======
+   // // !
+   // useEffect(() => {
+   //    console.log("postCompLoadingStatuses: ", postCompLoadingStatuses);
+   // }, [postCompLoadingStatuses])
+
+   // useEffect(() => {
+   //    console.log("allPostCompsHaveBeenLoaded: ", allPostCompsHaveBeenLoaded);
+   // }, [allPostCompsHaveBeenLoaded])
+
+   // useEffect(() => {
+   //    console.log("postsLoadInfo: ", postsLoadInfo);
+   // }, [postsLoadInfo])
+   // // !
+
+
+   useEffect(() => {
+      resize.addEventListener();
+      scroll.addEventListener();
+
+      return () => {
+         resize.removeEventListener();
+         scroll.removeEventListener();
+      }
+   }, []);
+
+
+   useEffect(() => {
+      console.log("1", allPostCompsHaveBeenLoaded, profileInfo.posts.length, uploadedPostIds.length)
+
+      if (
+         allPostCompsHaveBeenLoaded
+         && !postsLoadInfo.loading
+         && postsLoadInfo.loaded
+         && profileInfo.posts.length > 3
+         && uploadedPostIds.length >= 3
+         && uploadedPostIds.length < profileInfo.posts.length
+      ) {
+         let scrollBottom = document.documentElement.scrollHeight - (resize.value[1] + scroll.value[1]);
+
+         console.log("scrollBottom: ", scrollBottom)
+
+         if (scrollBottom < 200) {
+            dispatch(getPosts(
+               {
+                  allPostIdsLength: profileInfo.posts.length,
+                  uploadedPostIdsLength: uploadedPostIds.length,
+                  objectId: profileInfo.objectId
+               }
+            ))
+
+            setAllPostCompsHaveBeenLoaded(false);
+         }
+      }
+   }, [postsLoadInfo.loading, postsLoadInfo.loaded, allPostCompsHaveBeenLoaded, uploadedPostIds.length, profileInfo.posts.length])
+
+
+   useEffect(() => {
+      if (!postsLoadInfo.loading && postsLoadInfo.loaded) {
+         const loadingStatusEqualToFalse = uploadedPostIds.find(id => postCompLoadingStatuses[id] === false);
+
+         console.log("2", postCompLoadingStatuses, loadingStatusEqualToFalse)
+
+         if (loadingStatusEqualToFalse === undefined) {
+            setAllPostCompsHaveBeenLoaded(true);
+         } else {
+            setAllPostCompsHaveBeenLoaded(false);
+         }
+      }
+   }, [postCompLoadingStatuses, postsLoadInfo.loading, postsLoadInfo.loaded])
+>>>>>>> 7e108e21dac936826c41b6704e0634af542bc4fc
 
 
    // * setPostCompLoadingStatuses
    useEffect(() => {
+<<<<<<< HEAD
       if (postsLoadInfo.loading && !postsLoadInfo.loaded) {
+=======
+      if (!postsLoadInfo.loading && postsLoadInfo.loaded) {
+>>>>>>> 7e108e21dac936826c41b6704e0634af542bc4fc
          const loadingStatuses: PostLoadingStatuses = {}
 
          uploadedPostIds.forEach((id => {
@@ -62,6 +138,11 @@ const Wall = (props: Props) => {
          }))
 
          setPostCompLoadingStatuses(loadingStatuses);
+<<<<<<< HEAD
+=======
+
+         console.log("3", "loadingStatuses: ", loadingStatuses)
+>>>>>>> 7e108e21dac936826c41b6704e0634af542bc4fc
       }
 
    }, [uploadedPostIds.length, postsLoadInfo.loading, postsLoadInfo.loaded])
@@ -88,6 +169,7 @@ const Wall = (props: Props) => {
    // }, [postCompLoadingStatuses, uploadedPostIds.length])
 
 
+<<<<<<< HEAD
    useEffect(() => {
       if (postsLoadInfo.loading && !postsLoadInfo.loaded) {
          const loadingStatusEqualToFalse = uploadedPostIds.find(id => postCompLoadingStatuses[id] === false);
@@ -111,6 +193,12 @@ const Wall = (props: Props) => {
          scroll.removeEventListener();
       }
    }, []);
+=======
+
+
+
+
+>>>>>>> 7e108e21dac936826c41b6704e0634af542bc4fc
 
 
    // * запрос на получение новых постов getPosts
@@ -159,6 +247,7 @@ const Wall = (props: Props) => {
    // ])
 
 
+<<<<<<< HEAD
    useEffect(() => {
       if (allPostCompsHaveBeenLoaded && postsLoadInfo.loading && !postsLoadInfo.loaded) {
          let scrollBottom = document.documentElement.scrollHeight - (resize.value[1] + scroll.value[1]);
@@ -180,6 +269,8 @@ const Wall = (props: Props) => {
    }, [postsLoadInfo.loading, postsLoadInfo.loaded, allPostCompsHaveBeenLoaded, uploadedPostIds.length, profileInfo.posts.length])
 
 
+=======
+>>>>>>> 7e108e21dac936826c41b6704e0634af542bc4fc
 
 
    return !postsLoadInfo.error && uploadedPostIds.length > 0
