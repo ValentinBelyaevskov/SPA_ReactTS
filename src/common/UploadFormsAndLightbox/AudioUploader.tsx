@@ -15,7 +15,7 @@ import { getPlayerState, getShowAudioPlayer } from '../AudioPlayer/redux/audioPl
 
 
 interface Props {
-   finishEditing: () => void
+   finishShowingThePopup: () => void
    submitListener: (file: File | null, callback: () => void, type: "audio") => void
    loadInfo?: LoadInfo
    closeButtonClickHandler?: () => void
@@ -39,7 +39,7 @@ const AudioUploader = (props: Props) => {
    const fileLabelButtonHoverAndTouchClassNames = useHoverAndTouchClassNames(styles.hover, styles.touch);
    const [editingCompleted, setEditingCompleted] = useState<boolean>(false);
    const popupForm = usePopupForm(() => {
-      props.finishEditing();
+      props.finishShowingThePopup();
       setEditingCompleted(true);
       if (showAudioPlayer) playerStateAPI.resetPlayer();
    });

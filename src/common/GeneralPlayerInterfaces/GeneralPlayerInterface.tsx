@@ -1,10 +1,8 @@
 import { audioPlayerApi } from 'common/AudioPlayer/API/audioPlayerAPI';
 import PlayerInterface from 'common/AudioPlayer/PlayerInterface';
 import { audioPlayerActions, getPlayerStatus, getShowAudioPlayer } from 'common/AudioPlayer/redux/audioPlayerReducer';
-import { AudioPlayerContext } from 'common/AudioPlayer/useAudioPlayer';
 import { useAppSelector } from 'hooks/redux';
 import { useHoverAndTouchClassNames } from 'hooks/useHoverAndTouchClassNames';
-import { useContext } from 'react';
 import { useAppDispatch } from '../../hooks/redux';
 
 
@@ -23,11 +21,6 @@ type Props = {
 
 
 const GeneralPlayerInterface = (props: Props) => {
-   const {
-      showPlayerOnPlayBtnClick,
-      setShowPlayerOnPlayBtnClick
-   } = useContext(AudioPlayerContext);
-
    const playerStatus = useAppSelector(getPlayerStatus("general"));
    const showAudioPlayer = useAppSelector(getShowAudioPlayer("general"));
    const dispatch = useAppDispatch();

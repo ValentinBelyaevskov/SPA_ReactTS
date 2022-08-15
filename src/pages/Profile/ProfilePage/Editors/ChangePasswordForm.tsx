@@ -13,7 +13,7 @@ import { useState } from "react";
 
 
 interface Props {
-   finishEditing: () => void
+   finishShowingThePopup: () => void
 }
 
 type Inputs = {
@@ -43,10 +43,10 @@ const ChangePasswordForm = (props: Props) => {
 
 
    function endEditingCallback(): void {
-      props.finishEditing();
+      props.finishShowingThePopup();
       if (popupForm.clickedButton && popupForm.clickedButton.includes("setNewPasswordButton")) {
          dispatch(profileActions.resetProfileInfo("signIn"));
-         dispatch(profileActions.setProfileInfoMode("view"));
+         dispatch(profileActions.setProfileInfoMode("pageView"));
          localStorage.clear();
       }
    }

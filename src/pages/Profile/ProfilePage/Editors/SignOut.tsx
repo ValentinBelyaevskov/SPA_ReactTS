@@ -8,7 +8,7 @@ import { usePopupForm } from 'hooks/usePopup/usePopupForm';
 
 
 interface Props {
-   finishEditing: () => void,
+   finishShowingThePopup: () => void,
 }
 
 
@@ -23,7 +23,7 @@ const SignOut = (props: Props) => {
 
 
    function endEditingCallback(): void {
-      props.finishEditing();
+      props.finishShowingThePopup();
       if (profileMode === "loggedOut") dispatch(profileActions.resetProfileInfo("signIn"));
    }
 

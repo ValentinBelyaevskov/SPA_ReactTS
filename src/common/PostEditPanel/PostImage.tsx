@@ -5,6 +5,7 @@ import { useEffect, useState, useRef } from 'react';
 import { GridDirection } from "./hooks/usePostImagesAndVideosBlock";
 import { ImagesAndVideosBlockContext } from './PostEditPanel';
 import { useContext } from 'react';
+import { AppContext } from '../../App';
 
 
 
@@ -34,6 +35,7 @@ type ImageContainerStyle = {
 const PostImage = (props: Props) => {
    const contentRef = useRef<HTMLDivElement>(null);
    const context = useContext(ImagesAndVideosBlockContext);
+   const profileContentLoading = useContext(AppContext).profileContentLoading;
    const [playIconClassName, setPlayIconClassName] = useState<string>(styles.playIcon);
    const hideIconHoverAndTouchClassNames = useHoverAndTouchClassNames(styles.hover, styles.touch);
    const playIconHoverAndTouchClassNames = useHoverAndTouchClassNames(styles.hover, styles.touch);
@@ -47,7 +49,7 @@ const PostImage = (props: Props) => {
 
    const imageAndVideoClickHandler = (): void => {
       playIconHoverAndTouchClassNames.clickListener();
-      imagesAndVideosBlockContext.setShowVideoAndImageSlider!(true);
+      imagesAndVideosBlockContext.setPopupType!("showImageAndVideoSlider");
       imagesAndVideosBlockContext.setSliderStartIndex!(props.index);
    }
 
@@ -60,6 +62,7 @@ const PostImage = (props: Props) => {
       ? (
          <div
             className={`${styles.hideIcon} ${hideIconHoverAndTouchClassNames.className} unselectable`}
+            style={profileContentLoading ? {} : { zIndex: "9998"}}
             onClick={deleteImageOrVideo}
             onMouseEnter={hideIconHoverAndTouchClassNames.mouseEnterListener}
             onTouchStart={hideIconHoverAndTouchClassNames.touchStartListener}
@@ -154,6 +157,7 @@ const PostImage = (props: Props) => {
                <video
                   src={props.src}
                   className={`${styles.video} unselectable`}
+                  style={profileContentLoading ? {} : { zIndex: "9997"}}
                   width={iframeStyle.width}
                   height={iframeStyle.height}
                   onLoadedData={() => {
@@ -167,6 +171,7 @@ const PostImage = (props: Props) => {
             {getHideIcon()}
             <div
                className={`${playIconClassName} ${playIconHoverAndTouchClassNames.className} unselectable`}
+               style={profileContentLoading ? {} : { zIndex: "9998"}}
                onClick={imageAndVideoClickHandler}
                onMouseEnter={playIconHoverAndTouchClassNames.mouseEnterListener}
                onTouchStart={playIconHoverAndTouchClassNames.touchStartListener}

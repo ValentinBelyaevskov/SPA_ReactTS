@@ -14,7 +14,7 @@ import { useHoverAndTouchClassNames } from "hooks/useHoverAndTouchClassNames";
 
 
 interface Props {
-   finishEditing: () => void
+   finishShowingThePopup: () => void
    submitListener: (croppedImage: File | null, callback: () => void, type: "image", croppedImageSizes?: [number, number]) => void
    imageAspect: number | undefined
    loadInfo?: LoadInfo
@@ -39,7 +39,7 @@ const SelectAndEditAnImageForm = (props: Props) => {
    const [editorWithPreviewClassName, setEditorWithPreviewClassName] = useState<string | undefined>(undefined);
    const fileLabelButtonHoverAndTouchClassNames = useHoverAndTouchClassNames(styles.hover, styles.touch);
    const [errorString, setErrorString] = useState<"The file must be an image" | undefined>(undefined);
-   const popupForm = usePopupForm(props.finishEditing);
+   const popupForm = usePopupForm(props.finishShowingThePopup);
    const {
       aspect,
       crop,

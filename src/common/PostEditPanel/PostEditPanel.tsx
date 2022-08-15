@@ -25,11 +25,12 @@ import { Post } from 'pages/Profile/types/types';
 import getFormattedDate from 'functions/createCivilDate/getFormattedDate';
 import { InnerHTML } from './InnerHTML';
 import { DataType, usePostLoadingStatus } from './hooks/usePostLoadingStatus';
+import { PostLoadingStatuses } from 'pages/Profile/ProfilePage/Wall/Wall';
 
 
 
 
-type EditMode = "textEdit" | "imageEdit" | "fileSelection" | "audioSelection" | "videoSelection" | undefined;
+type PopupType = "textEdit" | "imageEdit" | "fileSelection" | "audioSelection" | "videoSelection" | "showImageAndVideoSlider" | undefined;
 
 export type PostMode = "edit" | "view"
 
@@ -45,14 +46,14 @@ type Props = {
    postIndex?: number
    containerClassName: string
    mode: PostMode
-   audioPlayerContext: string
    post?: Post
    id?: string
    updatePostLoadingStatuses?: (id: string, value: boolean) => void
+   postCompLoadingStatuses?: PostLoadingStatuses
 }
 
 type ImagesAndVideosBlockCtxt = {
-   setShowVideoAndImageSlider?: React.Dispatch<React.SetStateAction<boolean>>
+   setPopupType?: React.Dispatch<React.SetStateAction<PopupType>>
    setSliderStartIndex?: React.Dispatch<React.SetStateAction<number>>
    mode?: PostMode
    updateLoadingStatusesItem?: (index: number, newItemValue: boolean, dataType: DataType) => void
@@ -110,14 +111,13 @@ const PostEditPanel = (props: Props) => {
    const profileInfoMode = useAppSelector(getProfileInfoMode);
 
    const resize = useScrollOrWindowSize("resize");
-   const [editMode, setEditMode] = useState<EditMode>(undefined);
+   const [popupType, setPopupType] = useState<PopupType>(undefined);
    const popupContext = useContext(PopupContext);
    const appContext = useContext(AppContext);
    const promptRef: React.RefObject<HTMLDivElement> = useRef<HTMLDivElement>(null);
    const popupPrompt: Popup = usePopupElement(promptRef, false);
    const [contentIconsPromptText, setContentIconsPromptText] = useState<string | undefined>(undefined);
    const [activeContentIcon, setActiveContentIcon] = useState<AddContentButtonNames | undefined>("image");
-   const [showVideoAndImageSlider, setShowVideoAndImageSlider] = useState<boolean>(false);
    const [sliderStartIndex, setSliderStartIndex] = useState<number>(0);
    const [iconsLoaded, setIconsLoaded] = useState<boolean>(false);
    const [textEditorInnerHTML, setTextEditorInnerHTML] = useState<string | undefined>(undefined);
@@ -171,9 +171,11 @@ const PostEditPanel = (props: Props) => {
       addAudio,
       deleteAudio,
       resetAudios,
-      setGeneralPlayerContext
+      generalAudioPlayerContext,
+      setGeneralPlayerContext,
+      setCurrentPostPlayerIsActive,
 
-   } = useAudiosBlock(appContext, resize, props.audioPlayerContext, props.mode, props.post);
+   } = useAudiosBlock(appContext, resize, props.id ? props.id : 'createAPost', props.mode, props.post);
 
 
    const {
@@ -187,34 +189,34 @@ const PostEditPanel = (props: Props) => {
    )
 
 
-   const finishWatching = (): void => setShowVideoAndImageSlider(false);
-
-
-   const finishEditing = (): void => setEditMode(undefined);
+   const finishShowingThePopup = (): void => {
+      setPopupType(undefined);
+      dispatch(profileActions.setProfileInfoMode("pageView"));
+   }
 
 
    const textEditorClickListener = (e: React.MouseEvent): void => {
-      setEditMode('textEdit');
+      setPopupType('textEdit');
    }
 
 
    const imageClickListener = (): void => {
-      if (!contentIconsPromptText) setEditMode('imageEdit');
+      if (!contentIconsPromptText) setPopupType('imageEdit');
    }
 
 
    const filesClickListener = (): void => {
-      if (!contentIconsPromptText) setEditMode('fileSelection');
+      if (!contentIconsPromptText) setPopupType('fileSelection');
    }
 
 
    const audioClickListener = (): void => {
-      if (!contentIconsPromptText) setEditMode('audioSelection');
+      if (!contentIconsPromptText) setPopupType('audioSelection');
    }
 
 
    const videoClickListener = (): void => {
-      if (!contentIconsPromptText) setEditMode('videoSelection');
+      if (!contentIconsPromptText) setPopupType('videoSelection');
    }
 
 
@@ -230,7 +232,7 @@ const PostEditPanel = (props: Props) => {
       setPostIsLoading(true);
       setPostIsBeingCreated(true);
 
-      dispatch(profileActions.setProfileInfoMode('addContent'));
+      dispatch(profileActions.setProfileInfoMode('addingContent'));
 
       dispatch(createAPost({
          profileId: profile.objectId,
@@ -259,13 +261,13 @@ const PostEditPanel = (props: Props) => {
 
 
    useEffect(() => {
-      // ! сброс аудиоплеера
-
-      if (!loadInfo.loading && profileInfoMode === 'view') {
+      if (!loadInfo.loading && profileInfoMode === 'pageView' && props.mode === 'edit') {
          if (postIsBeingCreated) {
             resetImagesBlock();
             resetFilesBlock();
-            resetAudios();
+
+            if (generalAudioPlayerContext === undefined) resetAudios();
+
             setResetInnerHTML(true);
 
             setPostIsBeingCreated(false);
@@ -273,7 +275,7 @@ const PostEditPanel = (props: Props) => {
 
          setPostIsLoading(false);
       }
-   }, [loadInfo.loading, profileInfoMode, postIsBeingCreated])
+   }, [loadInfo.loading, profileInfoMode, postIsBeingCreated, props.mode, props.postIndex, generalAudioPlayerContext])
 
 
    useEffect(() => {
@@ -287,72 +289,75 @@ const PostEditPanel = (props: Props) => {
 
 
    useEffect(() => {
-      if ((editMode && editMode !== 'textEdit') || showVideoAndImageSlider) {
-         popupContext.setNeedToShowPopup!(true);
-      } else if (editMode) {
-         popupContext.setNeedToShowPopup!(false);
+      if (popupType && popupType !== 'textEdit') {
+         popupContext.setPopupName!(props.mode === 'edit' ? "newPost" : props.post!.objectId);
+
+      } else if (
+         (props.mode === 'edit' && popupContext.popupName === "newPost")
+         || (props.mode === 'view' && popupContext.popupName === props.post!.objectId)
+      ) {
+         popupContext.setPopupName!(undefined);
       }
-   }, [editMode, showVideoAndImageSlider]);
+   }, [popupType, props.mode, props.post, popupContext.popupName, props.postIndex]);
 
 
    useEffect(() => {
-      if ((editMode || showVideoAndImageSlider) && editMode !== 'textEdit') {
-         dispatch(profileActions.setProfileInfoMode("edit"));
+      if (popupType && popupType !== 'textEdit') {
+         dispatch(profileActions.setProfileInfoMode("showingAPopup"));
       }
-
-      return () => {
-         dispatch(profileActions.setProfileInfoMode("view"));
-      }
-   }, [editMode, showVideoAndImageSlider]);
+   }, [popupType]);
 
 
    useEffect(() => {
-      if (!showVideoAndImageSlider) {
-         if (editMode === 'imageEdit') {
-            appContext.setPopup!(<SelectAndEditAnImageForm
-               finishEditing={finishEditing}
-               imageAspect={undefined}
-               submitListener={addImageOrVideo}
-               uploadUncroppedImage={true}
-               uploadButtonText="Add image to post"
-               popupText='Add image to post'
-            />);
-         } else if (editMode === 'videoSelection') {
-            appContext.setPopup!(<VideoUploader
-               finishEditing={finishEditing}
-               submitListener={addImageOrVideo}
-               uploadButtonText="Add video to post"
-               popupText='Add video to post'
-               playVideoListener={stopAudio}
-            />);
-         } else if (editMode === 'fileSelection') {
-            appContext.setPopup!(<FileUploader
-               finishEditing={finishEditing}
-               submitListener={addFile}
-               uploadButtonText="Add file to post"
-               popupText='Add file to post'
-            />);
-         } else if (editMode === 'audioSelection') {
-            appContext.setPopup!(<AudioUploader
-               finishEditing={finishEditing}
-               submitListener={addAudio}
-               uploadButtonText="Add audio to post"
-               popupText='Add audio to post'
-               setOtherAudioIsPlaying={() => audioPlayerStateAPI.setIsPlaying(false)}
-            />);
-         } else if (editMode === undefined && !popupContext.needToShowPopup) {
-            console.log("setPopup(undefined). popupContext.needToShowPopup: ", popupContext.needToShowPopup);
-            appContext.setPopup!(undefined);
-         }
-      } else {
-         appContext.setPopup!(<ImageAndVideoLightbox
-            itemIndex={sliderStartIndex}
-            contentArr={imagesAndVideos}
-            finishWatching={finishWatching}
+      if (popupType === 'imageEdit') {
+         popupContext.setPopup!(<SelectAndEditAnImageForm
+            finishShowingThePopup={finishShowingThePopup}
+            imageAspect={undefined}
+            submitListener={addImageOrVideo}
+            uploadUncroppedImage={true}
+            uploadButtonText="Add image to post"
+            popupText='Add image to post'
+         />);
+      } else if (popupType === 'videoSelection') {
+         popupContext.setPopup!(<VideoUploader
+            finishShowingThePopup={finishShowingThePopup}
+            submitListener={addImageOrVideo}
+            uploadButtonText="Add video to post"
+            popupText='Add video to post'
             playVideoListener={stopAudio}
          />);
+      } else if (popupType === 'fileSelection') {
+         popupContext.setPopup!(<FileUploader
+            finishShowingThePopup={finishShowingThePopup}
+            submitListener={addFile}
+            uploadButtonText="Add file to post"
+            popupText='Add file to post'
+         />);
+      } else if (popupType === 'audioSelection') {
+         popupContext.setPopup!(<AudioUploader
+            finishShowingThePopup={finishShowingThePopup}
+            submitListener={addAudio}
+            uploadButtonText="Add audio to post"
+            popupText='Add audio to post'
+            setOtherAudioIsPlaying={() => audioPlayerStateAPI.setIsPlaying(false)}
+         />);
+      } else if (popupType === "showImageAndVideoSlider") {
+         popupContext.setPopup!(<ImageAndVideoLightbox
+            itemIndex={sliderStartIndex}
+            contentArr={imagesAndVideos}
+            finishShowingThePopup={finishShowingThePopup}
+            playVideoListener={stopAudio}
+         />);
+      } else if (
+         popupType == undefined
+         && (
+            (props.mode === 'edit' && popupContext.popupName === "newPost")
+            || (props.mode === 'view' && popupContext.popupName === props.post!.objectId)
+         )
+      ) {
+         popupContext.setPopup!(undefined);
       }
-   }, [editMode, showVideoAndImageSlider, sliderStartIndex, imagesAndVideos.length, popupContext.needToShowPopup]);
+   }, [popupType, sliderStartIndex, imagesAndVideos.length, props.mode, props.post, popupContext.popupName]);
 
 
    useEffect(() => {
@@ -363,17 +368,6 @@ const PostEditPanel = (props: Props) => {
       };
    }, [imagesAndVideos.length, files.length, audioFiles.length, activeContentIcon]);
 
-   // useEffect(() => {
-   //    if (props.post) {
-   //       console.log("post id: ", props.post.objectId);
-   //    }
-   // }, [props.post])
-
-   useEffect(() => {
-      if (props.mode === 'edit') {
-         console.log("editMode: ", editMode, "popupContext.needToShowPopup: ", popupContext.needToShowPopup)
-      }
-   }, [props.mode, editMode, popupContext.needToShowPopup])
 
 
 
@@ -457,7 +451,7 @@ const PostEditPanel = (props: Props) => {
                         <ImagesAndVideosBlockContext.Provider
                            value={
                               {
-                                 setShowVideoAndImageSlider,
+                                 setPopupType,
                                  setSliderStartIndex,
                                  mode: props.mode,
                                  updateLoadingStatusesItem

@@ -47,21 +47,23 @@ const AudiosListItem = (props: Props) => {
    const [loadingStatus, setLoadingStatus] = useState<boolean>(false);
    const audioRef = useRef<HTMLAudioElement>(null);
    const [trackDuration, setTrackDuration] = useState<string | undefined>(undefined);
-   const [expectContextMatch, setExpectContextMatch] = useState<boolean>(false);
 
+   //*
+   const [expectContextMatch, setExpectContextMatch] = useState<boolean>(false);
+   // * Переменная указывает, ожидается ли совпадение значение контекста (general и panel)
 
 
 
    const getFileFormat = (name: string): string => getFileNameAndFormat(name)[1];
 
-   const audioClickHandler = (): void => {
+   const audioClickListener = (): void => {
       audioLinkHoverAndTouchClassNames.clickListener();
 
       if (props.currentPlaylistActive) {
          setIsPlaying(!isPlaying);
          props.setAudioIsPlaying(!isPlaying);
       } else {
-         setExpectContextMatch(true);
+      setExpectContextMatch(true);
       }
 
       props.setActiveTrackIdNumber(props.index);
@@ -100,7 +102,7 @@ const AudiosListItem = (props: Props) => {
          props.setAudioIsPlaying(!isPlaying);
          setExpectContextMatch(false);
       }
-   }, [expectContextMatch, props.currentPlaylistActive])
+      }, [expectContextMatch, props.currentPlaylistActive])
 
 
    useEffect(() => {
@@ -154,9 +156,7 @@ const AudiosListItem = (props: Props) => {
       if (props.index === props.activeTrackIdNumber && props.currentPlaylistActive) {
          setIsPlaying(props.audioIsPlaying);
 
-         if (isPlaying) {
-            setActive(true);
-         }
+         setActive(true);
       }
    }, [props.audioIsPlaying, props.index, props.activeTrackIdNumber, isPlaying, props.currentPlaylistActive])
 
@@ -188,7 +188,7 @@ const AudiosListItem = (props: Props) => {
                      <>
                         <div
                            className={`${styles.audioNameContainer} ${audioLinkHoverAndTouchClassNames.className}`}
-                           onClick={audioClickHandler}
+                           onClick={audioClickListener}
                            onMouseEnter={audioLinkHoverAndTouchClassNames.mouseEnterListener}
                            onTouchStart={audioLinkHoverAndTouchClassNames.touchStartListener}
                            onTouchEnd={audioLinkHoverAndTouchClassNames.touchEndListener}

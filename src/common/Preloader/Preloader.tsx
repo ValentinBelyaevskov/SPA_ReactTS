@@ -1,5 +1,5 @@
 import { IconsThatAreLoaded } from 'common/IconsThatAreLoaded/IconsThatAreLoaded'
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import styles from './Preloader.module.scss'
 
 
@@ -16,6 +16,7 @@ const Preloader = (props: Props) => {
       "./animatedIcons/preloader1.svg"
    ];
    const [iconsLoaded, setIconsLoaded] = useState<boolean>(false);
+
 
 
 

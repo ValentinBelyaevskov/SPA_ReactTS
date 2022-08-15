@@ -48,7 +48,7 @@ const PlayListItem = (props: Props) => {
 
    const getFileFormat = (name: string): string => getFileNameAndFormat(name)[1];
 
-   const audioClickHandler = (): void => {
+   const audioClickListener = (): void => {
       audioLinkHoverAndTouchClassNames.clickListener();
       setIsPlaying(!isPlaying);
       props.setAudioIsPlaying(!isPlaying);
@@ -146,7 +146,7 @@ const PlayListItem = (props: Props) => {
          {
             <div
                className={`${styles.audioNameContainer} ${audioLinkHoverAndTouchClassNames.className}`}
-               onClick={audioClickHandler}
+               onClick={audioClickListener}
                onMouseEnter={audioLinkHoverAndTouchClassNames.mouseEnterListener}
                onTouchStart={audioLinkHoverAndTouchClassNames.touchStartListener}
                onTouchEnd={audioLinkHoverAndTouchClassNames.touchEndListener}

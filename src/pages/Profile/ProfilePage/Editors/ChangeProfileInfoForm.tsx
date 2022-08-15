@@ -16,7 +16,7 @@ import { useEffect } from 'react';
 
 
 type Props = {
-   finishEditing: () => void,
+   finishShowingThePopup: () => void,
 }
 
 export interface Territory {
@@ -111,7 +111,7 @@ const ChangeProfileInfoForm = (props: Props) => {
    const dispatch = useAppDispatch();
    const profile = useAppSelector(getProfileInfo);
    const loadInfo = useAppSelector(getLoadInfo);
-   const popupForm = usePopupForm(props.finishEditing);
+   const popupForm = usePopupForm(props.finishShowingThePopup);
    const [iconsLoaded, setIconsLoaded] = useState<boolean>(false);
    const [dayOfBirth, setDayOfBirth] = useState<string>(profile.dateOfBirth ? profile.dateOfBirth.split(" ")[1].slice(0, -1) : "");
    const [mounthOfBirth, setMounthOfBirth] = useState<string>(profile.dateOfBirth ? profile.dateOfBirth.split(" ")[0] : "");

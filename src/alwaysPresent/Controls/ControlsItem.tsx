@@ -34,7 +34,7 @@ const ControlsItem = (props: Props) => {
 
    const getItemClassName = ({ isActive }: IsActiveObj): string => isActive ? `${itemClassName} ${styles.activeItem}` : itemClassName;
 
-   const getTo = (): string => profileInfoMode !== "addContent"
+   const getTo = (): string => profileInfoMode !== "addingContent"
       ? props.buttonName
       : 'Profile'
 

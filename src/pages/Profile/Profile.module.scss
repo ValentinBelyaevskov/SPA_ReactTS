@@ -20,6 +20,10 @@
    color: red;
 }
 
+.loading {
+   z-index: 1000;
+}
+
 // media queries
 @media (max-width: 950px) {
    .loading {

@@ -49,7 +49,6 @@ const ProfilePanel = () => {
    const [showChangeAvatarButton, setShowChangeAvatarButton] = useState<boolean>(false);
    const [changeAvatarButtonStyle, setChangeAvatarButtonStyle] = useState<{ opacity?: string }>({});
    const popupContext = useContext(PopupContext);
-   const appContext = useContext(AppContext);
 
 
 
@@ -74,9 +73,9 @@ const ProfilePanel = () => {
       </div>
    )
 
-   const finishEditing: () => void = () => {
+   const finishShowingThePopup: () => void = () => {
       setEditMode(undefined);
-      appContext.setPopup!(undefined);
+      popupContext.setPopup!(undefined);
    }
 
    const showPopupAvatarPrompt = (): void => {
@@ -123,31 +122,31 @@ const ProfilePanel = () => {
 
    useEffect(() => {
       if (editMode) {
-         dispatch(profileActions.setProfileInfoMode("edit"));
+         dispatch(profileActions.setProfileInfoMode("showingAPopup"));
       }
       return () => {
-         dispatch(profileActions.setProfileInfoMode("view"));
+         dispatch(profileActions.setProfileInfoMode("pageView"));
       }
    }, [editMode])
 
    useEffect(() => {
       if (editMode) {
-         popupContext.setNeedToShowPopup!(true);
+         popupContext.setPopupName!("editProfile");
       } else {
-         popupContext.setNeedToShowPopup!(false);
+         popupContext.setPopupName!(undefined);
       }
    }, [editMode])
 
    useEffect(() => {
       if (editMode === "edit") {
-         appContext.setPopup!(<ChangeProfileInfoForm finishEditing={finishEditing} />)
+         popupContext.setPopup!(<ChangeProfileInfoForm finishShowingThePopup={finishShowingThePopup} />)
       } else if ((editMode === "changePassword") && editIconsLoaded) {
-         appContext.setPopup!(<ChangePasswordForm finishEditing={finishEditing} />)
+         popupContext.setPopup!(<ChangePasswordForm finishShowingThePopup={finishShowingThePopup} />)
       } else if (editMode === "signOut") {
-         appContext.setPopup!(<SignOut finishEditing={finishEditing} />)
+         popupContext.setPopup!(<SignOut finishShowingThePopup={finishShowingThePopup} />)
       } else if (editMode === "changeAvatar") {
-         appContext.setPopup!(< SelectAndEditAnImageForm
-            finishEditing={finishEditing}
+         popupContext.setPopup!(< SelectAndEditAnImageForm
+            finishShowingThePopup={finishShowingThePopup}
             imageAspect={1 / 1}
             loadInfo={loadInfo}
             submitListener={changeAvatarFormSubmitListener}
@@ -156,7 +155,7 @@ const ProfilePanel = () => {
             popupText='Update avatar:'
          />)
       } else {
-         appContext.setPopup!(undefined)
+         popupContext.setPopup!(undefined)
       }
    }, [editMode, editIconsLoaded, loadInfo.loading])
 
@@ -186,7 +185,6 @@ const ProfilePanel = () => {
             <PostEditPanel
                containerClassName={styles.panelForCreatingAPost}
                mode="edit"
-               audioPlayerContext='createAPost'
             />
          </div>
          <IconsThatAreLoaded

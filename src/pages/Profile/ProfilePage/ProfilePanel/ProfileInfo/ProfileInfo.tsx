@@ -36,7 +36,7 @@ const ProfileInfo = (props: Props) => {
    const [showMoreButtonStyle, setShowMoreButtonStyle] = useState<ShowMoreButtonStyle>({});
    const [showFullInfo, setShowFullInfo] = useState<boolean>(false);
    const profileInfoRef = useRef<HTMLDivElement>(null);
-   const setShowPreloader = useContext(AppContext).setShowPreloader!;
+   const setProfileInfoLoading = useContext(AppContext).setProfileInfoLoading!;
    const [hideFullInfoOnTouchTimeout, setHideFullInfoOnTouchTimeout] = useState<NodeJS.Timeout | null>(null);
    const showMorePseudoClassNames = useHoverAndTouchClassNames(styles.hover, styles.touch);
 
@@ -63,10 +63,18 @@ const ProfileInfo = (props: Props) => {
 
 
 
+
+   useEffect(() => {
+      return (() => {
+         setProfileInfoLoading(true);
+      });
+   }, [])
+
+
    useEffect(() => {
       if (!loadInfo.loaded) return
       if (profileInfoRef.current!.classList.length === 5) {
-         setShowPreloader(false);
+         setProfileInfoLoading(false);
          setShowFullInfo(false);
       } else if (profileInfoRef.current!.classList.length === 4) {
          setShowFullInfo(true);

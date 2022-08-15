@@ -2,7 +2,7 @@ import styles from './Profile.module.scss';
 import ProfilePage from './ProfilePage/ProfilePage';
 import { useState, useEffect, useContext } from 'react';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux';
-import { getErrorTypes, getLoadInfo, getLoadingStatus, getProfileInfoMode, getProfileMode, profileActions } from './redux/profileReducer';
+import { getErrorTypes, getLoadInfo, getLoadingStatus, getProfileInfoMode, getProfileMode, getProfilePageScroll, profileActions } from './redux/profileReducer';
 import { Preloader } from '../../common';
 import ErrorPage from './ErrorPage/ErrorPage';
 import GuestPage from './GuestPage/GuestPage';
@@ -34,14 +34,14 @@ const Profile = () => {
    const errorTypes = useAppSelector(getErrorTypes);
    const profileMode: string = useAppSelector(getProfileMode);
    const [iconsLoaded, setIconsLoaded] = useState<boolean>(false);
-   const showPreloader = useContext(AppContext).showPreloader!;
+   const profileContentLoading = useContext(AppContext).profileContentLoading!;
 
 
 
    useEffect(() => {
       return () => {
          dispatch(profileActions.setSignInMode("login"));
-         dispatch(profileActions.setProfileInfoMode("view"));
+         dispatch(profileActions.setProfileInfoMode("pageView"));
       }
    }, []);
 
@@ -53,16 +53,15 @@ const Profile = () => {
 
 
 
-
    return (
       <div className={`${styles.profile} page`}>
          {
             ((loading
                && (
-                  (!trySignIn && (profileInfoMode === "view"))
+                  (!trySignIn && (profileInfoMode === "pageView"))
                ))
                || !iconsLoaded
-               || (showPreloader && profileMode === "loggedIn")) && !loadInfo.error
+               || (profileContentLoading && profileMode === "loggedIn")) && !loadInfo.error
                ? (
                   <div className={`${styles.loading} pagePart`} >
                      <Preloader containerStyle={{ margin: "0 auto 0 auto" }} />

@@ -12,6 +12,7 @@ export type AudioFile = {
    src: string
    name: string
    size: number
+   id?: number
 }
 
 export type PlayerMode = "thumbnail" | "full"

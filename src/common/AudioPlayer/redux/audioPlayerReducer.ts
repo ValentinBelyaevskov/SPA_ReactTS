@@ -141,7 +141,7 @@ const playerSlice = createSlice({
          state.players[action.payload.name].audioFileIds = [];
 
          action.payload.audioFiles.forEach((file, index) => {
-            const id = new Date().getTime() + index;
+            const id = file.id ? file.id: new Date().getTime() + index;
             state.players[action.payload.name].audioFiles[id] = { ...file };
             state.players[action.payload.name].audioFileIds.push(id);
          })

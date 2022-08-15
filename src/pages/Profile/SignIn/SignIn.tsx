@@ -11,12 +11,12 @@ import { AppContext } from 'App';
 
 const SignIn = () => {
    const signInMode = useAppSelector(getSignInMode);
-   const setShowPreloader = useContext(AppContext).setShowPreloader!;
+   const setProfileContentLoading = useContext(AppContext).setProfileContentLoading!;
 
 
 
    useEffect(() => {
-      setShowPreloader(false);
+      setProfileContentLoading(false);
    }, [])
 
 
