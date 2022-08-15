@@ -10,7 +10,7 @@ import { convertFileSizeToMb } from "functions/convertFileSizeToMB";
 
 
 interface Props {
-   finishEditing: () => void
+   finishShowingThePopup: () => void
    submitListener: (file: File | null, callback: () => void, type: "file") => void
    loadInfo?: LoadInfo
    closeButtonClickHandler?: () => void
@@ -34,7 +34,7 @@ const FileUploader = (props: Props) => {
    const [textSrc, setTextSrc] = useState<string>("");
    const [textFile, setTextFile] = useState<File | null>(null);
    const fileLabelButtonHoverAndTouchClassNames = useHoverAndTouchClassNames(styles.hover, styles.touch);
-   const popupForm = usePopupForm(props.finishEditing);
+   const popupForm = usePopupForm(props.finishShowingThePopup);
    const fieldsRef = useRef<HTMLDivElement>(null);
    const [errorString, setErrorString] = useState<string | undefined>(undefined);
 

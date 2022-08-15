@@ -1,7 +1,7 @@
 import { separatePatnAndName } from './../../../functions/separatePathAndName';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { ProfileState, Profile, AccountParams, LoginParams, ProfileMode, SetErrors, UpdateParams, ProfileInfoMode, SignInMode, UpdatedProfile, UploadFileParams, PostData, PostPayloadAction, Post, ImagesAndVideosItem, AudiosItem, FilesItem, PostObject, GetPostsData } from '../types/types';
+import { ProfileState, Profile, AccountParams, LoginParams, ProfileMode, SetErrors, UpdateParams, ProfileInfoMode, SignInMode, UpdatedProfile, UploadFileParams, PostData, PostPayloadAction, Post, ImagesAndVideosItem, AudiosItem, FilesItem, PostObject, GetPostsData, ProfilePageScroll } from '../types/types';
 import { UserProps, LoadInfo, BackendlessError } from '../../../types/types';
 import { createSelector } from 'reselect';
 import { RootState } from '../../../redux/store';
@@ -24,6 +24,7 @@ const initialState: ProfileState = {
       dateOfBirth: undefined,
       posts: [],
    },
+   profilePageScroll: [0, 0],
    uploadedPosts: {
       entities: {},
       ids: [],
@@ -33,7 +34,7 @@ const initialState: ProfileState = {
       ids: [],
    },
    profileMode: "signIn",
-   profileInfoMode: "view",
+   profileInfoMode: "pageView",
    signInMode: "login",
    loadInfo: {
       loaded: false,
@@ -69,6 +70,10 @@ const profileSlice = createSlice({
    reducers: {
       setProfileMode: (state, action: PayloadAction<ProfileMode>) => {
          state.profileMode = action.payload
+      },
+
+      setProfilePageScroll: (state, action: PayloadAction<ProfilePageScroll>) => {
+         state.profilePageScroll = action.payload
       },
 
       setProfileInfoMode: (state, action: PayloadAction<ProfileInfoMode>) => {
@@ -165,7 +170,7 @@ const profileSlice = createSlice({
                      ...action.payload as Profile
                   }
                }
-               state.profileInfoMode = "view"
+               state.profileInfoMode = "pageView"
             }
             state.loadInfo.loading = false
             state.loadInfo.loaded = true
@@ -220,13 +225,12 @@ const profileSlice = createSlice({
             state.loadInfo.errorType = undefined;
          })
          .addCase(createAPost.fulfilled, (state, action) => {
-            console.log("createAPost responce: ", action.payload);
             state.uploadedPosts.entities[action.payload.objectId] = action.payload;
             state.uploadedPosts.ids.unshift(action.payload.objectId);
 
             state.profileInfo.posts.unshift(action.payload.objectId);
 
-            state.profileInfoMode = "view";
+            state.profileInfoMode = "pageView";
 
 
             state.postsLoadInfo.loading = false;
@@ -238,8 +242,6 @@ const profileSlice = createSlice({
             state.loadInfo.errorType = undefined;
          })
          .addCase(getPosts.fulfilled, (state, action) => {
-            console.log("getPosts responce: ", action.payload);
-
             if (action.payload) {
                action.payload.forEach(post => {
                   state.uploadedPosts.entities[post.objectId] = post;
@@ -273,7 +275,7 @@ const profileSlice = createSlice({
                state.loadInfo.loading = false
                state.loadInfo.loaded = false
                state.loadInfo.error = action.payload
-               console.log("action.payload: ", action.payload)
+
                if (action.payload === "Unable to login. User account is locked out due to too many failed logins.") {
                   state.loadInfo.errorType = "manyFailedLoginAttempts"
                } else if (action.payload === "User cannot login - email address must be confirmed first") {
@@ -290,11 +292,7 @@ const profileSlice = createSlice({
                ) {
                   state.postsLoadInfo.error = "An error occurred while loading posts. Try reloading the app."
                   state.postsLoadInfo.errorType = action.type.split("").slice(8, -9).join("")
-
-                  console.log("An error occurred while loading posts. Try reloading the app.")
                }
-
-               console.log(state.loadInfo.errorType)
             })
    }
 })
@@ -305,6 +303,11 @@ const profileSlice = createSlice({
 export const getLoadInfo = createSelector(
    (state: RootState) => state.profile.loadInfo,
    loadInfo => loadInfo
+)
+
+export const getProfilePageScroll = createSelector(
+   (state: RootState) => state.profile.profilePageScroll,
+   profilePageScroll => profilePageScroll
 )
 
 export const getPostsLoadInfo = createSelector(
@@ -375,35 +378,16 @@ export const getProfileProps = createAsyncThunk(
             }
 
 
-
-            const offset = profile.posts.length - 3 > 0
-               ? profile.posts.length - 3
-               : profile.posts.length;
-
             const pageSize = profile.posts.length >= 3
                ? 3
                : profile.posts.length;
 
             const postQuery = await Backendless.DataQueryBuilder.create()
                .setPageSize(pageSize)
-               // .setPageSize(profile.posts.length)
-               .setSortBy(["created"])
-               .setOffset(offset)
+               .setSortBy(["created DESC"])
                .setWhereClause(`userId = '${objectId}'`);
 
             const posts: Post[] = await Backendless.Data.of("Posts").find(postQuery);
-
-
-            // await Backendless.UserService.update({
-            //    ...profile,
-            //    posts: posts.map(post => post.objectId)
-            // })
-
-
-            //    !
-            // console.log("profile", profile)
-            // console.log("posts: ", posts)
-            //    !
 
 
             return {
@@ -411,7 +395,7 @@ export const getProfileProps = createAsyncThunk(
                   ...profile, posts: profile.posts.reverse()
                },
                guestMode: false,
-               posts: posts.reverse()
+               posts: posts
             }
 
          } else {
@@ -546,7 +530,6 @@ export const login = createAsyncThunk(
 
          const posts: Post[] = await Backendless.Data.of("Posts").find(postQuery);
 
-         console.log("posts: ", posts)
 
          return { profile, posts: posts.reverse() }
 
@@ -595,7 +578,6 @@ export const createAPost = createAsyncThunk(
             files: FilesItem[],
          ): Promise<PostObject> => {
 
-            console.log("files: ", files)
 
             const fileUrls = await Promise.all(
                files
@@ -616,8 +598,6 @@ export const createAPost = createAsyncThunk(
             const audioUrls = await remoteFileStorage.uploadAudios(audios.map(item => item.file!));
             const imagesAndVideosUrls = await remoteFileStorage.uploadImagesAndVideos(imagesAndVideos.map(item => item.file!));
 
-
-            console.log("imagesAndVideosUrls: ", imagesAndVideosUrls)
 
             return {
                userId,
@@ -696,22 +676,24 @@ export const getPosts = createAsyncThunk(
             throw new Error("All posts have been loaded")
          }
 
-         console.log("getPostsData call. PostsData: ", PostsData);
 
-         const pageSize = allPostIdsLength - uploadedPostIdsLength - 3 >= 3
+         const offset = uploadedPostIdsLength;
+
+         const pageSize = allPostIdsLength - uploadedPostIdsLength >= 3
             ? 3
             : allPostIdsLength - uploadedPostIdsLength;
+
 
          if (allPostIdsLength > uploadedPostIdsLength) {
             const postQuery = await Backendless.DataQueryBuilder.create()
                .setPageSize(pageSize)
-               .setSortBy(["created"])
-               .setOffset(allPostIdsLength - uploadedPostIdsLength - 3)
+               .setSortBy(["created DESC"])
+               .setOffset(offset)
                .setWhereClause(`userId = '${PostsData.objectId}'`);
 
             const posts: Post[] = await Backendless.Data.of("Posts").find(postQuery);
 
-            return posts.reverse()
+            return posts
          }
 
 

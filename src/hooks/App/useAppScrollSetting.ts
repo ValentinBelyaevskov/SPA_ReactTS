@@ -14,7 +14,7 @@ type Elements = {
 }
 
 
-export const useAppScrollSetting = (needToShowPopup: boolean, needToShowBackground: boolean, elements: Elements, showPreloader: boolean) => {
+export const useAppScrollSetting = (needToShowPopup: boolean, needToShowBackground: boolean, elements: Elements, profileContentLoading: boolean) => {
    const resize = useScrollOrWindowSize("resize");
    const [appStyle, setAppStyle] = useState<AppStyle>({});
    const [fullAppHeight, setFullAppHeight] = useState<number>(0);
@@ -112,10 +112,10 @@ export const useAppScrollSetting = (needToShowPopup: boolean, needToShowBackgrou
 
 
    useEffect(() => {
-      if (!showPreloader && elements.appElem) {
+      if (!profileContentLoading && elements.appElem) {
          elements.appElem.style.position = "relative"
       }
-   }, [showPreloader])
+   }, [profileContentLoading])
 
 
 

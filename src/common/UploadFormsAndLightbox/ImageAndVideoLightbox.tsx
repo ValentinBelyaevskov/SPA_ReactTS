@@ -1,9 +1,10 @@
 import styles from "./ImageAndVideoLightbox.module.scss";
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { usePopupForm } from "hooks/usePopup/usePopupForm";
 import { useHoverAndTouchClassNames } from "hooks/useHoverAndTouchClassNames";
 import { useScrollOrWindowSize } from '../../hooks/useScrollOrWindowSize';
 import CustomImage from "common/Image/CustomImage";
+import { AppContext } from '../../App';
 
 
 
@@ -18,7 +19,7 @@ export type ContentArrItem = {
 }
 
 interface Props {
-   finishWatching: () => void
+   finishShowingThePopup: () => void
    contentArr: ContentArrItem[]
    itemIndex: number
    playVideoListener?: () => void
@@ -38,12 +39,13 @@ const ImageAndVideoLightbox = (props: Props) => {
    const [contentStyle, setContentStyle] = useState<ContentStyle>({});
    const [itemIndex, setItemIndex] = useState<number>(props.itemIndex);
    const resize = useScrollOrWindowSize("resize");
-   const popupForm = usePopupForm(props.finishWatching);
+   const popupForm = usePopupForm(props.finishShowingThePopup);
    const closeButtonHoverAndTouchClassNames = useHoverAndTouchClassNames(styles.hover, styles.touch);
    const leftArrowHoverAndTouchClassNames = useHoverAndTouchClassNames(styles.hover, styles.touch);
    const rightArrowHoverAndTouchClassNames = useHoverAndTouchClassNames(styles.hover, styles.touch);
    const [indexString, setIndexString] = useState<string>(`${itemIndex} / ${props.contentArr.length}`);
    const [moveUpClassName, setMoveUpClassName] = useState<string | undefined>(undefined);
+   const profileContentLoading = useContext(AppContext).profileContentLoading;
 
 
 
@@ -94,8 +96,6 @@ const ImageAndVideoLightbox = (props: Props) => {
 
 
    useEffect(() => {
-      // console.log(props.contentArr, itemIndex)
-
       const media: ContentArrItem = props.contentArr[itemIndex];
       const mediaSizes: [number, number] = media.sizes!;
       const mediaWidth: number = mediaSizes![0];
@@ -201,6 +201,7 @@ const ImageAndVideoLightbox = (props: Props) => {
                   <div className={styles.videoContainer} style={contentStyle}>
                      <video
                         className={`${styles.video} ${moveUpClassName}`}
+                        style={profileContentLoading ? {} : { zIndex: "9997"}}
                         width={contentStyle.width}
                         height={contentStyle.height}
                         onPlay={props.playVideoListener}

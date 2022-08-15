@@ -34,18 +34,26 @@ export const useAudiosBlock = (appContext: AppCtxt, resize: WindowSize, panelAud
    } = useContext(AudioPlayerContext);
 
    const audioPlayerState = useAppSelector(getPlayerState("general"));
-   const audioPlayerContext = useAppSelector(getGeneralPlayerContext);
    const audioPlayerStateAPI = new audioPlayerApi(dispatch, audioPlayerActions, "general");
+
+
+   // ! 2) setGeneralAudioPlayerContext(panelAudioPlayerContext);
+   const generalAudioPlayerContext = useAppSelector(getGeneralPlayerContext);
+
+   // ! 1)
+   const [activeTrackIdNumber, setActiveTrackIdNumber] = useState<number>(0);
+   // ! 3)
+   const [showAudioPlayer, setShowAudioPlayer] = useState<boolean>(false);
+
    const audios = useAppSelector(getPlayerAudioFiles("general"));
    const audioIds = useAppSelector(getPlayerAudioFileIds("general"));
    const [audioFiles, setAudioFiles] = useState<AudioFilesItem[]>([]);
-   const [activeTrackIdNumber, setActiveTrackIdNumber] = useState<number>(0);
    const [audiosBlockStyle, setAudiosBlockStyle] = useState<{ marginTop?: string }>({});
-   const [showAudioPlayer, setShowAudioPlayer] = useState<boolean>(false);
    const [currentPlaylistActive, setCurrentPlaylistActive] = useState<boolean>(false);
 
    const [audioLoadingStatuses, setAudioLoadingStatuses] = useState<boolean[]>(getFilledArray(false, audioFiles.length));
    const [numberOfAudioLoadedStatuses, setNumberOfAudioLoadedStatuses] = useState<number>(0);
+   const [currentPostPlayerIsActive, setCurrentPostPlayerIsActive] = useState<boolean>(panelAudioPlayerContext === generalAudioPlayerContext ? true : false);
 
 
 
@@ -115,8 +123,10 @@ export const useAudiosBlock = (appContext: AppCtxt, resize: WindowSize, panelAud
 
 
    useEffect(() => {
-      setShowAudioPlayer(false);
-   }, [audioPlayerContext, panelAudioPlayerContext])
+      if (panelAudioPlayerContext !== generalAudioPlayerContext) {
+         setCurrentPostPlayerIsActive(false);
+      }
+   }, [panelAudioPlayerContext, generalAudioPlayerContext])
 
 
    useEffect(() => {
@@ -124,7 +134,11 @@ export const useAudiosBlock = (appContext: AppCtxt, resize: WindowSize, panelAud
    }, [audioFiles.length])
 
 
+   // !
    useEffect(() => {
+      if (panelAudioPlayerContext === "6E65700B-571A-4113-9206-6E832883BD99") {
+         console.log("setActiveTrackIdNumber(getActiveTrackIdNumber(audioPlayerState.activeTrackId));")
+      }
       if (audios[audioPlayerState.activeTrackId]) {
          setActiveTrackIdNumber(getActiveTrackIdNumber(audioPlayerState.activeTrackId));
       }
@@ -132,10 +146,11 @@ export const useAudiosBlock = (appContext: AppCtxt, resize: WindowSize, panelAud
 
 
    useEffect(() => {
-      if (resize.value[0] <= 950 && showAudioPlayer) {
-         appContext.setShowAudioPlayer!(true);
+      if (resize.value[0] <= 950) {
+         if (showAudioPlayer) appContext.setShowAudioPlayer!(true);
 
-      } else {
+         // } else {
+      } else if (!showAudioPlayer && panelAudioPlayerContext === generalAudioPlayerContext) {
          appContext.setShowAudioPlayer!(false);
       }
    }, [showAudioPlayer, resize.value[0]])
@@ -144,12 +159,12 @@ export const useAudiosBlock = (appContext: AppCtxt, resize: WindowSize, panelAud
    useEffect(() => {
       setAudioLoadingStatuses(getFilledArray(false, audioFiles.length));
 
-      if (audioFiles.length === 0) {
+      if (mode === "edit" && audioFiles.length === 0 && panelAudioPlayerContext === generalAudioPlayerContext) {
          audioPlayerStateAPI.resetPlayer();
          setAudioLoadingStatuses(getFilledArray(false, audioFiles.length));
          setShowPlayerOnPlayBtnClick!(false);
       }
-   }, [audioFiles.length])
+   }, [audioFiles.length, panelAudioPlayerContext, generalAudioPlayerContext, mode])
 
 
    useEffect(() => {
@@ -162,28 +177,32 @@ export const useAudiosBlock = (appContext: AppCtxt, resize: WindowSize, panelAud
          setAudiosBlockStyle({ marginTop: "15px" });
       } else {
          setAudiosBlockStyle({});
-         setShowAudioPlayer(false);
-         audioPlayerStateAPI.setIsPlaying(false);
+
+         if (mode === "edit" && panelAudioPlayerContext === generalAudioPlayerContext) {
+            setShowAudioPlayer(false);
+            audioPlayerStateAPI.setIsPlaying(false);
+         }
+
       }
-   }, [audioFiles.length])
+   }, [audioFiles.length, panelAudioPlayerContext, generalAudioPlayerContext, mode])
 
 
    useEffect(() => {
-      if (audioPlayerState.isPlaying && !showAudioPlayer && audioFiles.length > 0 && panelAudioPlayerContext === audioPlayerContext) {
+      if (audioPlayerState.isPlaying && !showAudioPlayer && audioFiles.length > 0 && panelAudioPlayerContext === generalAudioPlayerContext) {
          setShowAudioPlayer(true);
-      } else if (audioFiles.length === 0) {
+      } else if (audioFiles.length === 0 && generalAudioPlayerContext === panelAudioPlayerContext && mode === "edit") {
          setShowAudioPlayer(false);
       }
-   }, [audioPlayerState.isPlaying, showAudioPlayer, audioFiles.length, panelAudioPlayerContext, audioPlayerContext]);
+   }, [audioPlayerState.isPlaying, showAudioPlayer, audioFiles.length, panelAudioPlayerContext, generalAudioPlayerContext, mode]);
 
 
    useEffect(() => {
-      if (!audioPlayerState.showAudioPlayer && panelAudioPlayerContext === audioPlayerContext) {
+      if (!audioPlayerState.showAudioPlayer && panelAudioPlayerContext === generalAudioPlayerContext) {
          setShowAudioPlayer(false);
       } else {
          setShowPlayerOnPlayBtnClick!(true);
       }
-   }, [audioPlayerState.showAudioPlayer, panelAudioPlayerContext, audioPlayerContext])
+   }, [audioPlayerState.showAudioPlayer, panelAudioPlayerContext, generalAudioPlayerContext])
 
 
    useEffect(() => {
@@ -256,7 +275,7 @@ export const useAudiosBlock = (appContext: AppCtxt, resize: WindowSize, panelAud
 
          audioPlayerStateAPI.setStatus(true);
       }
-   }, [showAudioPlayer, resize.value[0], audioPlayerContext, panelAudioPlayerContext, audioPlayerContext])
+   }, [showAudioPlayer, resize.value[0], generalAudioPlayerContext, panelAudioPlayerContext, generalAudioPlayerContext])
 
 
    useEffect(() => {
@@ -272,33 +291,59 @@ export const useAudiosBlock = (appContext: AppCtxt, resize: WindowSize, panelAud
 
 
    useEffect(() => {
-      if (panelAudioPlayerContext === audioPlayerContext && showAudioPlayer) {
+      if (panelAudioPlayerContext === generalAudioPlayerContext && showAudioPlayer) {
+         console.log(audioIds, audioPlayerState.activeTrackId);
+      }
+
+      if (
+         panelAudioPlayerContext === generalAudioPlayerContext
+         && showAudioPlayer
+         && !currentPostPlayerIsActive
+      ) {
          audioPlayerStateAPI.setAudioFiles(
             audioFiles.map(item => ({
                name: item.name,
                size: item.size,
                src: item.src,
-               type: item.type
+               type: item.type,
+               id: item.id
             }))
          );
+
+         setCurrentPostPlayerIsActive(true);
       }
-   }, [panelAudioPlayerContext, audioPlayerContext, audioFiles.length, showAudioPlayer])
+   }, [panelAudioPlayerContext, generalAudioPlayerContext, audioFiles.length, showAudioPlayer, currentPostPlayerIsActive])
 
 
+
+   // // !
+   // useEffect(() => {
+   //    if (panelAudioPlayerContext === "6E65700B-571A-4113-9206-6E832883BD99") {
+   //       console.log("audioPlayerState: ", audioPlayerState)
+   //    }
+   // }, [audioPlayerState])
+   // // !
+
+
+   // !
    useEffect(() => {
-      if (audioIds[activeTrackIdNumber] && panelAudioPlayerContext === audioPlayerContext) {
+      if (panelAudioPlayerContext === "6E65700B-571A-4113-9206-6E832883BD99") {
+         console.log("audioPlayerStateAPI.setActiveTrackId(audioIds[activeTrackIdNumber]);");
+      }
+
+      if (audioIds[activeTrackIdNumber] && panelAudioPlayerContext === generalAudioPlayerContext) {
          audioPlayerStateAPI.setActiveTrackId(audioIds[activeTrackIdNumber]);
       }
-   }, [activeTrackIdNumber, audioIds.length, audioIds[0], panelAudioPlayerContext, audioPlayerContext])
+   }, [activeTrackIdNumber, audioIds.length, audioIds[0], panelAudioPlayerContext, generalAudioPlayerContext])
 
 
    useEffect(() => {
-      if (audioPlayerState.showAudioPlayer && panelAudioPlayerContext === audioPlayerContext) {
+      if (audioPlayerState.showAudioPlayer && panelAudioPlayerContext === generalAudioPlayerContext) {
          setCurrentPlaylistActive(true);
       } else {
          setCurrentPlaylistActive(false);
       }
-   }, [audioPlayerState.showAudioPlayer, panelAudioPlayerContext, audioPlayerContext])
+   }, [audioPlayerState.showAudioPlayer, panelAudioPlayerContext, generalAudioPlayerContext])
 
 
    useEffect(() => {
@@ -326,6 +371,8 @@ export const useAudiosBlock = (appContext: AppCtxt, resize: WindowSize, panelAud
       addAudio,
       deleteAudio,
       resetAudios,
+      generalAudioPlayerContext,
+      setCurrentPostPlayerIsActive,
       setGeneralPlayerContext: () => audioPlayerStateAPI.setGeneralPlayerContext(panelAudioPlayerContext),
    }
 }

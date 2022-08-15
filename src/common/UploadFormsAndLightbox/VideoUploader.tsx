@@ -11,7 +11,7 @@ import { convertFileSizeToMb } from "functions/convertFileSizeToMB";
 
 
 interface Props {
-   finishEditing: () => void
+   finishShowingThePopup: () => void
    submitListener: (file: File | null, callback: () => void, type: "image" | "video", sizes: [number, number] | undefined) => void
    loadInfo?: LoadInfo
    closeButtonClickHandler?: () => void
@@ -37,7 +37,7 @@ const VideoUploader = (props: Props) => {
    const [videoFile, setVideoFile] = useState<File | null>(null);
    const [videoSizes, setVideoSizes] = useState<[number, number]>([0, 0]);
    const fileLabelButtonHoverAndTouchClassNames = useHoverAndTouchClassNames(styles.hover, styles.touch);
-   const popupForm = usePopupForm(props.finishEditing);
+   const popupForm = usePopupForm(props.finishShowingThePopup);
    const fieldsRef = useRef<HTMLDivElement>(null);
    const [videoStyle, setVideoStyle] = useState<VideoStyle>({});
    const resize = useScrollOrWindowSize("resize");

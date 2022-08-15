@@ -1,11 +1,12 @@
 import { useAppSelector } from 'hooks/redux'
 import styles from './Wall.module.scss'
-import { getUploadedPostIds, getPostEntities, getProfileInfo, getPosts, getPostsLoadInfo } from '../../redux/profileReducer';
+import { getUploadedPostIds, getPostEntities, getProfileInfo, getPosts, getPostsLoadInfo, profileActions, getProfileInfoMode } from '../../redux/profileReducer';
 import PostEditPanel from 'common/PostEditPanel/PostEditPanel';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { useScrollOrWindowSize } from '../../../../hooks/useScrollOrWindowSize';
 import { useAppDispatch } from '../../../../hooks/redux';
 import { ErrorGettingPost } from './ErrorGettingPost';
+import { AppContext } from 'App';
 
 
 
@@ -13,7 +14,7 @@ import { ErrorGettingPost } from './ErrorGettingPost';
 type Props = {
 }
 
-type PostLoadingStatuses = {
+export type PostLoadingStatuses = {
    [index: string]: boolean
 }
 
@@ -22,7 +23,9 @@ type PostLoadingStatuses = {
 
 const Wall = (props: Props) => {
    const dispatch = useAppDispatch();
+   const setProfileWallLoading = useContext(AppContext).setProfileWallLoading!;
    const profileInfo = useAppSelector(getProfileInfo);
+   const profileInfoMode = useAppSelector(getProfileInfoMode);
    const uploadedPostIds = useAppSelector(getUploadedPostIds);
    const postEntities = useAppSelector(getPostEntities);
    const postsLoadInfo = useAppSelector(getPostsLoadInfo);
@@ -30,26 +33,29 @@ const Wall = (props: Props) => {
    const scroll = useScrollOrWindowSize("scroll");
 
    const [allPostCompsHaveBeenLoaded, setAllPostCompsHaveBeenLoaded] = useState<boolean>(false);
-   const [postCompLoadingStatuses, setPostCompLoadingStatuses] = useState<PostLoadingStatuses>({});
+
+   const postCompLoadingStatuses = useRef<PostLoadingStatuses>({});
 
 
 
 
    const updatePostLoadingStatuses = (id: string, value: boolean): void => {
-      // console.log("updatePostLoadingStatuses")
-
-      const loadingStatuses = { ...postCompLoadingStatuses };
+      const loadingStatuses = { ...postCompLoadingStatuses.current };
       loadingStatuses[id] = value;
+      postCompLoadingStatuses.current = { ...loadingStatuses }
 
-      setPostCompLoadingStatuses(loadingStatuses);
+
+      const loadingStatusEqualToFalse = uploadedPostIds.find(id => loadingStatuses[id] === false);
+
+      if (loadingStatusEqualToFalse === undefined) {
+         setAllPostCompsHaveBeenLoaded(true);
+         setProfileWallLoading(false);
+      } else {
+         setAllPostCompsHaveBeenLoaded(false);
+      }
    }
 
 
-
-
-   useEffect(() => {
-      // console.log("postCompLoadingStatuses: ", postCompLoadingStatuses);
-   }, [postCompLoadingStatuses])
 
 
    useEffect(() => {
@@ -59,15 +65,18 @@ const Wall = (props: Props) => {
       return () => {
          resize.removeEventListener();
          scroll.removeEventListener();
+         dispatch(profileActions.setProfileInfoMode("pageView"));
+         setProfileWallLoading(true);
       }
    }, []);
 
 
    useEffect(() => {
-      // console.log("1", allPostCompsHaveBeenLoaded, profileInfo.posts.length, uploadedPostIds.length)
+      dispatch(profileActions.setProfilePageScroll(scroll.value));
 
       if (
          allPostCompsHaveBeenLoaded
+         && profileInfoMode !== 'showingAPopup'
          && !postsLoadInfo.loading
          && postsLoadInfo.loaded
          && profileInfo.posts.length > 3
@@ -75,8 +84,6 @@ const Wall = (props: Props) => {
          && uploadedPostIds.length < profileInfo.posts.length
       ) {
          let scrollBottom = document.documentElement.scrollHeight - (resize.value[1] + scroll.value[1]);
-
-         // console.log("scrollBottom: ", scrollBottom)
 
          if (scrollBottom < 200) {
             dispatch(getPosts(
@@ -86,17 +93,24 @@ const Wall = (props: Props) => {
                   objectId: profileInfo.objectId
                }
             ))
-
-            setAllPostCompsHaveBeenLoaded(false);
          }
       }
-   }, [scroll.value[1], postsLoadInfo.loading, postsLoadInfo.loaded, allPostCompsHaveBeenLoaded, uploadedPostIds.length, profileInfo.posts.length])
+   }, [
+      scroll.value[1],
+      postsLoadInfo.loading,
+      postsLoadInfo.loaded,
+      allPostCompsHaveBeenLoaded,
+      uploadedPostIds.length,
+      profileInfo.posts.length,
+      profileInfoMode
+   ])
 
 
    // * setPostCompLoadingStatuses
    useEffect(() => {
       if (!postsLoadInfo.loading && postsLoadInfo.loaded) {
-         const loadingStatuses: PostLoadingStatuses = { ...postCompLoadingStatuses };
+
+         const loadingStatuses: PostLoadingStatuses = { ...postCompLoadingStatuses.current };
 
          let i = 0;
 
@@ -107,27 +121,14 @@ const Wall = (props: Props) => {
             }
          }))
 
-         if (i > 0) setPostCompLoadingStatuses(loadingStatuses);
-
-         const loadingStatusEqualToFalse = uploadedPostIds.find(id => loadingStatuses[id] === false);
-
-         if (loadingStatusEqualToFalse === undefined) {
-            setAllPostCompsHaveBeenLoaded(true);
-         } else {
-            setAllPostCompsHaveBeenLoaded(false);
-         }
+         if (i > 0) postCompLoadingStatuses.current = { ...loadingStatuses };
       }
-
-   }, [postCompLoadingStatuses, uploadedPostIds.length, postsLoadInfo.loading, postsLoadInfo.loaded])
-
-
-   useEffect(() => {
-      console.log("uploadedPostIds: ", uploadedPostIds)
-   }, [uploadedPostIds])
+   }, [uploadedPostIds.length, postsLoadInfo.loading, postsLoadInfo.loaded])
 
 
 
-   return !postsLoadInfo.error && uploadedPostIds.length > 0
+
+   return !postsLoadInfo.error && uploadedPostIds.length > 0 && uploadedPostIds.length
       ? (
          <>
             {
@@ -138,9 +139,9 @@ const Wall = (props: Props) => {
                         postIndex={index}
                         containerClassName={styles.post}
                         post={postEntities[id]}
-                        audioPlayerContext={`post_${id}`}
                         id={id}
                         updatePostLoadingStatuses={updatePostLoadingStatuses}
+                        postCompLoadingStatuses={postCompLoadingStatuses.current}
                      />
                   </div>
                ))

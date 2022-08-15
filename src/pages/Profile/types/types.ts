@@ -2,6 +2,7 @@ import { LoadInfo, UserProps, Entities, Ids } from '../../../types/types';
 
 export type ProfileState = {
    profileInfo: Profile
+   profilePageScroll: ProfilePageScroll
    profileMode: ProfileMode
    profileInfoMode: ProfileInfoMode
    signInMode: SignInMode
@@ -33,6 +34,11 @@ export interface Profile {
    posts: string[]
 }
 
+export type ProfilePageScroll = [
+   number,
+   number
+]
+
 export type Post = {
    objectId: string
    innerHTML: string
@@ -48,8 +54,8 @@ export type ProfileMode = "signIn"
    | "loggedInAsGuest"
    | "guestSignIn"
 
-export type ProfileInfoMode = "view"
-   | "edit" | "addContent"
+export type ProfileInfoMode = "pageView"
+   | "showingAPopup" | "addingContent"
 
 export type SignInMode = "login"
    | "passwordReset"

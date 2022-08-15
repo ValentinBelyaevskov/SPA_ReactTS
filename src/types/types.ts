@@ -44,8 +44,9 @@ export type PopupSwitcherIcon = "./icons/hide.svg" | "./icons/burger.svg";
 export type PopupStyle = { display?: "none" }
 
 export type PopupCtxt = {
-   needToShowPopup?: boolean
-   setNeedToShowPopup?: React.Dispatch<React.SetStateAction<boolean>>
+   popupName?: string,
+   setPopupName?:  React.Dispatch<React.SetStateAction<string | undefined>>,
+   setPopup?:  React.Dispatch<React.SetStateAction<JSX.Element | undefined>>,
 }
 
 export type PopupControlsCtxt = {
@@ -68,11 +69,9 @@ export type ShowPopupCtxt = {
 export type WindowSize = [number, number]
 
 export type AppCtxt = {
-   appRef?: React.RefObject<HTMLDivElement>
-   pageRef?: React.RefObject<HTMLDivElement>
-   pagePartRef?: React.RefObject<HTMLDivElement>
-   showPreloader?: boolean
-   setShowPreloader?: React.Dispatch<React.SetStateAction<boolean>>
+   profileContentLoading?: boolean
    setShowAudioPlayer?: React.Dispatch<React.SetStateAction<boolean>>
-   setPopup?: React.Dispatch<React.SetStateAction<JSX.Element | undefined>>
+   setProfileContentLoading?: React.Dispatch<React.SetStateAction<boolean>>
+   setProfileInfoLoading?: React.Dispatch<React.SetStateAction<boolean>>
+   setProfileWallLoading?: React.Dispatch<React.SetStateAction<boolean>>
 }

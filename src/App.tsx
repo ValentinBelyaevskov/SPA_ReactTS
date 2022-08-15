@@ -14,11 +14,14 @@ import GeneralPlayerInterface from 'common/GeneralPlayerInterfaces/GeneralPlayer
 import { AudioPlayerContext, useAudioPlayer } from 'common/AudioPlayer/useAudioPlayer';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { NotFound } from 'pages/NotFound/NotFound';
+import { useAppContext } from 'hooks/App/useAppContext';
+
 
 
 
 type Props = {
 }
+
 
 
 
@@ -32,9 +35,7 @@ export const AppContext = React.createContext<AppCtxt>({});
 
 const App = (props: Props) => {
    const dispatch = useAppDispatch();
-   const [showPreloader, setShowPreloader] = useState<boolean>(true);
-   const [needToShowPopup, setNeedToShowPopup] = useState<boolean>(false);
-   const [showAudioPlayer, setShowAudioPlayer] = useState<boolean>(false);
+   const [popupName, setPopupName] = useState<string | undefined>(undefined);
    const [popup, setPopup] = useState<JSX.Element | undefined>(undefined);
    const appRef = useRef<HTMLDivElement>(null);
    const headerContainerRef = useRef<HTMLDivElement>(null);
@@ -45,21 +46,40 @@ const App = (props: Props) => {
 
 
    const {
+      profileInfoLoading,
+      profileWallLoading,
+      profileContentLoading,
+      showAudioPlayer,
+      setShowAudioPlayer,
+      setProfileInfoLoading,
+      setProfileWallLoading,
+      setProfileContentLoading,
+
+   } = useAppContext();
+
+
+   const {
       audioPlayerContainerRef,
       audioPlayerContext
+
    } = useAudioPlayer();
+
 
    const popupControlsContext = usePopupControlsContext();
 
-   const popupContext = {
-      needToShowPopup,
-      setNeedToShowPopup
+
+   const popupContext: PopupCtxt = {
+      popupName,
+      setPopupName,
+      setPopup,
    }
+
 
    const showPopupContextValue: ShowPopupCtxt = {
       appRef,
       pagesContainerRef
    };
+
 
    const elements = {
       appElem: appRef.current!,
@@ -73,32 +93,43 @@ const App = (props: Props) => {
 
 
    const appStyle = useAppScrollSetting(
-      popupControlsContext.needToShowPopup! || needToShowPopup,
-      popupControlsContext.needToShowBackground! || needToShowPopup,
+      popupControlsContext.needToShowPopup! || Boolean(popupName),
+      popupControlsContext.needToShowBackground! || Boolean(popupName),
       elements,
-      showPreloader,
+      profileContentLoading!,
    );
 
 
 
-// !
-   useEffect(() => {
-      console.log("popup: ", popup);
-   }, [popup])
-// !
-
 
    useEffect(() => {
-      dispatch(profileActions.setProfileInfoMode("view"));
+      dispatch(profileActions.setProfileInfoMode("pageView"));
       dispatch(getProfileProps());
    }, []);
+
+
+   useEffect(() => {
+      if (profileInfoLoading || profileWallLoading) {
+         setProfileContentLoading(true);
+      } else {
+         setProfileContentLoading(false);
+      }
+   }, [profileInfoLoading, profileWallLoading])
 
 
 
 
    return (
       <div className={styles.app} ref={appRef} style={appStyle}>
-         <AppContext.Provider value={{ showPreloader, setShowPreloader, setShowAudioPlayer, setPopup }}>
+         <AppContext.Provider value={
+            {
+               profileContentLoading,
+               setProfileInfoLoading,
+               setProfileWallLoading,
+               setProfileContentLoading,
+               setShowAudioPlayer
+            }
+         }>
             <PopupContext.Provider value={{ ...popupContext }}>
                <PopupControlsContext.Provider value={{ ...popupControlsContext }}>
                   <ShowPopupContext.Provider value={{ ...showPopupContextValue }}>
@@ -144,7 +175,7 @@ const App = (props: Props) => {
                         </div>
                         <div className={styles.appPopup}>
                            {
-                              needToShowPopup && popup
+                              popupName && popup
                                  ? popup
                                  : null
                            }
@@ -159,6 +190,7 @@ const App = (props: Props) => {
       </div>
    )
 }
+
 
 
 
