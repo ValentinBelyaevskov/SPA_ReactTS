@@ -341,6 +341,7 @@ export const getPostEntities = (state: RootState) => state.profile.uploadedPosts
 
 
 
+
 export const loginAsGuest = createAsyncThunk(
    "profile/loginAsGuest",
    async (stayLoggedIn: boolean, { rejectWithValue }) => {

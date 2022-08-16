@@ -3,7 +3,7 @@
    margin-top: 10px;
    padding-top: 2rem;
    padding-bottom: 2rem;
-   
+
    &:last-of-type {
       margin-bottom: 10px;
    }
@@ -11,5 +11,16 @@
    .post {
       margin: 0 auto;
       max-width: 510px;
+   }
+}
+
+.preloaderContainer {
+   margin-top: 10px;
+   padding: 7px 0;
+
+   img {
+      display: block;
+      margin: 0 auto;
+      width: 40px;
    }
 }

@@ -2,8 +2,8 @@ import styles from './App.module.scss'
 import React, { useEffect, useState } from 'react';
 import { Header, LeftPanel, RightPanel } from 'alwaysPresent';
 import { Profile } from 'pages';
-import { getProfileProps, profileActions } from 'pages/Profile/redux/profileReducer';
-import { useAppDispatch } from 'hooks/redux';
+import { getProfilePageScroll, getProfileProps, profileActions } from 'pages/Profile/redux/profileReducer';
+import { useAppDispatch, useAppSelector } from 'hooks/redux';
 import { AppCtxt, PopupControlsCtxt, PopupCtxt, ShowPopupCtxt } from 'types/types';
 import Controls from 'alwaysPresent/Controls/Controls';
 import { usePopupControlsContext } from './hooks/App/usePopupControlsContext';
@@ -105,6 +105,8 @@ const App = (props: Props) => {
    useEffect(() => {
       dispatch(profileActions.setProfileInfoMode("pageView"));
       dispatch(getProfileProps());
+
+      // * Real-time event handlers. Call real-time event listeners (thunk / dispatch actions)
    }, []);
 
 

@@ -37,16 +37,20 @@ export const useAudiosBlock = (appContext: AppCtxt, resize: WindowSize, panelAud
    const audioPlayerStateAPI = new audioPlayerApi(dispatch, audioPlayerActions, "general");
 
 
-   // ! 2) setGeneralAudioPlayerContext(panelAudioPlayerContext);
    const generalAudioPlayerContext = useAppSelector(getGeneralPlayerContext);
 
-   // ! 1)
-   const [activeTrackIdNumber, setActiveTrackIdNumber] = useState<number>(0);
-   // ! 3)
+   // activeTrackIdNumber должен иметь актуальное значение, что useEffects 1 и 2 выполнялись в разных рендерах
+   // (см изменение зависимостей audioPlayerState.activeTrackId и activeTrackIdNumber).
+   const audioIds = useAppSelector(getPlayerAudioFileIds("general"));
+   const [activeTrackIdNumber, setActiveTrackIdNumber] = useState<number>(
+      panelAudioPlayerContext === generalAudioPlayerContext
+         ? getActiveTrackIdNumber(audioPlayerState.activeTrackId)
+         : 0
+   );
+
    const [showAudioPlayer, setShowAudioPlayer] = useState<boolean>(false);
 
    const audios = useAppSelector(getPlayerAudioFiles("general"));
-   const audioIds = useAppSelector(getPlayerAudioFileIds("general"));
    const [audioFiles, setAudioFiles] = useState<AudioFilesItem[]>([]);
    const [audiosBlockStyle, setAudiosBlockStyle] = useState<{ marginTop?: string }>({});
    const [currentPlaylistActive, setCurrentPlaylistActive] = useState<boolean>(false);
@@ -100,7 +104,9 @@ export const useAudiosBlock = (appContext: AppCtxt, resize: WindowSize, panelAud
    }
 
 
-   const getActiveTrackIdNumber = (activeTrackId: number): number => audioIds.findIndex(id => id === activeTrackId);
+   function getActiveTrackIdNumber(activeTrackId: number): number {
+      return audioIds.findIndex(id => id === activeTrackId)
+   }
 
 
    const updateAudioLoadingStatusesItem = (index: number, newItemValue: boolean): void => {
@@ -134,10 +140,10 @@ export const useAudiosBlock = (appContext: AppCtxt, resize: WindowSize, panelAud
    }, [audioFiles.length])
 
 
-   // !
+   // ! 1)
    useEffect(() => {
       if (panelAudioPlayerContext === "6E65700B-571A-4113-9206-6E832883BD99") {
-         console.log("setActiveTrackIdNumber(getActiveTrackIdNumber(audioPlayerState.activeTrackId));")
+         console.log("setActiveTrackIdNumber, audioPlayerState.activeTrackId: ", audioPlayerState.activeTrackId, audioIds);
       }
       if (audios[audioPlayerState.activeTrackId]) {
          setActiveTrackIdNumber(getActiveTrackIdNumber(audioPlayerState.activeTrackId));
@@ -315,20 +321,11 @@ export const useAudiosBlock = (appContext: AppCtxt, resize: WindowSize, panelAud
    }, [panelAudioPlayerContext, generalAudioPlayerContext, audioFiles.length, showAudioPlayer, currentPostPlayerIsActive])
 
 
-
-   // // !
-   // useEffect(() => {
-   //    if (panelAudioPlayerContext === "6E65700B-571A-4113-9206-6E832883BD99") {
-   //       console.log("audioPlayerState: ", audioPlayerState)
-   //    }
-   // }, [audioPlayerState])
-   // // !
-
-
    // !
+   // ! 2)
    useEffect(() => {
       if (panelAudioPlayerContext === "6E65700B-571A-4113-9206-6E832883BD99") {
-         console.log("audioPlayerStateAPI.setActiveTrackId(audioIds[activeTrackIdNumber]);");
+         console.log("audioPlayerStateAPI.setActiveTrackId, activeTrackIdNumber: ", activeTrackIdNumber, Boolean(panelAudioPlayerContext === "6E65700B-571A-4113-9206-6E832883BD99"));
       }
 
       if (audioIds[activeTrackIdNumber] && panelAudioPlayerContext === generalAudioPlayerContext) {

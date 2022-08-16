@@ -30,7 +30,14 @@ import { PostLoadingStatuses } from 'pages/Profile/ProfilePage/Wall/Wall';
 
 
 
-type PopupType = "textEdit" | "imageEdit" | "fileSelection" | "audioSelection" | "videoSelection" | "showImageAndVideoSlider" | undefined;
+type PopupType = "textEdit"
+   | "deletePosts"
+   | "imageEdit"
+   | "fileSelection"
+   | "audioSelection"
+   | "videoSelection"
+   | "showImageAndVideoSlider"
+   | undefined;
 
 export type PostMode = "edit" | "view"
 
@@ -220,6 +227,11 @@ const PostEditPanel = (props: Props) => {
    }
 
 
+   const deleletePostClickListener = (): void => {
+      setPopupType('deletePosts');
+   }
+
+
    const addContentButtonClickListeners: AddContentButtonClickListeners = {
       image: imageClickListener,
       file: filesClickListener,
@@ -348,6 +360,8 @@ const PostEditPanel = (props: Props) => {
             finishShowingThePopup={finishShowingThePopup}
             playVideoListener={stopAudio}
          />);
+      } else if (popupType === 'deletePosts') {
+         
       } else if (
          popupType == undefined
          && (
