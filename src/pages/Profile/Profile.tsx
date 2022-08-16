@@ -12,6 +12,7 @@ import { AppContext } from 'App';
 
 
 
+
 const Profile = () => {
    const icons = [
       "./icons/other.svg",
@@ -26,6 +27,7 @@ const Profile = () => {
       "./icons/music.svg",
       "./icons/video.svg",
    ];
+
    const dispatch = useAppDispatch();
    const [trySignIn, setTrySignIn] = useState<boolean>(false);
    const loading = useAppSelector(getLoadingStatus);
@@ -38,6 +40,7 @@ const Profile = () => {
 
 
 
+
    useEffect(() => {
       return () => {
          dispatch(profileActions.setSignInMode("login"));
@@ -45,11 +48,6 @@ const Profile = () => {
       }
    }, []);
 
-   useEffect(() => {
-      if (loading && !iconsLoaded) {
-         setIconsLoaded(false);
-      }
-   }, [loading, iconsLoaded]);
 
 
 
@@ -92,6 +90,7 @@ const Profile = () => {
       </div>
    )
 }
+
 
 
 

@@ -1,7 +1,7 @@
 import { separatePatnAndName } from './../../../functions/separatePathAndName';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { ProfileState, Profile, AccountParams, LoginParams, ProfileMode, SetErrors, UpdateParams, ProfileInfoMode, SignInMode, UpdatedProfile, UploadFileParams, PostData, PostPayloadAction, Post, ImagesAndVideosItem, AudiosItem, FilesItem, PostObject, GetPostsData, ProfilePageScroll } from '../types/types';
+import { ProfileState, Profile, AccountParams, LoginParams, ProfileMode, SetErrors, UpdateParams, ProfileInfoMode, SignInMode, UpdatedProfile, UploadFileParams, PostData, PostPayloadAction, Post, ImagesAndVideosItem, AudiosItem, FilesItem, PostObject, GetPostsData, ProfilePageScroll, DeletePostData } from '../types/types';
 import { UserProps, LoadInfo, BackendlessError } from '../../../types/types';
 import { createSelector } from 'reselect';
 import { RootState } from '../../../redux/store';
@@ -341,6 +341,7 @@ export const getPostEntities = (state: RootState) => state.profile.uploadedPosts
 
 
 
+
 export const loginAsGuest = createAsyncThunk(
    "profile/loginAsGuest",
    async (stayLoggedIn: boolean, { rejectWithValue }) => {
@@ -667,10 +668,10 @@ export const createAPost = createAsyncThunk(
 
 export const getPosts = createAsyncThunk(
    "profile/getPosts",
-   async (PostsData: GetPostsData, { rejectWithValue }) => {
+   async (postData: GetPostsData, { rejectWithValue }) => {
       try {
-         const allPostIdsLength = PostsData.allPostIdsLength;
-         const uploadedPostIdsLength = PostsData.uploadedPostIdsLength;
+         const allPostIdsLength = postData.allPostIdsLength;
+         const uploadedPostIdsLength = postData.uploadedPostIdsLength;
 
          if (allPostIdsLength === uploadedPostIdsLength) {
             throw new Error("All posts have been loaded")
@@ -689,7 +690,7 @@ export const getPosts = createAsyncThunk(
                .setPageSize(pageSize)
                .setSortBy(["created DESC"])
                .setOffset(offset)
-               .setWhereClause(`userId = '${PostsData.objectId}'`);
+               .setWhereClause(`userId = '${postData.objectId}'`);
 
             const posts: Post[] = await Backendless.Data.of("Posts").find(postQuery);
 
@@ -700,6 +701,18 @@ export const getPosts = createAsyncThunk(
       } catch (err: any) {
          console.log(err);
          return rejectWithValue(err.message)
+      }
+   }
+)
+
+export const deletePost = createAsyncThunk(
+   "profile/deletePost",
+   async (deletePostData: DeletePostData, { rejectWithValue }) => {
+      try {
+         
+
+      } catch (err: any) {
+
       }
    }
 )

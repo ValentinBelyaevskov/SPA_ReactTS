@@ -26,11 +26,20 @@ import getFormattedDate from 'functions/createCivilDate/getFormattedDate';
 import { InnerHTML } from './InnerHTML';
 import { DataType, usePostLoadingStatus } from './hooks/usePostLoadingStatus';
 import { PostLoadingStatuses } from 'pages/Profile/ProfilePage/Wall/Wall';
+import { useHoverAndTouchClassNames } from 'hooks/useHoverAndTouchClassNames';
+import DeletePost from './DeletePost/DeletePost';
 
 
 
 
-type PopupType = "textEdit" | "imageEdit" | "fileSelection" | "audioSelection" | "videoSelection" | "showImageAndVideoSlider" | undefined;
+type PopupType = "textEdit"
+   | "deletePosts"
+   | "imageEdit"
+   | "fileSelection"
+   | "audioSelection"
+   | "videoSelection"
+   | "showImageAndVideoSlider"
+   | undefined;
 
 export type PostMode = "edit" | "view"
 
@@ -125,6 +134,8 @@ const PostEditPanel = (props: Props) => {
    const [postIsBeingCreated, setPostIsBeingCreated] = useState<boolean>(false);
    const [resetInnerHTML, setResetInnerHTML] = useState<boolean>(false);
 
+   const deleteButtonHoverAndTouchClassNames = useHoverAndTouchClassNames(styles.hover, styles.touch);
+
 
    const {
       imagesAndVideos,
@@ -173,7 +184,6 @@ const PostEditPanel = (props: Props) => {
       resetAudios,
       generalAudioPlayerContext,
       setGeneralPlayerContext,
-      setCurrentPostPlayerIsActive,
 
    } = useAudiosBlock(appContext, resize, props.id ? props.id : 'createAPost', props.mode, props.post);
 
@@ -217,6 +227,12 @@ const PostEditPanel = (props: Props) => {
 
    const videoClickListener = (): void => {
       if (!contentIconsPromptText) setPopupType('videoSelection');
+   }
+
+
+   const deleletePostClickListener = (): void => {
+      setPopupType('deletePosts');
+      deleteButtonHoverAndTouchClassNames.clickListener()
    }
 
 
@@ -348,6 +364,13 @@ const PostEditPanel = (props: Props) => {
             finishShowingThePopup={finishShowingThePopup}
             playVideoListener={stopAudio}
          />);
+      } else if (popupType === 'deletePosts' && props.mode === "view") {
+         popupContext.setPopup!(<DeletePost
+            finishShowingThePopup={finishShowingThePopup}
+            postId={props.post!.objectId}
+            profileId={profile.objectId}
+            allPostIds={profile.posts}
+         />)
       } else if (
          popupType == undefined
          && (
@@ -428,6 +451,15 @@ const PostEditPanel = (props: Props) => {
                                  </div>
                                  <div className={styles.date}>
                                     {getFormattedDate(props.post!.created, "posts")}
+                                 </div>
+                                 <div
+                                    className={`${styles.deletePostButton} ${deleteButtonHoverAndTouchClassNames.className} unselectable`}
+                                    onClick={deleletePostClickListener}
+                                    onMouseEnter={deleteButtonHoverAndTouchClassNames.mouseEnterListener}
+                                    onTouchStart={deleteButtonHoverAndTouchClassNames.touchStartListener}
+                                    onTouchEnd={deleteButtonHoverAndTouchClassNames.touchEndListener}
+                                 >
+                                    <img src="./icons/delete.svg" alt='delete post button' />
                                  </div>
                               </>
                               : null

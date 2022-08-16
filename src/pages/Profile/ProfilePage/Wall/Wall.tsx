@@ -1,6 +1,6 @@
 import { useAppSelector } from 'hooks/redux'
 import styles from './Wall.module.scss'
-import { getUploadedPostIds, getPostEntities, getProfileInfo, getPosts, getPostsLoadInfo, profileActions, getProfileInfoMode } from '../../redux/profileReducer';
+import { getUploadedPostIds, getPostEntities, getProfileInfo, getPosts, getPostsLoadInfo, profileActions, getProfileInfoMode, getProfilePageScroll } from '../../redux/profileReducer';
 import PostEditPanel from 'common/PostEditPanel/PostEditPanel';
 import { useContext, useEffect, useRef, useState } from 'react';
 import { useScrollOrWindowSize } from '../../../../hooks/useScrollOrWindowSize';
@@ -23,7 +23,7 @@ export type PostLoadingStatuses = {
 
 const Wall = (props: Props) => {
    const dispatch = useAppDispatch();
-   const setProfileWallLoading = useContext(AppContext).setProfileWallLoading!;
+   const appContext = useContext(AppContext);
    const profileInfo = useAppSelector(getProfileInfo);
    const profileInfoMode = useAppSelector(getProfileInfoMode);
    const uploadedPostIds = useAppSelector(getUploadedPostIds);
@@ -31,6 +31,8 @@ const Wall = (props: Props) => {
    const postsLoadInfo = useAppSelector(getPostsLoadInfo);
    const resize = useScrollOrWindowSize("resize");
    const scroll = useScrollOrWindowSize("scroll");
+   const profilePageScroll = useAppSelector(getProfilePageScroll);
+   const [scrollHasBeenSet, setScrollHasBeenSet] = useState<boolean>(false);
 
    const [allPostCompsHaveBeenLoaded, setAllPostCompsHaveBeenLoaded] = useState<boolean>(false);
 
@@ -49,13 +51,19 @@ const Wall = (props: Props) => {
 
       if (loadingStatusEqualToFalse === undefined) {
          setAllPostCompsHaveBeenLoaded(true);
-         setProfileWallLoading(false);
       } else {
          setAllPostCompsHaveBeenLoaded(false);
       }
    }
 
 
+
+
+   useEffect(() => {
+      if (scrollHasBeenSet && allPostCompsHaveBeenLoaded) {
+         appContext.setProfileWallLoading!(false);
+      }
+   }, [scrollHasBeenSet, allPostCompsHaveBeenLoaded])
 
 
    useEffect(() => {
@@ -66,14 +74,62 @@ const Wall = (props: Props) => {
          resize.removeEventListener();
          scroll.removeEventListener();
          dispatch(profileActions.setProfileInfoMode("pageView"));
-         setProfileWallLoading(true);
+         appContext.setProfileWallLoading!(true);
       }
    }, []);
 
 
    useEffect(() => {
-      dispatch(profileActions.setProfilePageScroll(scroll.value));
+      if (allPostCompsHaveBeenLoaded) {
+         // !
+         console.log(
+            profilePageScroll[1],
+            document.documentElement.clientHeight,
+            profilePageScroll[1] + document.documentElement.clientHeight,
+            document.documentElement.scrollHeight
+         );
+         // !
 
+         if (!scrollHasBeenSet) {
+            if (profilePageScroll[1] + document.documentElement.clientHeight <= document.documentElement.scrollHeight) {
+               document.documentElement.scrollTop = profilePageScroll[1];
+               setScrollHasBeenSet(true);
+               // !
+               console.log("document.documentElement.scrollTop: ", profilePageScroll[1]);
+               // !
+
+            } else {
+               // !
+               console.log("document.documentElement.scrollTop: ", document.documentElement.scrollHeight - document.documentElement.clientHeight);
+               // !
+               document.documentElement.scrollTop = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+
+               if (uploadedPostIds.length === profileInfo.posts.length) {
+                  setScrollHasBeenSet(true);
+               }
+            }
+
+         } else {
+            // !
+            console.log("setProfilePageScroll: ", scroll.value);
+            // !
+
+            dispatch(profileActions.setProfilePageScroll(scroll.value));
+         }
+
+      }
+   }, [
+      scroll.value[1],
+      allPostCompsHaveBeenLoaded,
+      scrollHasBeenSet,
+      uploadedPostIds.length,
+      profileInfo.posts.length,
+      uploadedPostIds.length,
+      profileInfo.posts.length
+   ])
+
+
+   useEffect(() => {
       if (
          allPostCompsHaveBeenLoaded
          && profileInfoMode !== 'showingAPopup'
@@ -84,6 +140,7 @@ const Wall = (props: Props) => {
          && uploadedPostIds.length < profileInfo.posts.length
       ) {
          let scrollBottom = document.documentElement.scrollHeight - (resize.value[1] + scroll.value[1]);
+
 
          if (scrollBottom < 200) {
             dispatch(getPosts(
@@ -106,7 +163,6 @@ const Wall = (props: Props) => {
    ])
 
 
-   // * setPostCompLoadingStatuses
    useEffect(() => {
       if (!postsLoadInfo.loading && postsLoadInfo.loaded) {
 
@@ -148,8 +204,8 @@ const Wall = (props: Props) => {
             }
             {
                postsLoadInfo.loading && (
-                  <div className={styles.postPreloaderContainer}>
-                     <img src='./image/defaultAvatar.jpg' />
+                  <div className={`${styles.preloaderContainer} pagePart`}>
+                     <img src='./animatedIcons/preloader2.svg' />
                   </div>
                )
             }
