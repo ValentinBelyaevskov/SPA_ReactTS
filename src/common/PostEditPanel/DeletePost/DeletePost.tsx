@@ -1,38 +1,54 @@
-import styles from './Delete.module.scss';
+import styles from './DeletePost.module.scss';
 import { useEffect } from 'react';
 import { usePopupForm } from 'hooks/usePopup/usePopupForm';
 import Button from 'common/Button/Button';
 import { useAppDispatch, useAppSelector } from 'hooks/redux';
-import { getLoadInfo, getProfileMode, logout, profileActions } from 'pages/Profile/redux/profileReducer';
+import { deletePost, getLoadInfo, getProfileMode, logout, profileActions } from 'pages/Profile/redux/profileReducer';
 
 
 
 
 interface Props {
    finishShowingThePopup: () => void,
+   finishShowingDeleteWindow: () => void
+   postId: string
+   profileId: string
+   allPostIds: string[]
 }
 
 
 
 
-const Delete = (props: Props) => {
-   const profileMode = useAppSelector(getProfileMode);
+const DeletePost = (props: Props) => {
    const loadInfo = useAppSelector(getLoadInfo);
    const dispatch = useAppDispatch();
    const popupForm = usePopupForm(endEditingCallback);
-   const profileLogout = () => dispatch(logout());
 
 
 
 
    function endEditingCallback(): void {
-      // props.finishShowingThePopup();
-      // if (profileMode === "loggedOut") dispatch(profileActions.resetProfileInfo("signIn"));
+      console.log(popupForm.clickedButton)
+      if (popupForm.clickedButton) {
+         if (popupForm.clickedButton.includes("closeButton")) {
+            props.finishShowingThePopup();
+         } else if (popupForm.clickedButton.includes("signOutButton")) {
+            props.finishShowingDeleteWindow();
+         }
+      }
    }
 
-   const saveButtonClickListener = (e: React.MouseEvent) => {
-      profileLogout();
+   const deleteButtonClickListener = (e: React.MouseEvent) => {
       popupForm.setClickedButtonName(e);
+
+      dispatch(
+         deletePost({
+            callback: popupForm.hideEditorStyle,
+            postId: props.postId,
+            profileId: props.profileId,
+            allPostIds: props.allPostIds
+         })
+      )
    }
 
    const closeButtonClickListener = (e: React.MouseEvent) => {
@@ -50,15 +66,6 @@ const Delete = (props: Props) => {
 
 
 
-   useEffect(() => {
-      if (profileMode === "loggedOut") {
-         popupForm.hideEditorStyle();
-      }
-   }, [profileMode]);
-
-
-
-
    return (
       <div style={popupForm.editorStyle} onTransitionEnd={popupForm.transitionEndListener} className={`${styles.editor} ${styles.signOutEditor} editor`}>
          <div className={styles.signOutBody}>
@@ -72,7 +79,7 @@ const Delete = (props: Props) => {
                )
             }
             <h2 className={styles.title}>
-               Are you sure you want Sign out?
+               Are you sure you want to delete the post?
             </h2>
             {
                loadInfo.error ? <div className={`${styles.warning} ${styles.errorWarning}`}>{`${loadInfo.error}`}</div>
@@ -83,8 +90,8 @@ const Delete = (props: Props) => {
                   params={
                      {
                         containerClassName: `signOutButtonContainer ${styles.formButtonContainer}`,
-                        clickHandler: saveButtonClickListener,
-                        text: "Sign out",
+                        clickHandler: deleteButtonClickListener,
+                        text: "DeletePost Post",
                         type: "submit",
                         color: "red",
                         buttonClassName: `${styles.formButton} signOutButton`,
@@ -113,4 +120,4 @@ const Delete = (props: Props) => {
 
 
 
-export default Delete
+export default DeletePost

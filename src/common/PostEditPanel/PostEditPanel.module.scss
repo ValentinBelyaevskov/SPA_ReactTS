@@ -99,16 +99,16 @@
       }
 
       &.view {
-         grid-template-columns: 55px minmax(0, 1fr);
+         grid-template-columns: 55px minmax(0, 1fr) 40px;
          grid-template-rows: 20px 20px 7px minmax(0, auto) minmax(0, auto) minmax(0, auto) minmax(0, auto);
          grid-template-areas:
-            "avatar          userName"
-            "avatar          date"
-            "null            null"
-            "text            text"
-            "imagesAndVideos imagesAndVideos"
-            "audios          audios         "
-            "files           files          ";
+            "avatar          userName        deletePost"
+            "avatar          date            deletePost"
+            "null            null            null"
+            "text            text            text"
+            "imagesAndVideos imagesAndVideos imagesAndVideos"
+            "audios          audios          audios"
+            "files           files           files";
 
          .userName {
             grid-area: userName;
@@ -122,6 +122,31 @@
             grid-area: date;
             align-self: center;
             font-size: 1.3rem;
+         }
+
+         .deletePostButton {
+            grid-area: deletePost;
+            align-self: center;
+            justify-self: end;
+
+            height: 25px;
+
+            transition-property: opacity;
+            transition-duration: 0.1s;
+            opacity: 1;
+
+            margin-right: -10px;
+
+            img {
+               height: 100%;
+               padding: 5px 10px;
+            }
+
+            &.hover:hover,
+            &.touch {
+               cursor: pointer;
+               opacity: 0.6;
+            }
          }
 
          .text {

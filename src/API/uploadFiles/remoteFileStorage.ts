@@ -91,17 +91,6 @@ class RemoteFileStorage implements Cloud {
 
 
 
-            // if (
-            //    file.type.includes("image")
-            //    && convertFileSizeToMb(file.size) > 5
-            //    && convertFileSizeToMb(file.size) < 10
-            // ) {
-            //    size = "big";
-            // } else if (convertFileSizeToMb(file.size) > 10) {
-            //    throw new Error("Image size should not exceed 10mb");
-            // }
-
-
             if (file.type.includes("image")) {
                if (
                   convertFileSizeToMb(file.size) > 5

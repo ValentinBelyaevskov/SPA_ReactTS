@@ -80,6 +80,9 @@ const FilesListItem = (props: Props) => {
                {fileNameWithFormat}
             </a>
          </div >
+         <div>
+            <img/>
+         </div>
          <img
             className={`${styles.hideIcon} ${hideIconHoverAndTouchClassNames.className}`}
             src="./icons/hideMini.svg"

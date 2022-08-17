@@ -11,7 +11,7 @@ import Header from './Header/Header';
 import ProfileInfo from './ProfileInfo/ProfileInfo';
 import { Popup, usePopupElement } from 'hooks';
 import { useElementTouchStartListener } from 'hooks/usePopup/useElementTouchStartListener';
-import { AppContext, PopupContext } from '../../../../App';
+import { PopupContext } from '../../../../App';
 import SelectAndEditAnImageForm from 'common/UploadFormsAndLightbox/SelectAndEditAnImageForm';
 import PostEditPanel from 'common/PostEditPanel/PostEditPanel';
 import ChangeProfileInfoForm from '../Editors/ChangeProfileInfoForm';
@@ -132,18 +132,18 @@ const ProfilePanel = () => {
    useEffect(() => {
       if (editMode) {
          popupContext.setPopupName!("editProfile");
-      } else {
+      } else if (editMode === undefined) {
          popupContext.setPopupName!(undefined);
       }
    }, [editMode])
 
    useEffect(() => {
       if (editMode === "edit") {
-         popupContext.setPopup!(<ChangeProfileInfoForm finishShowingThePopup={finishShowingThePopup} />)
+         popupContext.setPopup!(<ChangeProfileInfoForm finishShowingThePopup={finishShowingThePopup} />);
       } else if ((editMode === "changePassword") && editIconsLoaded) {
-         popupContext.setPopup!(<ChangePasswordForm finishShowingThePopup={finishShowingThePopup} />)
+         popupContext.setPopup!(<ChangePasswordForm finishShowingThePopup={finishShowingThePopup} />);
       } else if (editMode === "signOut") {
-         popupContext.setPopup!(<SignOut finishShowingThePopup={finishShowingThePopup} />)
+         popupContext.setPopup!(<SignOut finishShowingThePopup={finishShowingThePopup} />);
       } else if (editMode === "changeAvatar") {
          popupContext.setPopup!(< SelectAndEditAnImageForm
             finishShowingThePopup={finishShowingThePopup}
@@ -153,11 +153,11 @@ const ProfilePanel = () => {
             uploadUncroppedImage={false}
             uploadButtonText="Upload new avatar"
             popupText='Update avatar:'
-         />)
-      } else {
-         popupContext.setPopup!(undefined)
+         />);
+      } else if (editMode === undefined && popupContext.popupName === "editProfile") {
+         popupContext.setPopup!(undefined);
       }
-   }, [editMode, editIconsLoaded, loadInfo.loading])
+   }, [editMode, editIconsLoaded, loadInfo.loading, popupContext.popupName])
 
 
 

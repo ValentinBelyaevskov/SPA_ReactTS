@@ -49,6 +49,11 @@ const Profile = () => {
    }, []);
 
 
+   // useEffect(() => {
+   //    console.log("iconsLoaded: ", iconsLoaded, "loading: ", loading, "profileContentLoading: ", profileContentLoading);
+   // }, [iconsLoaded, loading, profileContentLoading])
+
+
 
 
    return (

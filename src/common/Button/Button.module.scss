@@ -12,11 +12,11 @@
    }
 
    .redButton {
-      background-color: rgba(255, 0, 0, 0.692);
+      background-color: rgba(255, 0, 0, 0.8);
 
       &.hover:hover,
       &.touch {
-         background-color: rgba(212, 0, 0, 0.692);
+         background-color: rgb(206, 13, 13);
       }
    }
 

@@ -22,11 +22,6 @@ type Inputs = {
    fileList: { 0: File }
 }
 
-type VideoStyle = {
-   width?: string
-   height?: string
-   left?: string
-}
 
 
 
