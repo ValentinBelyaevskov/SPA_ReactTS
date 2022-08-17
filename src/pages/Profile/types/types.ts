@@ -191,3 +191,10 @@ export type GetPostsData = {
    uploadedPostIdsLength: number,
    allPostIdsLength: number,
 }
+
+export type DeletePostData = {
+   callback: () => void
+   postId: string
+   profileId: string
+   allPostIds: string[]
+}

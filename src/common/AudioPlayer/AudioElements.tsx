@@ -1,5 +1,4 @@
 import { useAppSelector } from "hooks/redux"
-import { useEffect } from "react";
 import AudioElementsItem from "./AudioElementsItem";
 import { getPlayerNames, getPlayerStatuses, getPlayers } from './redux/audioPlayerReducer';
 

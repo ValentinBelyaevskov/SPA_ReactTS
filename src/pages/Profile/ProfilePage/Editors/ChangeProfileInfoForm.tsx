@@ -354,7 +354,7 @@ const ChangeProfileInfoForm = (props: Props) => {
                            params={
                               {
                                  containerClassName: `saveButtonContainer ${styles.formButtonContainer}`,
-                                 clickHandler: popupForm.setClickedButtonName,
+                                 clickListener: popupForm.setClickedButtonName,
                                  text: "Save",
                                  type: "submit",
                                  disabled: !isValid,
@@ -367,7 +367,7 @@ const ChangeProfileInfoForm = (props: Props) => {
                            params={
                               {
                                  containerClassName: `closeButtonContainer ${styles.formButtonContainer}`,
-                                 clickHandler: (e) => { popupForm.hideEditorStyle(); popupForm.setClickedButtonName(e) },
+                                 clickListener: (e) => { popupForm.hideEditorStyle(); popupForm.setClickedButtonName(e) },
                                  text: "Close",
                                  type: "button",
                                  buttonClassName: `${styles.formButton} closeButton`,

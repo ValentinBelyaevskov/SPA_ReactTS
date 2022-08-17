@@ -225,7 +225,7 @@ const VideoUploader = (props: Props) => {
                      params={
                         {
                            containerClassName: `${styles.formButtonContainer}`,
-                           clickHandler: () => { },
+                           clickListener: () => { },
                            text: props.uploadButtonText,
                            disabled:
                               videoFile && isTheFileAnVideo(videoFile)
@@ -240,7 +240,7 @@ const VideoUploader = (props: Props) => {
                      params={
                         {
                            containerClassName: `closeButtonContainer ${styles.formButtonContainer}`,
-                           clickHandler: closeButtonClickHandler,
+                           clickListener: closeButtonClickHandler,
                            text: "Close",
                            type: "button",
                            buttonClassName: `${styles.formButton} closeButton`,

@@ -22,11 +22,6 @@ type Inputs = {
    fileList: { 0: File }
 }
 
-type VideoStyle = {
-   width?: string
-   height?: string
-   left?: string
-}
 
 
 
@@ -124,7 +119,7 @@ const FileUploader = (props: Props) => {
                      params={
                         {
                            containerClassName: `closeButtonContainer ${styles.formButtonContainer}`,
-                           clickHandler: closeButtonClickHandler,
+                           clickListener: closeButtonClickHandler,
                            text: "Close",
                            type: "button",
                            buttonClassName: `${styles.formButton} closeButton`,

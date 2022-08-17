@@ -194,7 +194,7 @@ const ChangePasswordForm = (props: Props) => {
                         params={
                            {
                               containerClassName: `${styles.formButtonContainer}`,
-                              clickHandler: popupForm.setClickedButtonName,
+                              clickListener: popupForm.setClickedButtonName,
                               text: "Set new Password",
                               type: "submit",
                               buttonClassName: `${styles.formButton} setNewPasswordButton`,
@@ -207,7 +207,7 @@ const ChangePasswordForm = (props: Props) => {
                         params={
                            {
                               containerClassName: `closeButtonContainer ${styles.formButtonContainer}`,
-                              clickHandler: (e) => { popupForm.hideEditorStyle(); popupForm.setClickedButtonName(e) },
+                              clickListener: (e) => { popupForm.hideEditorStyle(); popupForm.setClickedButtonName(e) },
                               text: "Close",
                               type: "button",
                               buttonClassName: `${styles.formButton} closeButton`,

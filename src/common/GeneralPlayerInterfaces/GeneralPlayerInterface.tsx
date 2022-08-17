@@ -1,8 +1,10 @@
+import { AppContext } from 'App';
 import { audioPlayerApi } from 'common/AudioPlayer/API/audioPlayerAPI';
 import PlayerInterface from 'common/AudioPlayer/PlayerInterface';
 import { audioPlayerActions, getPlayerStatus, getShowAudioPlayer } from 'common/AudioPlayer/redux/audioPlayerReducer';
 import { useAppSelector } from 'hooks/redux';
 import { useHoverAndTouchClassNames } from 'hooks/useHoverAndTouchClassNames';
+import { useContext } from 'react';
 import { useAppDispatch } from '../../hooks/redux';
 
 
@@ -24,6 +26,7 @@ const GeneralPlayerInterface = (props: Props) => {
    const playerStatus = useAppSelector(getPlayerStatus("general"));
    const showAudioPlayer = useAppSelector(getShowAudioPlayer("general"));
    const dispatch = useAppDispatch();
+   const appContext = useContext(AppContext);
    const playerStateAPI = new audioPlayerApi(dispatch, audioPlayerActions, "general");
    const hideIconHoverAndTouchClassNames = useHoverAndTouchClassNames(props.styles.hover, props.styles.touch);
 
@@ -34,6 +37,7 @@ const GeneralPlayerInterface = (props: Props) => {
 
       playerStateAPI.setShowAudioPlayer(false);
       playerStateAPI.setIsPlaying(false);
+      appContext.setShowAudioPlayer!(false);
    }
 
 

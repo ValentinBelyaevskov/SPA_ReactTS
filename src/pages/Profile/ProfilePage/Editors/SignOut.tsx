@@ -77,7 +77,7 @@ const SignOut = (props: Props) => {
                   params={
                      {
                         containerClassName: `signOutButtonContainer ${styles.formButtonContainer}`,
-                        clickHandler: saveButtonClickListener,
+                        clickListener: saveButtonClickListener,
                         text: "Sign out",
                         type: "submit",
                         color: "red",
@@ -90,7 +90,7 @@ const SignOut = (props: Props) => {
                   params={
                      {
                         containerClassName: `closeButtonContainer ${styles.formButtonContainer}`,
-                        clickHandler: closeButtonClickListener,
+                        clickListener: closeButtonClickListener,
                         text: "Close",
                         type: "button",
                         buttonClassName: `${styles.formButton} closeButton`,

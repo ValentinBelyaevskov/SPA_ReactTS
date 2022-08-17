@@ -81,27 +81,12 @@ const Wall = (props: Props) => {
 
    useEffect(() => {
       if (allPostCompsHaveBeenLoaded) {
-         // !
-         console.log(
-            profilePageScroll[1],
-            document.documentElement.clientHeight,
-            profilePageScroll[1] + document.documentElement.clientHeight,
-            document.documentElement.scrollHeight
-         );
-         // !
-
          if (!scrollHasBeenSet) {
             if (profilePageScroll[1] + document.documentElement.clientHeight <= document.documentElement.scrollHeight) {
                document.documentElement.scrollTop = profilePageScroll[1];
                setScrollHasBeenSet(true);
-               // !
-               console.log("document.documentElement.scrollTop: ", profilePageScroll[1]);
-               // !
 
             } else {
-               // !
-               console.log("document.documentElement.scrollTop: ", document.documentElement.scrollHeight - document.documentElement.clientHeight);
-               // !
                document.documentElement.scrollTop = document.documentElement.scrollHeight - document.documentElement.clientHeight;
 
                if (uploadedPostIds.length === profileInfo.posts.length) {
@@ -110,10 +95,6 @@ const Wall = (props: Props) => {
             }
 
          } else {
-            // !
-            console.log("setProfilePageScroll: ", scroll.value);
-            // !
-
             dispatch(profileActions.setProfilePageScroll(scroll.value));
          }
 
@@ -182,6 +163,12 @@ const Wall = (props: Props) => {
    }, [uploadedPostIds.length, postsLoadInfo.loading, postsLoadInfo.loaded])
 
 
+
+   // !
+   useEffect(() => {
+      console.log("Wall", postsLoadInfo.error, uploadedPostIds.length, uploadedPostIds.length);
+   }, [postsLoadInfo.error, uploadedPostIds.length, uploadedPostIds.length])
+   // !
 
 
    return !postsLoadInfo.error && uploadedPostIds.length > 0 && uploadedPostIds.length
