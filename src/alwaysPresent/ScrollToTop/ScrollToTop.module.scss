@@ -1,0 +1,35 @@
+.scrollToTopButtonContainer {
+   position: fixed;
+   z-index: 9999;
+
+   bottom: 25px;
+   left: calc(50% + 310px);
+
+
+
+   .scrollToTopButton {
+      height: 40px;
+      padding: 10px;
+
+      border-radius: 50%;
+
+      .scrollToTopButtonArrow {
+         display: block;
+         margin-top: -3px;
+      }
+   }
+}
+
+
+@media (max-width: 950px) {
+   .scrollToTopButtonContainer {
+      left: 575px;
+   }
+}
+
+@media (max-width: 750px) {
+   .scrollToTopButtonContainer {
+      left: auto;
+      right: 25px;
+   }
+}

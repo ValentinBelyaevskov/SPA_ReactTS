@@ -177,7 +177,7 @@ const LoginForm = () => {
                <SignInButton
                   type="submit"
                   name="resetPassword"
-                  clickHandler={() => {
+                  clickListener={() => {
                      setClickedButton('resetPassword');
                      setResetPasswordWasClicked(true);
                   }}
@@ -216,7 +216,7 @@ const LoginForm = () => {
                   <SignInButton
                      type="submit"
                      name={"login"}
-                     clickHandler={() => {
+                     clickListener={() => {
                         setClickedButton('login')
                      }}
                   />
@@ -230,7 +230,7 @@ const LoginForm = () => {
                   <SignInButton
                      type="button"
                      name="createAccountBtn"
-                     clickHandler={() => {
+                     clickListener={() => {
                         dispatch(profileActions.setSignInMode("createAccount"))
                         clearErrors();
                         profileActions.setErrors({ error: undefined, errorType: undefined })
@@ -240,7 +240,7 @@ const LoginForm = () => {
                   <SignInButton
                      type="button"
                      name="loginAsGuestMode"
-                     clickHandler={() => {
+                     clickListener={() => {
                         if (profileMode === "guestSignIn") {
                            dispatch(profileActions.setProfileMode("loggedInAsGuest"))
                         } else {

@@ -1,9 +1,9 @@
 import styles from './DeletePost.module.scss';
-import { useEffect } from 'react';
 import { usePopupForm } from 'hooks/usePopup/usePopupForm';
 import Button from 'common/Button/Button';
 import { useAppDispatch, useAppSelector } from 'hooks/redux';
-import { deletePost, getLoadInfo, getProfileMode, logout, profileActions } from 'pages/Profile/redux/profileReducer';
+import { deletePost, getLoadInfo, profileActions } from 'pages/Profile/redux/profileReducer';
+import { useEffect, useState } from 'react';
 
 
 
@@ -23,12 +23,12 @@ const DeletePost = (props: Props) => {
    const loadInfo = useAppSelector(getLoadInfo);
    const dispatch = useAppDispatch();
    const popupForm = usePopupForm(endEditingCallback);
+   const [popupHasBeenMounted, setPopupHasBeenMounted] = useState<boolean>(false);
 
 
 
 
    function endEditingCallback(): void {
-      console.log(popupForm.clickedButton)
       if (popupForm.clickedButton) {
          if (popupForm.clickedButton.includes("closeButton")) {
             props.finishShowingThePopup();
@@ -52,6 +52,8 @@ const DeletePost = (props: Props) => {
    }
 
    const closeButtonClickListener = (e: React.MouseEvent) => {
+      if (!popupHasBeenMounted) return;
+
       popupForm.hideEditorStyle();
       popupForm.setClickedButtonName(e);
 
@@ -67,7 +69,12 @@ const DeletePost = (props: Props) => {
 
 
    return (
-      <div style={popupForm.editorStyle} onTransitionEnd={popupForm.transitionEndListener} className={`${styles.editor} ${styles.signOutEditor} editor`}>
+      <div
+         style={popupForm.editorStyle}
+         onAnimationEndCapture={() => setPopupHasBeenMounted(true)}
+         onTransitionEnd={popupForm.transitionEndListener}
+         className={`${styles.editor} ${styles.signOutEditor} editor`}
+      >
          <div className={styles.signOutBody}>
             {
                loadInfo.loading && (
@@ -90,7 +97,7 @@ const DeletePost = (props: Props) => {
                   params={
                      {
                         containerClassName: `signOutButtonContainer ${styles.formButtonContainer}`,
-                        clickHandler: deleteButtonClickListener,
+                        clickListener: deleteButtonClickListener,
                         text: "DeletePost Post",
                         type: "submit",
                         color: "red",
@@ -103,7 +110,7 @@ const DeletePost = (props: Props) => {
                   params={
                      {
                         containerClassName: `closeButtonContainer ${styles.formButtonContainer}`,
-                        clickHandler: closeButtonClickListener,
+                        clickListener: closeButtonClickListener,
                         text: "Close",
                         type: "button",
                         buttonClassName: `${styles.formButton} closeButton`,

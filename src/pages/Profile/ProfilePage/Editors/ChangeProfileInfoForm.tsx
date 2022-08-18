@@ -112,6 +112,7 @@ const ChangeProfileInfoForm = (props: Props) => {
    const profile = useAppSelector(getProfileInfo);
    const loadInfo = useAppSelector(getLoadInfo);
    const popupForm = usePopupForm(props.finishShowingThePopup);
+   const [popupHasBeenMounted, setPopupHasBeenMounted] = useState<boolean>(false);
    const [iconsLoaded, setIconsLoaded] = useState<boolean>(false);
    const [dayOfBirth, setDayOfBirth] = useState<string>(profile.dateOfBirth ? profile.dateOfBirth.split(" ")[1].slice(0, -1) : "");
    const [mounthOfBirth, setMounthOfBirth] = useState<string>(profile.dateOfBirth ? profile.dateOfBirth.split(" ")[0] : "");
@@ -198,6 +199,15 @@ const ChangeProfileInfoForm = (props: Props) => {
    }
 
 
+   const closeButtonClickListener = (e: React.MouseEvent): void => {
+      if (!popupHasBeenMounted) return;
+
+      popupForm.hideEditorStyle();
+      popupForm.setClickedButtonName(e);
+   }
+
+
+
 
    useEffect(() => {
       const ids: (["country_id" | "region_id" | "city_id", number | undefined])[] = [
@@ -218,8 +228,14 @@ const ChangeProfileInfoForm = (props: Props) => {
 
 
 
+
    return (
-      <div style={popupForm.editorStyle} onTransitionEnd={popupForm.transitionEndListener} className={`${styles.editor} ${styles.changeProfileInfoEditor} editor`}>
+      <div
+         style={popupForm.editorStyle}
+         onAnimationEndCapture={() => setPopupHasBeenMounted(true)}
+         onTransitionEnd={popupForm.transitionEndListener}
+         className={`${styles.editor} ${styles.changeProfileInfoEditor} editor`}
+      >
          {
             iconsLoaded ?
                <div className={`${styles.changeProfileInfoFormContainer} ${styles.formContainer}`}>
@@ -354,7 +370,7 @@ const ChangeProfileInfoForm = (props: Props) => {
                            params={
                               {
                                  containerClassName: `saveButtonContainer ${styles.formButtonContainer}`,
-                                 clickHandler: popupForm.setClickedButtonName,
+                                 clickListener: popupForm.setClickedButtonName,
                                  text: "Save",
                                  type: "submit",
                                  disabled: !isValid,
@@ -367,7 +383,7 @@ const ChangeProfileInfoForm = (props: Props) => {
                            params={
                               {
                                  containerClassName: `closeButtonContainer ${styles.formButtonContainer}`,
-                                 clickHandler: (e) => { popupForm.hideEditorStyle(); popupForm.setClickedButtonName(e) },
+                                 clickListener: closeButtonClickListener,
                                  text: "Close",
                                  type: "button",
                                  buttonClassName: `${styles.formButton} closeButton`,

@@ -40,6 +40,7 @@ const SelectAndEditAnImageForm = (props: Props) => {
    const fileLabelButtonHoverAndTouchClassNames = useHoverAndTouchClassNames(styles.hover, styles.touch);
    const [errorString, setErrorString] = useState<"The file must be an image" | undefined>(undefined);
    const popupForm = usePopupForm(props.finishShowingThePopup);
+   const [popupHasBeenMounted, setPopupHasBeenMounted] = useState<boolean>(false);
    const {
       aspect,
       crop,
@@ -79,6 +80,8 @@ const SelectAndEditAnImageForm = (props: Props) => {
    }
 
    const closeButtonClickHandler = (e: React.MouseEvent): void => {
+      if (!popupHasBeenMounted) return;
+
       popupForm.hideEditorStyle();
       popupForm.setClickedButtonName(e);
    }
@@ -149,7 +152,13 @@ const SelectAndEditAnImageForm = (props: Props) => {
 
 
    return (
-      <div style={popupForm.editorStyle} onTransitionEnd={popupForm.transitionEndListener} className={`${styles.editor} ${styles.changeAvatarEditor} ${editorWithPreviewClassName}`}>
+      <div
+         style={popupForm.editorStyle}
+         onAnimationEndCapture={() => setPopupHasBeenMounted(true)}
+         onTransitionEnd={popupForm.transitionEndListener}
+         className={`${styles.editor}
+         ${styles.changeAvatarEditor} ${editorWithPreviewClassName}`}
+      >
          <div className={`${styles.SelectAndEditAnImageFormContainer} ${styles.formContainer}`}>
             {
                (props.loadInfo && props.loadInfo.loading)
@@ -215,7 +224,7 @@ const SelectAndEditAnImageForm = (props: Props) => {
                      params={
                         {
                            containerClassName: `${styles.formButtonContainer}`,
-                           clickHandler: () => { },
+                           clickListener: () => { },
                            text: props.uploadButtonText,
                            disabled:
                               (
@@ -238,7 +247,7 @@ const SelectAndEditAnImageForm = (props: Props) => {
                      params={
                         {
                            containerClassName: `closeButtonContainer ${styles.formButtonContainer}`,
-                           clickHandler: closeButtonClickHandler,
+                           clickListener: closeButtonClickHandler,
                            text: "Close",
                            type: "button",
                            buttonClassName: `${styles.formButton} closeButton`,

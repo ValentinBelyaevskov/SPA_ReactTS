@@ -38,6 +38,7 @@ const VideoUploader = (props: Props) => {
    const [videoSizes, setVideoSizes] = useState<[number, number]>([0, 0]);
    const fileLabelButtonHoverAndTouchClassNames = useHoverAndTouchClassNames(styles.hover, styles.touch);
    const popupForm = usePopupForm(props.finishShowingThePopup);
+   const [popupHasBeenMounted, setPopupHasBeenMounted] = useState<boolean>(false);
    const fieldsRef = useRef<HTMLDivElement>(null);
    const [videoStyle, setVideoStyle] = useState<VideoStyle>({});
    const resize = useScrollOrWindowSize("resize");
@@ -77,6 +78,8 @@ const VideoUploader = (props: Props) => {
    }
 
    const closeButtonClickHandler = (e: React.MouseEvent): void => {
+      if (!popupHasBeenMounted) return;
+
       popupForm.hideEditorStyle();
       popupForm.setClickedButtonName(e);
    }
@@ -171,7 +174,12 @@ const VideoUploader = (props: Props) => {
 
 
    return (
-      <div style={popupForm.editorStyle} onTransitionEnd={popupForm.transitionEndListener} className={`${styles.editor} ${styles.changeAvatarEditor}`}>
+      <div
+         style={popupForm.editorStyle}
+         onAnimationEndCapture={() => setPopupHasBeenMounted(true)}
+         onTransitionEnd={popupForm.transitionEndListener}
+         className={`${styles.editor} ${styles.changeAvatarEditor}`}
+      >
          <div className={`${styles.formContainer}`}>
             <form id="updloadAvatar" className={styles.form} onSubmit={handleSubmit(onSubmit)}>
                <h2 className={styles.title}>
@@ -225,7 +233,7 @@ const VideoUploader = (props: Props) => {
                      params={
                         {
                            containerClassName: `${styles.formButtonContainer}`,
-                           clickHandler: () => { },
+                           clickListener: () => { },
                            text: props.uploadButtonText,
                            disabled:
                               videoFile && isTheFileAnVideo(videoFile)
@@ -240,7 +248,7 @@ const VideoUploader = (props: Props) => {
                      params={
                         {
                            containerClassName: `closeButtonContainer ${styles.formButtonContainer}`,
-                           clickHandler: closeButtonClickHandler,
+                           clickListener: closeButtonClickHandler,
                            text: "Close",
                            type: "button",
                            buttonClassName: `${styles.formButton} closeButton`,

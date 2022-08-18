@@ -45,6 +45,8 @@ export type Post = {
    imagesAndVideos: ImagesAndVideosItem[],
    files: FilesItem[],
    audios: AudiosItem[],
+   likes: string[],
+   comments: string[]
    created: number
 }
 

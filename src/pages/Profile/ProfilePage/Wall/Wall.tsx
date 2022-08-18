@@ -6,13 +6,14 @@ import { useContext, useEffect, useRef, useState } from 'react';
 import { useScrollOrWindowSize } from '../../../../hooks/useScrollOrWindowSize';
 import { useAppDispatch } from '../../../../hooks/redux';
 import { ErrorGettingPost } from './ErrorGettingPost';
-import { AppContext } from 'App';
+import { AppContext, PopupContext } from 'App';
 
 
 
 
 type Props = {
 }
+
 
 export type PostLoadingStatuses = {
    [index: string]: boolean
@@ -24,6 +25,7 @@ export type PostLoadingStatuses = {
 const Wall = (props: Props) => {
    const dispatch = useAppDispatch();
    const appContext = useContext(AppContext);
+   const popupContext = useContext(PopupContext);
    const profileInfo = useAppSelector(getProfileInfo);
    const profileInfoMode = useAppSelector(getProfileInfoMode);
    const uploadedPostIds = useAppSelector(getUploadedPostIds);
@@ -44,7 +46,7 @@ const Wall = (props: Props) => {
    const updatePostLoadingStatuses = (id: string, value: boolean): void => {
       const loadingStatuses = { ...postCompLoadingStatuses.current };
       loadingStatuses[id] = value;
-      postCompLoadingStatuses.current = { ...loadingStatuses }
+      postCompLoadingStatuses.current = { ...loadingStatuses };
 
 
       const loadingStatusEqualToFalse = uploadedPostIds.find(id => loadingStatuses[id] === false);
@@ -111,7 +113,19 @@ const Wall = (props: Props) => {
 
 
    useEffect(() => {
+      // console.log(
+      //    "popupName: ",
+      //    popupContext.popupName,
+      //    "offsetHeight: ",
+      //    document.documentElement.offsetHeight,
+      //    "scrollHeight: ",
+      //    document.documentElement.scrollHeight,
+      //    "scroll: ",
+      //    scroll.value[1],
+      // );
+
       if (
+         // popupContext.popupName === undefined
          allPostCompsHaveBeenLoaded
          && profileInfoMode !== 'showingAPopup'
          && !postsLoadInfo.loading
@@ -120,10 +134,12 @@ const Wall = (props: Props) => {
          && uploadedPostIds.length >= 3
          && uploadedPostIds.length < profileInfo.posts.length
       ) {
+
+
          let scrollBottom = document.documentElement.scrollHeight - (resize.value[1] + scroll.value[1]);
 
 
-         if (scrollBottom < 200) {
+         if (scrollBottom < 200 && scroll.value[1] > 0) {
             dispatch(getPosts(
                {
                   allPostIdsLength: profileInfo.posts.length,
@@ -140,7 +156,8 @@ const Wall = (props: Props) => {
       allPostCompsHaveBeenLoaded,
       uploadedPostIds.length,
       profileInfo.posts.length,
-      profileInfoMode
+      profileInfoMode,
+      popupContext.popupName
    ])
 
 

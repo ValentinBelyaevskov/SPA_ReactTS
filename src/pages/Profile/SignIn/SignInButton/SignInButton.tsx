@@ -6,12 +6,12 @@ import styles from './SignInButton.module.scss'
 type Props = {
    type: "submit" | "button",
    name: "login" | "loginAsGuestMode" | "createAccountBtn" | "register" | "resetPassword",
-   clickHandler: () => void
+   clickListener: () => void
    isValid?: boolean
 }
 
 type SignInButton = {
-   clickHandler: () => void,
+   clickListener: () => void,
    text: "Create account" | "Login" | "Login as guest" | "Register" | "Reset Password" | undefined,
    type: "button" | "submit",
    containerClassName: string,
@@ -25,7 +25,7 @@ const SignInButton = (props: Props) => {
    const buttonParams: SignInButton = {
       buttonStyle: { padding: "4px 15px" },
 
-      clickHandler: props.clickHandler,
+      clickListener: props.clickListener,
 
       containerClassName: `${styles[props.name]} ${styles.buttonContainer}`,
 

@@ -79,6 +79,7 @@ const ProfileInfo = (props: Props) => {
       } else if (profileInfoRef.current!.classList.length === 4) {
          setShowFullInfo(true);
       }
+
    }, [loadInfo.loaded, profileInfoClassname, profileInfoRef.current])
 
 
@@ -149,7 +150,7 @@ const ProfileInfo = (props: Props) => {
             params={
                {
                   text: showMoreButtonText,
-                  clickHandler: showMoreClickListener,
+                  clickListener: showMoreClickListener,
                   containerClassName: styles.showMoreButtonContainer,
                   buttonClassName: `${showButtonMoreClassName} ${showMorePseudoClassNames.className}`,
                   buttonStyle: showMoreButtonStyle,

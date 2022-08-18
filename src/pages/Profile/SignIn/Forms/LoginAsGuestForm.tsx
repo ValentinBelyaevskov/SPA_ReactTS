@@ -71,7 +71,7 @@ const LoginAsGuestForm = () => {
                   <SignInButton
                      type="submit"
                      name={"loginAsGuestMode"}
-                     clickHandler={() => { }}
+                     clickListener={() => { }}
                   />
                </div>
             </div>
@@ -83,7 +83,7 @@ const LoginAsGuestForm = () => {
                   <SignInButton
                      type="button"
                      name="createAccountBtn"
-                     clickHandler={() => {
+                     clickListener={() => {
                         dispatch(profileActions.setSignInMode("createAccount"))
                         clearErrors();
                         profileActions.setErrors({ error: undefined, errorType: undefined })
@@ -92,7 +92,7 @@ const LoginAsGuestForm = () => {
                   <SignInButton
                      type="button"
                      name="login"
-                     clickHandler={() => {
+                     clickListener={() => {
                         dispatch(profileActions.setSignInMode("login"))
                         clearErrors();
                         profileActions.setErrors({ error: undefined, errorType: undefined })

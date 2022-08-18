@@ -23,7 +23,7 @@ type Props = {
 export type ButtonConfig = {
    element: "img" | "slider" | "button"
    name: "play" | "prev" | "next" | "soundToggler" | "volume" | "playbackRate"
-   clickHandler?: () => void
+   clickListener?: () => void
    onChange?: () => void
    percentage?: number
    prevPercentage?: number
@@ -106,27 +106,27 @@ const ControlsPanel = (props: Props) => {
 
    const buttons: ButtonConfig[] = [
       {
-         clickHandler: playClickHandler,
+         clickListener: playClickHandler,
          element: "img",
          name: "play",
          togglerValue: state.isPlaying
       },
       {
-         clickHandler: () => switchToPrevTrack(state.activeTrackId, audioFileIds),
+         clickListener: () => switchToPrevTrack(state.activeTrackId, audioFileIds),
          element: "img",
          name: "prev",
          activeTrackId: state.activeTrackId,
          fileIdsLength: audioFileIds.length
       },
       {
-         clickHandler: () => switchToNextTrack(state.activeTrackId, audioFileIds),
+         clickListener: () => switchToNextTrack(state.activeTrackId, audioFileIds),
          element: "img",
          name: "next",
          activeTrackId: state.activeTrackId,
          fileIdsLength: audioFileIds.length
       },
       {
-         clickHandler: soundTogglerClickHandler,
+         clickListener: soundTogglerClickHandler,
          element: "img",
          name: "soundToggler",
          togglerValue: commonVolumeSliderProps.soundTogglerValue,
@@ -143,7 +143,7 @@ const ControlsPanel = (props: Props) => {
          showPlaylist: state.showPlaylist
       },
       {
-         clickHandler: speedClickHandler,
+         clickListener: speedClickHandler,
          element: "button",
          name: "playbackRate",
          text: "2X",
