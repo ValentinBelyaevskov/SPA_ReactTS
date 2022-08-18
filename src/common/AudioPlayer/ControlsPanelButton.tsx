@@ -23,7 +23,7 @@ const ControlsPanelButton = (props: Props) => {
 
 
    const buttonClickHandler = () => {
-      config.clickHandler!();
+      config.clickListener!();
       buttonHoverAndTouchClassNames.clickListener();
    }
 

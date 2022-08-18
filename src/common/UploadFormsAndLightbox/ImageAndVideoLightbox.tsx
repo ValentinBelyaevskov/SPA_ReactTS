@@ -40,6 +40,7 @@ const ImageAndVideoLightbox = (props: Props) => {
    const [itemIndex, setItemIndex] = useState<number>(props.itemIndex);
    const resize = useScrollOrWindowSize("resize");
    const popupForm = usePopupForm(props.finishShowingThePopup);
+   const [popupHasBeenMounted, setPopupHasBeenMounted] = useState<boolean>(false);
    const closeButtonHoverAndTouchClassNames = useHoverAndTouchClassNames(styles.hover, styles.touch);
    const leftArrowHoverAndTouchClassNames = useHoverAndTouchClassNames(styles.hover, styles.touch);
    const rightArrowHoverAndTouchClassNames = useHoverAndTouchClassNames(styles.hover, styles.touch);
@@ -51,6 +52,8 @@ const ImageAndVideoLightbox = (props: Props) => {
 
 
    const closeButtonClickHandler = (e: React.MouseEvent): void => {
+      if (!popupHasBeenMounted) return;
+
       closeButtonHoverAndTouchClassNames.clickListener();
       popupForm.hideEditorStyle();
       popupForm.setClickedButtonName(e);
@@ -154,7 +157,12 @@ const ImageAndVideoLightbox = (props: Props) => {
 
 
    return (
-      <div className={styles.lightbox} style={popupForm.editorStyle} onTransitionEnd={popupForm.transitionEndListener}>
+      <div
+         onAnimationEndCapture={() => setPopupHasBeenMounted(true)}
+         className={styles.lightbox}
+         style={popupForm.editorStyle}
+         onTransitionEnd={popupForm.transitionEndListener}
+      >
          <div
             className={`${styles.hideIcon} ${closeButtonHoverAndTouchClassNames.className}  headerControlsElement unselectable`}
             onClick={closeButtonClickHandler}
@@ -201,7 +209,7 @@ const ImageAndVideoLightbox = (props: Props) => {
                   <div className={styles.videoContainer} style={contentStyle}>
                      <video
                         className={`${styles.video} ${moveUpClassName}`}
-                        style={profileContentLoading ? {} : { zIndex: "9997"}}
+                        style={profileContentLoading ? {} : { zIndex: "9997" }}
                         width={contentStyle.width}
                         height={contentStyle.height}
                         onPlay={props.playVideoListener}

@@ -30,6 +30,7 @@ const FileUploader = (props: Props) => {
    const [textFile, setTextFile] = useState<File | null>(null);
    const fileLabelButtonHoverAndTouchClassNames = useHoverAndTouchClassNames(styles.hover, styles.touch);
    const popupForm = usePopupForm(props.finishShowingThePopup);
+   const [popupHasBeenMounted, setPopupHasBeenMounted] = useState<boolean>(false);
    const fieldsRef = useRef<HTMLDivElement>(null);
    const [errorString, setErrorString] = useState<string | undefined>(undefined);
 
@@ -57,6 +58,8 @@ const FileUploader = (props: Props) => {
 
 
    const closeButtonClickHandler = (e: React.MouseEvent): void => {
+      if (!popupHasBeenMounted) return;
+
       popupForm.hideEditorStyle();
       popupForm.setClickedButtonName(e);
    }
@@ -89,7 +92,12 @@ const FileUploader = (props: Props) => {
 
 
    return (
-      <div style={popupForm.editorStyle} onTransitionEnd={popupForm.transitionEndListener} className={`${styles.editor} ${styles.changeAvatarEditor}`}>
+      <div
+         style={popupForm.editorStyle}
+         onAnimationEndCapture={() => setPopupHasBeenMounted(true)}
+         onTransitionEnd={popupForm.transitionEndListener}
+         className={`${styles.editor} ${styles.changeAvatarEditor}`}
+      >
          <div className={`${styles.formContainer}`}>
             <form id="updloadAvatar" className={styles.form}>
                <h2 className={styles.title}>
@@ -119,7 +127,7 @@ const FileUploader = (props: Props) => {
                      params={
                         {
                            containerClassName: `closeButtonContainer ${styles.formButtonContainer}`,
-                           clickHandler: closeButtonClickHandler,
+                           clickListener: closeButtonClickHandler,
                            text: "Close",
                            type: "button",
                            buttonClassName: `${styles.formButton} closeButton`,

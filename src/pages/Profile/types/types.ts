@@ -45,6 +45,8 @@ export type Post = {
    imagesAndVideos: ImagesAndVideosItem[],
    files: FilesItem[],
    audios: AudiosItem[],
+   likes: string[],
+   comments: string[]
    created: number
 }
 
@@ -197,4 +199,14 @@ export type DeletePostData = {
    postId: string
    profileId: string
    allPostIds: string[]
+}
+
+export type ClickResult = "like" | "cancelLike"
+
+export type LikeAPostData = {
+   calback: () => void
+   clickResult: ClickResult
+   likes: string[]
+   profileId: string
+   postId: string
 }

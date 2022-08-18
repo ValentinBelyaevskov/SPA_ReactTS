@@ -28,6 +28,8 @@ import { DataType, usePostLoadingStatus } from './hooks/usePostLoadingStatus';
 import { PostLoadingStatuses } from 'pages/Profile/ProfilePage/Wall/Wall';
 import { useHoverAndTouchClassNames } from 'hooks/useHoverAndTouchClassNames';
 import DeletePost from './DeletePost/DeletePost';
+import LikeButton from './LikeButton';
+import CommentButton from './CommentButton';
 
 
 
@@ -205,7 +207,7 @@ const PostEditPanel = (props: Props) => {
       dispatch(profileActions.setProfileInfoMode("pageView"));
    }
 
-   
+
    const finishShowingDeleteWindow = (): void => {
       popupContext.setPopup!(undefined);
       popupContext.setPopupName!(undefined);
@@ -387,8 +389,6 @@ const PostEditPanel = (props: Props) => {
             || (props.mode === 'view' && popupContext.popupName === props.post!.objectId)
          )
       ) {
-         console.log("popupContext.setPopup!(undefined);")
-
          popupContext.setPopup!(undefined);
       }
    }, [popupType, sliderStartIndex, imagesAndVideos.length, props.mode, props.post, popupContext.popupName]);
@@ -401,13 +401,6 @@ const PostEditPanel = (props: Props) => {
          setContentIconsPromptText(undefined);
       };
    }, [imagesAndVideos.length, files.length, audioFiles.length, activeContentIcon]);
-
-
-   useEffect(() => {
-      if (props.post && props.post.objectId === "4F000088-90A3-48B6-80B0-3C88B10EE56D") {
-         console.log(popupContext.popupName, popupType)
-      }
-   }, [popupContext.popupName, popupType])
 
 
 
@@ -449,7 +442,7 @@ const PostEditPanel = (props: Props) => {
                                  params={
                                     {
                                        text: "Post",
-                                       clickHandler: postButtonClickHandler,
+                                       clickListener: postButtonClickHandler,
                                        changeStyleOnHover: true,
                                        containerClassName: styles.createAPostButtonContainer,
                                        buttonClassName: styles.createAPostButton,
@@ -565,6 +558,22 @@ const PostEditPanel = (props: Props) => {
                            )
                         }
                      </div>
+                     {
+                        props.mode === "view" && (
+                           <>
+                              <LikeButton
+                                 profileId={profile.objectId}
+                                 gridAreaStyle={styles.likes}
+                                 post={props.post!}
+                              />
+                              <CommentButton
+                                 profileId={profile.objectId}
+                                 gridAreaStyle={styles.comments}
+                                 post={props.post!}
+                              />
+                           </>
+                        )
+                     }
                   </div >
                )
                : null

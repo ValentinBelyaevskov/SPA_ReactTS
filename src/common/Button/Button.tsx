@@ -6,8 +6,8 @@ import { useEffect, useState } from 'react';
 
 type Params = {
    type?: "button" | "submit" | "reset" | undefined,
-   text: string | undefined,
-   clickHandler: ((arg: React.MouseEvent) => void) | (() => void),
+   text?: string,
+   clickListener: ((arg: React.MouseEvent) => void) | (() => void),
    mouseDownHandler?: ((arg: React.MouseEvent) => void) | (() => void),
    mouseUpHandler?: ((arg: React.MouseEvent) => void) | (() => void),
    mouseEnterHandler?: ((arg: React.MouseEvent) => void) | (() => void),
@@ -71,7 +71,7 @@ const Button = (props: Props) => {
    }
 
    const onClick = (e: React.MouseEvent) => {
-      props.params.clickHandler(e);
+      props.params.clickListener(e);
       buttonHoverAndTouchClassNames.clickListener();
    }
 

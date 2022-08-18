@@ -29,6 +29,7 @@ const ChangePasswordForm = (props: Props) => {
    const profile = useAppSelector(getProfileInfo);
    const loadInfo = useAppSelector(getLoadInfo);
    const popupForm = usePopupForm(endEditingCallback);
+   const [popupHasBeenMounted, setPopupHasBeenMounted] = useState<boolean>(false);
    const currentPasswordVisibility = useInputVisibilitySwitch("./icons/hidePasswordIcon.svg", "./icons/showPasswordIcon.svg");
    const newPasswordVisibility = useInputVisibilitySwitch("./icons/hidePasswordIcon.svg", "./icons/showPasswordIcon.svg");
    const currentPasswordIconPseudoClassNames = useHoverAndTouchClassNames(styles.hover, styles.touch);
@@ -87,10 +88,24 @@ const ChangePasswordForm = (props: Props) => {
       newPasswordVisibility.iconClickListener();
    }
 
+   const closeButtonClickListener = (e: React.MouseEvent): void => {
+      if (!popupHasBeenMounted) return;
+
+      popupForm.hideEditorStyle();
+      popupForm.setClickedButtonName(e);
+   }
+
+
+
 
 
    return (
-      <div style={popupForm.editorStyle} onTransitionEnd={popupForm.transitionEndListener} className={`${styles.editor} ${styles.changePasswordEditor}`}>
+      <div
+         style={popupForm.editorStyle}
+         onAnimationEndCapture={() => setPopupHasBeenMounted(true)}
+         onTransitionEnd={popupForm.transitionEndListener}
+         className={`${styles.editor} ${styles.changePasswordEditor}`}
+      >
          {editIconsLoaded ?
             <div className={`${styles.changePasswordFormContainer} ${styles.formContainer}`}>
                {
@@ -194,7 +209,7 @@ const ChangePasswordForm = (props: Props) => {
                         params={
                            {
                               containerClassName: `${styles.formButtonContainer}`,
-                              clickHandler: popupForm.setClickedButtonName,
+                              clickListener: popupForm.setClickedButtonName,
                               text: "Set new Password",
                               type: "submit",
                               buttonClassName: `${styles.formButton} setNewPasswordButton`,
@@ -207,7 +222,7 @@ const ChangePasswordForm = (props: Props) => {
                         params={
                            {
                               containerClassName: `closeButtonContainer ${styles.formButtonContainer}`,
-                              clickHandler: (e) => { popupForm.hideEditorStyle(); popupForm.setClickedButtonName(e) },
+                              clickListener: closeButtonClickListener,
                               text: "Close",
                               type: "button",
                               buttonClassName: `${styles.formButton} closeButton`,

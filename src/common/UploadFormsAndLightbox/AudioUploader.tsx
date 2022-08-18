@@ -43,6 +43,7 @@ const AudioUploader = (props: Props) => {
       setEditingCompleted(true);
       if (showAudioPlayer) playerStateAPI.resetPlayer();
    });
+   const [popupHasBeenMounted, setPopupHasBeenMounted] = useState<boolean>(false);
    const fieldsRef = useRef<HTMLDivElement>(null);
    const [errorString, setErrorString] = useState<"The file must be an video" | undefined>(undefined);
 
@@ -74,6 +75,8 @@ const AudioUploader = (props: Props) => {
 
 
    const closeButtonClickHandler = (e: React.MouseEvent): void => {
+      if (!popupHasBeenMounted) return;
+
       popupForm.hideEditorStyle();
       popupForm.setClickedButtonName(e);
    }
@@ -194,7 +197,12 @@ const AudioUploader = (props: Props) => {
 
 
    return (
-      <div style={popupForm.editorStyle} onTransitionEnd={popupForm.transitionEndListener} className={`${styles.editor} ${styles.changeAvatarEditor}`}>
+      <div
+         style={popupForm.editorStyle}
+         onAnimationEndCapture={() => setPopupHasBeenMounted(true)}
+         onTransitionEnd={popupForm.transitionEndListener}
+         className={`${styles.editor} ${styles.changeAvatarEditor}`}
+      >
          <div className={`${styles.SelectAndEditAnImageFormContainer} ${styles.formContainer}`}>
             <form id="updloadAvatar" className={styles.form} onSubmit={handleSubmit(onSubmit)}>
                <h2 className={styles.title}>
@@ -247,7 +255,7 @@ const AudioUploader = (props: Props) => {
                      params={
                         {
                            containerClassName: `${styles.formButtonContainer}`,
-                           clickHandler: () => { },
+                           clickListener: () => { },
                            text: props.uploadButtonText,
                            disabled:
                               audioFile && isTheFileAnAudio(audioFile)
@@ -262,7 +270,7 @@ const AudioUploader = (props: Props) => {
                      params={
                         {
                            containerClassName: `closeButtonContainer ${styles.formButtonContainer}`,
-                           clickHandler: closeButtonClickHandler,
+                           clickListener: closeButtonClickHandler,
                            text: "Close",
                            type: "button",
                            buttonClassName: `${styles.formButton} closeButton`,

@@ -205,7 +205,7 @@ const CreateAccountForm = () => {
                   <SignInButton
                      type="submit"
                      name="register"
-                     clickHandler={() => { }}
+                     clickListener={() => { }}
                   />
                </div>
             </div>
@@ -217,7 +217,7 @@ const CreateAccountForm = () => {
                   <SignInButton
                      type="button"
                      name="login"
-                     clickHandler={() => {
+                     clickListener={() => {
                         dispatch(profileActions.setSignInMode("login"))
                         clearErrors();
                         dispatch(profileActions.setErrors({ error: undefined, errorType: undefined }))
@@ -226,7 +226,7 @@ const CreateAccountForm = () => {
                   <SignInButton
                      type="button"
                      name="loginAsGuestMode"
-                     clickHandler={() => {
+                     clickListener={() => {
                         if (progfileMode === "guestSignIn") {
                            dispatch(profileActions.setProfileMode("loggedInAsGuest"));
                         } else {

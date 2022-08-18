@@ -15,6 +15,7 @@ import { AudioPlayerContext, useAudioPlayer } from 'common/AudioPlayer/useAudioP
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { NotFound } from 'pages/NotFound/NotFound';
 import { useAppContext } from 'hooks/App/useAppContext';
+import ScrollToTop from 'alwaysPresent/ScrollToTop/ScrollToTop';
 
 
 
@@ -184,6 +185,7 @@ const App = (props: Props) => {
                         </div>
                         <AudioElements />
                         <GeneralPlayerInterface styles={styles} containerRef={audioPlayerContainerRef} />
+                        <ScrollToTop />
                      </AudioPlayerContext.Provider>
                   </ShowPopupContext.Provider>
                </PopupControlsContext.Provider>

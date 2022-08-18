@@ -24,7 +24,7 @@ const GuestPage = (props: Props) => {
          <div className={styles.signInButtons}>
             <Button params={
                {
-                  clickHandler: () => setSignInMode(true),
+                  clickListener: () => setSignInMode(true),
                   text: "Sign in",
                   type: 'button',
                   containerClassName: `${styles.login} ${styles.buttonContainer}`,

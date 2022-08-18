@@ -142,9 +142,6 @@ export const useAudiosBlock = (appContext: AppCtxt, resize: WindowSize, panelAud
 
    // ! 1)
    useEffect(() => {
-      if (panelAudioPlayerContext === "6E65700B-571A-4113-9206-6E832883BD99") {
-         console.log("setActiveTrackIdNumber, audioPlayerState.activeTrackId: ", audioPlayerState.activeTrackId, audioIds);
-      }
       if (audios[audioPlayerState.activeTrackId]) {
          setActiveTrackIdNumber(getActiveTrackIdNumber(audioPlayerState.activeTrackId));
       }
@@ -297,10 +294,6 @@ export const useAudiosBlock = (appContext: AppCtxt, resize: WindowSize, panelAud
 
 
    useEffect(() => {
-      if (panelAudioPlayerContext === generalAudioPlayerContext && showAudioPlayer) {
-         console.log(audioIds, audioPlayerState.activeTrackId);
-      }
-
       if (
          panelAudioPlayerContext === generalAudioPlayerContext
          && showAudioPlayer
@@ -324,10 +317,6 @@ export const useAudiosBlock = (appContext: AppCtxt, resize: WindowSize, panelAud
    // !
    // ! 2)
    useEffect(() => {
-      if (panelAudioPlayerContext === "6E65700B-571A-4113-9206-6E832883BD99") {
-         console.log("audioPlayerStateAPI.setActiveTrackId, activeTrackIdNumber: ", activeTrackIdNumber, Boolean(panelAudioPlayerContext === "6E65700B-571A-4113-9206-6E832883BD99"));
-      }
-
       if (audioIds[activeTrackIdNumber] && panelAudioPlayerContext === generalAudioPlayerContext) {
          audioPlayerStateAPI.setActiveTrackId(audioIds[activeTrackIdNumber]);
       }

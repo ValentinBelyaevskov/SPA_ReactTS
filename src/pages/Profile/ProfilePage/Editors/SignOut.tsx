@@ -1,7 +1,7 @@
 import styles from './Editor.module.scss';
 import { useAppSelector, useAppDispatch } from '../../../../hooks/redux';
 import { getLoadInfo, profileActions, logout, getProfileMode } from '../../redux/profileReducer';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Button } from '../../../../common';
 import { usePopupForm } from 'hooks/usePopup/usePopupForm';
 
@@ -18,6 +18,7 @@ const SignOut = (props: Props) => {
    const loadInfo = useAppSelector(getLoadInfo);
    const dispatch = useAppDispatch();
    const popupForm = usePopupForm(endEditingCallback);
+   const [popupHasBeenMounted, setPopupHasBeenMounted] = useState<boolean>(false);
    const profileLogout = () => dispatch(logout());
 
 
@@ -33,6 +34,8 @@ const SignOut = (props: Props) => {
    }
 
    const closeButtonClickListener = (e: React.MouseEvent) => {
+      if (!popupHasBeenMounted) return;
+
       popupForm.hideEditorStyle();
       popupForm.setClickedButtonName(e);
       dispatch(profileActions.setLoadInfo({
@@ -54,7 +57,12 @@ const SignOut = (props: Props) => {
 
 
    return (
-      <div style={popupForm.editorStyle} onTransitionEnd={popupForm.transitionEndListener} className={`${styles.editor} ${styles.signOutEditor} editor`}>
+      <div
+         style={popupForm.editorStyle}
+         onAnimationEndCapture={() => setPopupHasBeenMounted(true)}
+         onTransitionEnd={popupForm.transitionEndListener}
+         className={`${styles.editor} ${styles.signOutEditor} editor`}
+      >
          <div className={styles.signOutBody}>
             {
                loadInfo.loading && (
@@ -77,7 +85,7 @@ const SignOut = (props: Props) => {
                   params={
                      {
                         containerClassName: `signOutButtonContainer ${styles.formButtonContainer}`,
-                        clickHandler: saveButtonClickListener,
+                        clickListener: saveButtonClickListener,
                         text: "Sign out",
                         type: "submit",
                         color: "red",
@@ -90,7 +98,7 @@ const SignOut = (props: Props) => {
                   params={
                      {
                         containerClassName: `closeButtonContainer ${styles.formButtonContainer}`,
-                        clickHandler: closeButtonClickListener,
+                        clickListener: closeButtonClickListener,
                         text: "Close",
                         type: "button",
                         buttonClassName: `${styles.formButton} closeButton`,

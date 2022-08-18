@@ -43,6 +43,14 @@
       }
    }
 
+   .fileSize {
+      justify-self: end;
+
+      color: #959595;
+      font-size: 1.2rem;
+      line-height: 2rem;
+   }
+
    .notVisibleValue {
       display: block;
       height: fit-content;
@@ -60,6 +68,11 @@
    }
 
    &.edit {
+      .fileSize {
+         margin-right: 2.5rem;
+         margin-left: auto;
+      }
+
       .hideIcon {
          width: 1.1rem;
 

@@ -1,5 +1,5 @@
 import { useHoverAndTouchClassNames } from 'hooks/useHoverAndTouchClassNames';
-import styles from './FilesListItem.module.scss'
+import styles from './FilesListItem.module.scss';
 import { addContentButtonNames, icons } from './PostEditPanel';
 import NotVisibleParameterValue from 'common/NotVisibleParameterValue/NotVisibleParameterValue';
 import { useState } from 'react';
@@ -7,6 +7,7 @@ import { useEffect } from 'react';
 import getFileNameAndFormat from 'functions/getFileNameAndFormat';
 import { FilesItem } from './hooks/useFilesBlock';
 import { DataType } from './hooks/usePostLoadingStatus';
+import { setFileSizeInUnits } from 'functions/setFileSizeInUnits';
 
 
 
@@ -66,6 +67,7 @@ const FilesListItem = (props: Props) => {
 
 
 
+
    return (
       <div className={`${styles.filesListItem} ${styles[props.mode]}`}>
          <div
@@ -80,8 +82,8 @@ const FilesListItem = (props: Props) => {
                {fileNameWithFormat}
             </a>
          </div >
-         <div>
-            <img/>
+         <div className={styles.fileSize}>
+            {setFileSizeInUnits(props.file.size!)}
          </div>
          <img
             className={`${styles.hideIcon} ${hideIconHoverAndTouchClassNames.className}`}

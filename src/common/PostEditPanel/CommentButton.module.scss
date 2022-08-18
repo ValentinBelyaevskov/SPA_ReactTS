@@ -1,0 +1,44 @@
+.commentButtonContainer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding-top: 20px;
+    width: 60px;
+
+    margin-left: 20px;
+
+    transition-property: opacity;
+    transition-duration: 0.1s;
+
+    &.hover:hover,
+    &.touch {
+        cursor: pointer;
+        opacity: 0.69;
+    }
+
+    .commentIcon {
+        position: relative;
+
+        height: 20px;
+
+        img {
+            position: absolute;
+            left: 0;
+            top: 0;
+
+            height: 100%;
+        }
+    }
+
+    .numberOfCommentsContainer {
+        width: 30px;
+
+
+        .numberOfComments {
+
+            font-size: 1.5rem;
+            line-height: 1;
+        }
+    }
+}

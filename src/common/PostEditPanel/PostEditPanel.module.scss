@@ -100,7 +100,7 @@
 
       &.view {
          grid-template-columns: 55px minmax(0, 1fr) 40px;
-         grid-template-rows: 20px 20px 7px minmax(0, auto) minmax(0, auto) minmax(0, auto) minmax(0, auto);
+         grid-template-rows: 20px 20px 7px minmax(0, auto) minmax(0, auto) minmax(0, auto) minmax(0, auto) minmax(0, auto);
          grid-template-areas:
             "avatar          userName        deletePost"
             "avatar          date            deletePost"
@@ -108,7 +108,8 @@
             "text            text            text"
             "imagesAndVideos imagesAndVideos imagesAndVideos"
             "audios          audios          audios"
-            "files           files           files";
+            "files           files           files"
+            "likes           comments       undefined";
 
          .userName {
             grid-area: userName;
@@ -156,6 +157,18 @@
             width: 100%;
 
             font-size: 1.3rem;
+         }
+
+         .likes {
+            grid-area: likes;
+            align-self: center;
+            justify-self: start;
+         }
+
+         .comments {
+            grid-area: comments;
+            align-self: center;
+            justify-self: start;
          }
       }
 
