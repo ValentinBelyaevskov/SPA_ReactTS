@@ -2,7 +2,7 @@ import { getArrayWithUpdatedItemValue } from "functions/getArrayWithUpdatedItemV
 import { getFilledArray } from "functions/getFiledArray";
 import { Post } from "pages/Profile/types/types";
 import { useEffect, useState } from "react";
-import { PostMode } from "../PostEditPanel";
+import { PostMode } from "../ContentPanel";
 
 
 

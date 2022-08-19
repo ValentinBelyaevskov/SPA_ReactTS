@@ -57,7 +57,7 @@ export type ProfileMode = "signIn"
    | "guestSignIn"
 
 export type ProfileInfoMode = "pageView"
-   | "showingAPopup" | "addingContent"
+   | "showingAPopup" | "addingContent" | "contentChange"
 
 export type SignInMode = "login"
    | "passwordReset"
@@ -199,4 +199,14 @@ export type DeletePostData = {
    postId: string
    profileId: string
    allPostIds: string[]
+}
+
+export type ClickResult = "like" | "cancelLike"
+
+export type LikeAPostData = {
+   callback: () => void
+   clickResult: ClickResult
+   likes: string[]
+   profileId: string
+   postId: string
 }

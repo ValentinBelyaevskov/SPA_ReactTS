@@ -2,7 +2,7 @@ import styles from './App.module.scss'
 import React, { useEffect, useState } from 'react';
 import { Header, LeftPanel, RightPanel } from 'alwaysPresent';
 import { Profile } from 'pages';
-import { getLoadInfo, getProfileInfoMode, getProfileProps, profileActions } from 'pages/Profile/redux/profileReducer';
+import { getProfileInfo, getProfileMode, getProfileProps, profileActions } from 'pages/Profile/redux/profileReducer';
 import { useAppDispatch, useAppSelector } from 'hooks/redux';
 import { AppCtxt, PopupControlsCtxt, PopupCtxt, ShowPopupCtxt } from 'types/types';
 import Controls from 'alwaysPresent/Controls/Controls';
@@ -42,6 +42,9 @@ const App = (props: Props) => {
    const headerContainerRef = useRef<HTMLDivElement>(null);
    const sidebarsContainerRef = useRef<HTMLDivElement>(null);
    const pagesContainerRef = useRef<HTMLDivElement>(null);
+   const profile = useAppSelector(getProfileInfo);
+   const profileMode = useAppSelector(getProfileMode);
+   const [homePath, setHomePath] = useState<string>("Profile");
 
 
 
@@ -120,7 +123,22 @@ const App = (props: Props) => {
    }, [profileInfoLoading, profileWallLoading])
 
 
+   useEffect(() => {
+      if (profileMode === "loggedIn") {
+         setHomePath(profile.objectId);
+      } else {
+         setHomePath("Profile");
+      }
+   }, [profileMode, profile.objectId])
 
+   // 1) SignIn - /SignIn
+   // 2) Profile - /profileId
+   // Если профиль свой:
+   //    NavLink указывает на Profile
+   // Если профиль чужой:
+   //    NavLink указывает на Friends
+   //    при нажатии кнопки назад, сразу после загрузки страницы - url: /Friends
+   // 3) Post - /
 
    return (
       <div className={styles.app} ref={appRef} style={appStyle}>
@@ -147,9 +165,18 @@ const App = (props: Props) => {
                            <Routes>
                               <Route
                                  path="/"
-                                 element={<Navigate to="Profile" replace />}
+                                 element={<Navigate to="SignIn" replace />}
                               />
-                              <Route path='/Profile' element={<Profile />} />
+                              <Route
+                                 path='/SignIn'
+                                 element={
+                                    profile.objectId
+                                       ? <Navigate to={`/${profile.objectId}`} replace />
+                                       : <Profile />
+                                 }
+                              />
+                              <Route path={`/${profile.objectId}`} element={<Profile />} />
+
                               <Route path='/:parent/NotFoundPage' element={<NotFound />} />
                               <Route
                                  path="/News"

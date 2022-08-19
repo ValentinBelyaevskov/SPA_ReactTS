@@ -1,6 +1,6 @@
 import { useHoverAndTouchClassNames } from 'hooks/useHoverAndTouchClassNames';
 import styles from './FilesListItem.module.scss';
-import { addContentButtonNames, icons } from './PostEditPanel';
+import { addContentButtonNames, icons } from './ContentPanel';
 import NotVisibleParameterValue from 'common/NotVisibleParameterValue/NotVisibleParameterValue';
 import { useState } from 'react';
 import { useEffect } from 'react';

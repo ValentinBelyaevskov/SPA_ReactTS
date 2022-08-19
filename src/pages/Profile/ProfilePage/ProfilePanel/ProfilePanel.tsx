@@ -13,7 +13,7 @@ import { Popup, usePopupElement } from 'hooks';
 import { useElementTouchStartListener } from 'hooks/usePopup/useElementTouchStartListener';
 import { PopupContext } from '../../../../App';
 import SelectAndEditAnImageForm from 'common/UploadFormsAndLightbox/SelectAndEditAnImageForm';
-import PostEditPanel from 'common/PostEditPanel/PostEditPanel';
+import ContentPanel from 'common/ContentPanel/ContentPanel';
 import ChangeProfileInfoForm from '../Editors/ChangeProfileInfoForm';
 
 
@@ -182,7 +182,7 @@ const ProfilePanel = () => {
             <ProfileInfo
                profileInfo={profileInfo}
             />
-            <PostEditPanel
+            <ContentPanel
                containerClassName={styles.panelForCreatingAPost}
                mode="edit"
             />

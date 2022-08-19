@@ -1,7 +1,7 @@
 import { Popup } from "hooks"
 import { useElementTouchStartListener } from "hooks/usePopup/useElementTouchStartListener"
-import { AddContentButtonNames } from "./PostEditPanel"
-import styles from './PostEditPanel.module.scss'
+import { AddContentButtonNames } from "./ContentPanel"
+import styles from './ContentPanel.module.scss'
 
 
 
