@@ -3,7 +3,7 @@ import { useHoverAndTouchClassNames } from "hooks/useHoverAndTouchClassNames"
 import styles from './ImagesAndVideosBlockContainer.module.scss'
 import { useEffect, useState, useRef } from 'react';
 import { GridDirection } from "./hooks/usePostImagesAndVideosBlock";
-import { ImagesAndVideosBlockContext } from './PostEditPanel';
+import { ImagesAndVideosBlockContext } from './ContentPanel';
 import { useContext } from 'react';
 import { AppContext } from '../../App';
 

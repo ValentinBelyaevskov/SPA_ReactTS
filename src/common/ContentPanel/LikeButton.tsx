@@ -1,5 +1,7 @@
+import { useAppDispatch, useAppSelector } from "hooks/redux"
 import { useHoverAndTouchClassNames } from "hooks/useHoverAndTouchClassNames"
-import { Post } from "pages/Profile/types/types"
+import { getProfileInfoMode, likeAPost, profileActions } from "pages/Profile/redux/profileReducer"
+import { ClickResult, Post } from "pages/Profile/types/types"
 import { useEffect, useState } from "react"
 import styles from "./LikeButton.module.scss"
 
@@ -19,15 +21,44 @@ const LikeButton = (props: Props) => {
     const likesHoverAndTouchClassNames = useHoverAndTouchClassNames(styles.hover, styles.touch);
     const [thePostWasLiked, setThePostWasLiked] = useState<boolean>(false);
     const [likeIcon, setLikeIcon] = useState<"./icons/like.svg" | "./icons/likeFilled.svg">("./icons/like.svg");
+    // const [clickIsBeingProcessed, setClickIsBeingProcessed] = useState<boolean>(false);
+    const [clickResult, setClickResult] = useState<ClickResult>("like");
+    const dispatch = useAppDispatch();
+    const profileInfoMode = useAppSelector(getProfileInfoMode);
 
 
 
 
     const buttonClickListener = (): void => {
-        console.log();
+        if (profileInfoMode === "contentChange") return;
+
+        dispatch(profileActions.setProfileInfoMode("contentChange"));
+        
+        dispatch(likeAPost(
+            {
+                // callback: () => setClickIsBeingProcessed(false),
+                callback: () => dispatch(profileActions.setProfileInfoMode("pageView")),
+                clickResult,
+                likes: props.post.likes,
+                profileId: props.profileId,
+                postId: props.post.objectId
+            }
+        ))
+
         likesHoverAndTouchClassNames.clickListener();
         setThePostWasLiked(!thePostWasLiked);
     }
+
+
+
+
+    useEffect(() => {
+        if (props.post.likes.includes(props.profileId)) {
+            setClickResult("cancelLike");
+        } else {
+            setClickResult("like");
+        }
+    }, [props.post.likes.length, props.profileId])
 
 
     useEffect(() => {

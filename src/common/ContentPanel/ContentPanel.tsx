@@ -1,4 +1,4 @@
-import styles from './PostEditPanel.module.scss';
+import styles from './ContentPanel.module.scss';
 import React, { useRef, useState, useEffect, useContext } from 'react';
 import { Button, RoundAvatar } from 'common';
 import { useAppDispatch, useAppSelector } from 'hooks/redux';
@@ -116,7 +116,7 @@ export let ImagesAndVideosBlockContext = React.createContext<ImagesAndVideosBloc
 
 
 
-const PostEditPanel = (props: Props) => {
+const ContentPanel = (props: Props) => {
    const dispatch = useAppDispatch();
    const profile = useAppSelector(getProfileInfo);
    const loadInfo = useAppSelector(getLoadInfo);
@@ -242,7 +242,7 @@ const PostEditPanel = (props: Props) => {
 
    const deleletePostClickListener = (): void => {
       setPopupType('deletePosts');
-      deleteButtonHoverAndTouchClassNames.clickListener()
+      deleteButtonHoverAndTouchClassNames.clickListener();
    }
 
 
@@ -589,4 +589,4 @@ const PostEditPanel = (props: Props) => {
 
 
 
-export default PostEditPanel
+export default ContentPanel

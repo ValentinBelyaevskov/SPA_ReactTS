@@ -1,7 +1,7 @@
 import { separatePatnAndName } from './../../../functions/separatePathAndName';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { ProfileState, Profile, AccountParams, LoginParams, ProfileMode, SetErrors, UpdateParams, ProfileInfoMode, SignInMode, UpdatedProfile, UploadFileParams, PostData, PostPayloadAction, Post, ImagesAndVideosItem, AudiosItem, FilesItem, PostObject, GetPostsData, ProfilePageScroll, DeletePostData } from '../types/types';
+import { ProfileState, Profile, AccountParams, LoginParams, ProfileMode, SetErrors, UpdateParams, ProfileInfoMode, SignInMode, UpdatedProfile, UploadFileParams, PostData, PostPayloadAction, Post, ImagesAndVideosItem, AudiosItem, FilesItem, PostObject, GetPostsData, ProfilePageScroll, DeletePostData, LikeAPostData } from '../types/types';
 import { UserProps, LoadInfo, BackendlessError } from '../../../types/types';
 import { createSelector } from 'reselect';
 import { RootState } from '../../../redux/store';
@@ -263,6 +263,14 @@ const profileSlice = createSlice({
             state.loadInfo.error = undefined;
             state.loadInfo.errorType = undefined;
          })
+         .addCase(likeAPost.fulfilled, (state, action) => {
+            state.uploadedPosts.entities[action.payload.postId] = action.payload.updatedPost;
+
+            state.loadInfo.loading = false;
+            state.loadInfo.loaded = true;
+            state.loadInfo.error = undefined;
+            state.loadInfo.errorType = undefined;
+         })
          .addMatcher((action) => action.type.startsWith('profile/') && action.type.endsWith('/pending'),
             (state, action) => {
                if (
@@ -372,16 +380,16 @@ export const getProfileProps = createAsyncThunk(
    "profile/getProfileProps",
    async (_, { rejectWithValue }) => {
       try {
-         const objectId = await (await Backendless.UserService.getCurrentUser()).objectId;
+         const currentPofile = await (await Backendless.UserService.getCurrentUser());
 
          const role: string[] = await Backendless.UserService.getUserRoles();
 
 
-         if (role.includes("GuestUser", 0)) {
-            return { profile: { objectId }, guestMode: true }
+         if (role.includes("GuestUser", 0) && currentPofile && currentPofile.objectId) {
+            return { profile: { objectId: currentPofile.objectId }, guestMode: true }
 
-         } else if (objectId) {
-            const profile: Profile = await Backendless.Data.of('Users').findById(`${objectId}`)
+         } else if (currentPofile && currentPofile.objectId) {
+            const profile: Profile = await Backendless.Data.of('Users').findById(`${currentPofile.objectId}`)
             const avatar = await fetch(`${profile.avatar}`)
 
 
@@ -397,7 +405,7 @@ export const getProfileProps = createAsyncThunk(
             const postQuery = await Backendless.DataQueryBuilder.create()
                .setPageSize(pageSize)
                .setSortBy(["created DESC"])
-               .setWhereClause(`userId = '${objectId}'`);
+               .setWhereClause(`userId = '${currentPofile.objectId}'`);
 
             const posts: Post[] = await Backendless.Data.of("Posts").find(postQuery);
 
@@ -720,9 +728,7 @@ export const deletePost = createAsyncThunk(
    "profile/deletePost",
    async (deletePostData: DeletePostData, { rejectWithValue }) => {
       try {
-
          const deletePostFirstResp = await Backendless.Data.of("Posts").remove({ objectId: deletePostData.postId });
-
 
          const deletePostSecondResp = await Backendless.UserService.update({
             objectId: deletePostData.profileId,
@@ -732,11 +738,49 @@ export const deletePost = createAsyncThunk(
 
          if (deletePostFirstResp && deletePostSecondResp) {
             deletePostData.callback();
-            
+
             return deletePostData.postId
          } else {
             throw Error("An error occurred while deleting the post. Please reload the page.")
          }
+
+      } catch (err: any) {
+         console.log(err);
+         return rejectWithValue(err.message)
+      }
+   }
+)
+
+export const likeAPost = createAsyncThunk(
+   "profile/likeAPost",
+   async (likeAPostData: LikeAPostData, { rejectWithValue }) => {
+      try {
+         const likes = likeAPostData.clickResult === 'like'
+            ? [...likeAPostData.likes, likeAPostData.profileId]
+            : likeAPostData.clickResult === 'cancelLike'
+               ? likeAPostData.likes.filter(id => id !== likeAPostData.profileId)
+               : [...likeAPostData.likes];
+
+
+
+         const updatedPost = await Backendless.Data.of("Posts").save<Post>({
+            objectId: likeAPostData.postId,
+            likes: likes
+         });
+
+
+         if (updatedPost) {
+            likeAPostData.callback();
+
+
+            return {
+               updatedPost,
+               postId: likeAPostData.postId
+            }
+         } else {
+            throw Error("An error occurred while liking thes post. Please reload the page.");
+         }
+
 
       } catch (err: any) {
          console.log(err);

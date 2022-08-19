@@ -2,7 +2,7 @@ import styles from './App.module.scss'
 import React, { useEffect, useState } from 'react';
 import { Header, LeftPanel, RightPanel } from 'alwaysPresent';
 import { Profile } from 'pages';
-import { getLoadInfo, getProfileInfoMode, getProfileProps, profileActions } from 'pages/Profile/redux/profileReducer';
+import { getProfileInfo, getProfileMode, getProfileProps, profileActions } from 'pages/Profile/redux/profileReducer';
 import { useAppDispatch, useAppSelector } from 'hooks/redux';
 import { AppCtxt, PopupControlsCtxt, PopupCtxt, ShowPopupCtxt } from 'types/types';
 import Controls from 'alwaysPresent/Controls/Controls';
@@ -12,7 +12,7 @@ import { useRef } from 'react';
 import AudioElements from 'common/AudioPlayer/AudioElements';
 import GeneralPlayerInterface from 'common/GeneralPlayerInterfaces/GeneralPlayerInterface';
 import { AudioPlayerContext, useAudioPlayer } from 'common/AudioPlayer/useAudioPlayer';
-import { Navigate, Route, Routes } from 'react-router-dom';
+import { Navigate, Route, Routes, useParams } from 'react-router-dom';
 import { NotFound } from 'pages/NotFound/NotFound';
 import { useAppContext } from 'hooks/App/useAppContext';
 import ScrollToTop from 'alwaysPresent/ScrollToTop/ScrollToTop';
@@ -42,6 +42,12 @@ const App = (props: Props) => {
    const headerContainerRef = useRef<HTMLDivElement>(null);
    const sidebarsContainerRef = useRef<HTMLDivElement>(null);
    const pagesContainerRef = useRef<HTMLDivElement>(null);
+   const profile = useAppSelector(getProfileInfo);
+   const profileMode = useAppSelector(getProfileMode);
+   const [homePath, setHomePath] = useState<string>("Profile");
+   // const routeParams = useParams();
+
+   console.log("routeParams: ", useParams())
 
 
 
@@ -111,6 +117,11 @@ const App = (props: Props) => {
    }, []);
 
 
+   // useEffect(() => {
+   //    console.log("routeParams: ", routeParams)
+   // })
+
+
    useEffect(() => {
       if (profileInfoLoading || profileWallLoading) {
          setProfileContentLoading(true);
@@ -120,7 +131,16 @@ const App = (props: Props) => {
    }, [profileInfoLoading, profileWallLoading])
 
 
+   useEffect(() => {
+      if (profileMode === "loggedIn") {
+         setHomePath(profile.objectId);
+      } else {
+         setHomePath("Profile");
+      }
+   }, [profileMode, profile.objectId])
 
+   // 1) Проверка параметра /:profileId и принятие дальнейших действий, в зависимости от его значения
+   // 2) Сделать переадресацию на signIn при нажатии signOut
 
    return (
       <div className={styles.app} ref={appRef} style={appStyle}>
@@ -147,9 +167,28 @@ const App = (props: Props) => {
                            <Routes>
                               <Route
                                  path="/"
-                                 element={<Navigate to="Profile" replace />}
+                                 element={<Navigate to="SignIn" replace />}
                               />
-                              <Route path='/Profile' element={<Profile />} />
+                              <Route path={`/:profileId`} element={
+                                 profile.objectId
+                                 && <Profile />
+                              } />
+                              <Route
+                                 path='/SignIn'
+                                 element={
+                                    profile.objectId
+                                       ? <Navigate to={`/${profile.objectId}`} replace />
+                                       : <Profile />
+                                 }
+                              />
+
+                              <Route
+                                 path='/Pra/:param'
+                                 element={
+                                       <div></div>
+                                 }
+                              />
+
                               <Route path='/:parent/NotFoundPage' element={<NotFound />} />
                               <Route
                                  path="/News"

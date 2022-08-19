@@ -1,7 +1,7 @@
 import { useAppSelector } from 'hooks/redux'
 import styles from './Wall.module.scss'
 import { getUploadedPostIds, getPostEntities, getProfileInfo, getPosts, getPostsLoadInfo, profileActions, getProfileInfoMode, getProfilePageScroll } from '../../redux/profileReducer';
-import PostEditPanel from 'common/PostEditPanel/PostEditPanel';
+import ContentPanel from 'common/ContentPanel/ContentPanel';
 import { useContext, useEffect, useRef, useState } from 'react';
 import { useScrollOrWindowSize } from '../../../../hooks/useScrollOrWindowSize';
 import { useAppDispatch } from '../../../../hooks/redux';
@@ -188,7 +188,7 @@ const Wall = (props: Props) => {
             {
                uploadedPostIds.map((id, index) => (
                   <div key={id} className={`${styles.postContainer} pagePart`}>
-                     <PostEditPanel
+                     <ContentPanel
                         mode='view'
                         postIndex={index}
                         containerClassName={styles.post}
