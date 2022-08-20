@@ -2,7 +2,7 @@ import styles from './Profile.module.scss';
 import ProfilePage from './ProfilePage/ProfilePage';
 import { useState, useEffect, useContext } from 'react';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux';
-import { getErrorTypes, getLoadInfo, getLoadingStatus, getPostsLoadInfo, getProfileInfoMode, getProfileMode, getProfilePageScroll, profileActions } from './redux/profileReducer';
+import { getErrorTypes, getLoadInfo, getLoadingStatus, getPostsLoadInfo, getProfileInfoMode, getProfileMode, profileActions } from './redux/profileReducer';
 import { Preloader } from '../../common';
 import ErrorPage from './ErrorPage/ErrorPage';
 import GuestPage from './GuestPage/GuestPage';
@@ -73,13 +73,23 @@ const Profile = () => {
                && !trySignIn
                ? <ErrorPage setTrySignIn={setTrySignIn} />
                : (
-                  (profileMode === "loggedIn"
-                     || profileMode === "loggedOut")
+                  (
+                     (
+                        profileMode === "loggedIn"
+                        || profileMode === "loggedOut"
+                     )
+                     && loadInfo.errorType !== "signedInFromAnotherDevice"
+                  )
                      ? <ProfilePage />
-                     : (profileMode === "loggedInAsGuest"
-                        || profileMode === "guestSignIn")
+                     : (
+                        profileMode === "loggedInAsGuest"
+                        || profileMode === "guestSignIn"
+                     )
                         ? <GuestPage />
-                        : profileMode === "signIn"
+                        : (
+                           profileMode === "signIn"
+                           || loadInfo.errorType === "signedInFromAnotherDevice"
+                        )
                            ? <SignIn />
                            : null
                )

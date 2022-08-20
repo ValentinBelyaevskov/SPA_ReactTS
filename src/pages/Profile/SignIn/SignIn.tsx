@@ -1,4 +1,4 @@
-import styles from './SignIn.module.scss'
+import styles from './SignIn.module.scss';
 import LoginForm from './Forms/LoginForm';
 import CreateAccountForm from './Forms/CreateAccountForm';
 import LoginAsGuestForm from './Forms/LoginAsGuestForm';
@@ -15,9 +15,11 @@ const SignIn = () => {
 
 
 
+
    useEffect(() => {
       setProfileContentLoading(false);
-   }, [])
+   }, []);
+
 
 
 

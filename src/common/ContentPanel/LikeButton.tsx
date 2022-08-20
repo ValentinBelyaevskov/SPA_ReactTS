@@ -21,7 +21,6 @@ const LikeButton = (props: Props) => {
     const likesHoverAndTouchClassNames = useHoverAndTouchClassNames(styles.hover, styles.touch);
     const [thePostWasLiked, setThePostWasLiked] = useState<boolean>(false);
     const [likeIcon, setLikeIcon] = useState<"./icons/like.svg" | "./icons/likeFilled.svg">("./icons/like.svg");
-    // const [clickIsBeingProcessed, setClickIsBeingProcessed] = useState<boolean>(false);
     const [clickResult, setClickResult] = useState<ClickResult>("like");
     const dispatch = useAppDispatch();
     const profileInfoMode = useAppSelector(getProfileInfoMode);
@@ -33,10 +32,9 @@ const LikeButton = (props: Props) => {
         if (profileInfoMode === "contentChange") return;
 
         dispatch(profileActions.setProfileInfoMode("contentChange"));
-        
+
         dispatch(likeAPost(
             {
-                // callback: () => setClickIsBeingProcessed(false),
                 callback: () => dispatch(profileActions.setProfileInfoMode("pageView")),
                 clickResult,
                 likes: props.post.likes,
@@ -50,6 +48,15 @@ const LikeButton = (props: Props) => {
     }
 
 
+
+
+    useEffect(() => {
+        if (props.post.likes.includes(props.profileId)) {
+            setThePostWasLiked(true);
+        } else {
+            setThePostWasLiked(false)
+        }
+    }, [props.post.likes.length, props.profileId])
 
 
     useEffect(() => {

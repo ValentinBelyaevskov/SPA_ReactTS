@@ -23,7 +23,7 @@ const AddContentIcon = (props: Props) => {
       elementTouchEndListener,
       showElement,
       hideElement
-   } = useElementTouchStartListener(styles.touch, styles.hover, ".prostContentIconPrompt", props.popupPrompt, [0, 0]);
+   } = useElementTouchStartListener(styles.touch, styles.hover, ".postContentIconPrompt", props.popupPrompt, [0, 0]);
 
 
 
@@ -44,16 +44,18 @@ const AddContentIcon = (props: Props) => {
 
 
 
-   return (<img
-      className={`${elementHoverAndTouchClassName} unselectable`}
-      src={props.icon}
-      alt={`Add ${props.addContentButtonName} to post button`}
-      onClick={clickListener}
-      onMouseEnter={mouseEnterListener}
-      onMouseLeave={hideElement}
-      onTouchStart={touchStartListener}
-      onTouchEnd={() => elementTouchEndListener()}
-   />)
+   return (
+      <img
+         className={`${elementHoverAndTouchClassName} unselectable`}
+         src={props.icon}
+         alt={`Add ${props.addContentButtonName} to post button`}
+         onClick={clickListener}
+         onMouseEnter={mouseEnterListener}
+         onMouseLeave={hideElement}
+         onTouchStart={touchStartListener}
+         onTouchEnd={() => elementTouchEndListener()}
+      />
+   )
 }
 
 

@@ -36,15 +36,18 @@ const LoginForm = () => {
 
 
 
+
    const passwordIconTouchStartListener = (e: React.TouchEvent): void => {
       passwordIconPseudoClassNames.touchStartListener();
       passwordInputFocus.innerElementClickListener(e);
    }
 
+
    const passwordIconClickListener = () => {
       passwordIconPseudoClassNames.clickListener();
       passwordVisibility.iconClickListener();
    }
+
 
    const { register, handleSubmit, clearErrors, formState: { errors, isValid } } = useForm<Inputs>({
       mode: "onBlur",
@@ -54,6 +57,7 @@ const LoginForm = () => {
          rememberMe: false,
       }
    });
+
 
    const onSubmit: SubmitHandler<Inputs> = data => {
       if (clickedButton === "login") {
@@ -82,9 +86,11 @@ const LoginForm = () => {
 
 
 
+
    useEffect(() => {
       setResetPasswordWasClicked(false);
    }, []);
+
 
 
 
@@ -95,8 +101,14 @@ const LoginForm = () => {
                Login
             </h3>
             {
+               loadInfo.errorType === "signedInFromAnotherDevice"
+                  ? <p className={styles.prompt}>Please login again to refresh your user token.
+                     <br />You may have signed in from another device or the token has expired</p>
+                  : null
+            }
+            {
                ((loadInfo.error && (loadInfo.errorType === "emailConfirmation"))
-               || signInMode === 'emailConfirmation')
+                  || signInMode === 'emailConfirmation')
                   ? <p className={styles.prompt}>Before you login and begin working with the application, please confirm your email address by following the link.
                      <br />The link is in the message sent to your email.</p>
                   : null

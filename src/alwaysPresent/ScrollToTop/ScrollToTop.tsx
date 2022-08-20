@@ -1,8 +1,9 @@
 import styles from './ScrollToTop.module.scss'
 import { Button } from 'common';
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useScrollOrWindowSize } from 'hooks/useScrollOrWindowSize';
-import { PopupContext } from 'App';
+import { useAppSelector } from '../../hooks/redux';
+import { getPlayerState, getPlayerStatus } from 'common/AudioPlayer/redux/audioPlayerReducer';
 
 
 
@@ -21,7 +22,9 @@ const ScrollToTop = (props: Props) => {
    const scroll = useScrollOrWindowSize("scroll");
    const [prevScroll, setPrevScroll] = useState<number>(0);
    const [scrollDirection, setScrollDirection] = useState<"up" | "down">("down");
-   const popupContext = useContext(PopupContext);
+   const generalAudioPlayerStatus = useAppSelector(getPlayerStatus("general"));
+   const generalAudioPlayerState = useAppSelector(getPlayerState("general"));
+   const [buttonContainerClassName, setButtonContainerClassName] = useState<string>(styles.scrollToTopButtonContainer);
 
 
 
@@ -54,13 +57,25 @@ const ScrollToTop = (props: Props) => {
    useEffect(() => {
       setPrevScroll(scroll.value[1]);
 
-
-      if (scroll.value[1] > 100 && scrollDirection === 'up') {
+      if ((scroll.value[1] > 100 && scrollDirection === 'up')) {
          setButtonStyle({});
       } else {
          setButtonStyle({ display: "none" });
       }
-   }, [scroll.value[1], scrollDirection])
+
+      if (generalAudioPlayerState.showPlaylist) {
+         setButtonStyle({ display: "none" });
+      }
+   }, [scroll.value[1], scrollDirection, generalAudioPlayerState.showPlaylist])
+
+
+   useEffect(() => {
+      if (generalAudioPlayerStatus) {
+         setButtonContainerClassName(`${styles.scrollToTopButtonContainer} ${styles.audioPlayerShown}`)
+      } else {
+         setButtonContainerClassName(`${styles.scrollToTopButtonContainer}`)
+      }
+   }, [generalAudioPlayerStatus])
 
 
 
@@ -72,7 +87,7 @@ const ScrollToTop = (props: Props) => {
                type: "button",
                clickListener: buttonClickListener,
                containerStyle: buttonStyle,
-               containerClassName: styles.scrollToTopButtonContainer,
+               containerClassName: buttonContainerClassName,
                buttonClassName: styles.scrollToTopButton,
                changeStyleOnHover: true,
                jsx: <img className={styles.scrollToTopButtonArrow} src="./icons/arrowUpWhite.svg" alt="Scroll to top button" />

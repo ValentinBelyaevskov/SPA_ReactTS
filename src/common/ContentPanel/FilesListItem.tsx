@@ -104,12 +104,12 @@ const FilesListItem = (props: Props) => {
             setVisibleParameterValue={setVisibleParameterValue}
             className={styles.notVisibleValue}
             configForAdaptability={[
-               [550, undefined, 450, 38],
-               [480, 550, 380, 32],
-               [420, 480, 312, 27],
-               [350, 420, 242, 21],
-               [320, 350, 207, 18],
-               [280, 320, 173, 15],
+               [550, undefined, 415, 35],
+               [500, 549, 360, 30],
+               [461, 499, 320, 20],
+               [400, 460, 200, 15],
+               [320, 399, 160, 10],
+               [280, 319, 130, 8],
             ]}
          />
       </div >

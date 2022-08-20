@@ -54,6 +54,7 @@ const AudiosListItem = (props: Props) => {
 
 
 
+
    const getFileFormat = (name: string): string => getFileNameAndFormat(name)[1];
 
    const audioClickListener = (): void => {
@@ -63,12 +64,12 @@ const AudiosListItem = (props: Props) => {
          setIsPlaying(!isPlaying);
          props.setAudioIsPlaying(!isPlaying);
       } else {
-      setExpectContextMatch(true);
+         setExpectContextMatch(true);
       }
 
-      props.setActiveTrackIdNumber(props.index);
       props.setGeneralPlayerContext();
       props.setShowAudioPlayer(true);
+      props.setActiveTrackIdNumber(props.index);
    }
 
    const hideIconClickHandler = (): void => {
@@ -102,7 +103,7 @@ const AudiosListItem = (props: Props) => {
          props.setAudioIsPlaying(!isPlaying);
          setExpectContextMatch(false);
       }
-      }, [expectContextMatch, props.currentPlaylistActive])
+   }, [expectContextMatch, props.currentPlaylistActive])
 
 
    useEffect(() => {
@@ -245,10 +246,10 @@ const AudiosListItem = (props: Props) => {
                configForAdaptability={[
                   [550, undefined, 415, 35],
                   [500, 549, 360, 30],
-                  [461, 499, 320, 22],
-                  [400, 460, 250, 18],
-                  [320, 399, 180, 12],
-                  [280, 319, 145, 10],
+                  [461, 499, 320, 20],
+                  [400, 460, 200, 15],
+                  [320, 399, 160, 10],
+                  [280, 319, 125, 7],
                ]}
             />
          </div >

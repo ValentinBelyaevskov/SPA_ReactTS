@@ -35,9 +35,10 @@ const GeneralPlayerInterface = (props: Props) => {
    const hideIconClickHandler = (): void => {
       hideIconHoverAndTouchClassNames.clickListener();
 
-      playerStateAPI.setShowAudioPlayer(false);
-      playerStateAPI.setIsPlaying(false);
+      // playerStateAPI.setShowAudioPlayer(false);
+      // playerStateAPI.setIsPlaying(false);
       appContext.setShowAudioPlayer!(false);
+      playerStateAPI.resetPlayer();
    }
 
 

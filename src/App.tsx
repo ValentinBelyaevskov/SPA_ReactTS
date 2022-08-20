@@ -2,7 +2,7 @@ import styles from './App.module.scss'
 import React, { useEffect, useState } from 'react';
 import { Header, LeftPanel, RightPanel } from 'alwaysPresent';
 import { Profile } from 'pages';
-import { getProfileInfo, getProfileMode, getProfileProps, profileActions } from 'pages/Profile/redux/profileReducer';
+import { getErrorTypes, getLoadInfo, getProfileInfo, getProfileMode, getProfileProps, profileActions } from 'pages/Profile/redux/profileReducer';
 import { useAppDispatch, useAppSelector } from 'hooks/redux';
 import { AppCtxt, PopupControlsCtxt, PopupCtxt, ShowPopupCtxt } from 'types/types';
 import Controls from 'alwaysPresent/Controls/Controls';
@@ -12,10 +12,11 @@ import { useRef } from 'react';
 import AudioElements from 'common/AudioPlayer/AudioElements';
 import GeneralPlayerInterface from 'common/GeneralPlayerInterfaces/GeneralPlayerInterface';
 import { AudioPlayerContext, useAudioPlayer } from 'common/AudioPlayer/useAudioPlayer';
-import { Navigate, Route, Routes } from 'react-router-dom';
+import { Navigate, Route, Routes, useParams } from 'react-router-dom';
 import { NotFound } from 'pages/NotFound/NotFound';
 import { useAppContext } from 'hooks/App/useAppContext';
 import ScrollToTop from 'alwaysPresent/ScrollToTop/ScrollToTop';
+import { ProfileRouteDisplay } from 'ProfileRouteDisplay';
 
 
 
@@ -43,9 +44,9 @@ const App = (props: Props) => {
    const sidebarsContainerRef = useRef<HTMLDivElement>(null);
    const pagesContainerRef = useRef<HTMLDivElement>(null);
    const profile = useAppSelector(getProfileInfo);
-   const profileMode = useAppSelector(getProfileMode);
-   const [homePath, setHomePath] = useState<string>("Profile");
 
+   // * useFindEntityFromRoute
+   const [routeProfileId, setRouteProfileId] = useState<string | undefined>(undefined);
 
 
 
@@ -123,22 +124,7 @@ const App = (props: Props) => {
    }, [profileInfoLoading, profileWallLoading])
 
 
-   useEffect(() => {
-      if (profileMode === "loggedIn") {
-         setHomePath(profile.objectId);
-      } else {
-         setHomePath("Profile");
-      }
-   }, [profileMode, profile.objectId])
 
-   // 1) SignIn - /SignIn
-   // 2) Profile - /profileId
-   // Если профиль свой:
-   //    NavLink указывает на Profile
-   // Если профиль чужой:
-   //    NavLink указывает на Friends
-   //    при нажатии кнопки назад, сразу после загрузки страницы - url: /Friends
-   // 3) Post - /
 
    return (
       <div className={styles.app} ref={appRef} style={appStyle}>
@@ -150,7 +136,8 @@ const App = (props: Props) => {
                setProfileContentLoading,
                setShowAudioPlayer
             }
-         }>
+         }
+         >
             <PopupContext.Provider value={{ ...popupContext }}>
                <PopupControlsContext.Provider value={{ ...popupControlsContext }}>
                   <ShowPopupContext.Provider value={{ ...showPopupContextValue }}>
@@ -175,8 +162,9 @@ const App = (props: Props) => {
                                        : <Profile />
                                  }
                               />
-                              <Route path={`/${profile.objectId}`} element={<Profile />} />
-
+                              <Route path={`/:profileId`}
+                                 element={<ProfileRouteDisplay setRouteProfileId={setRouteProfileId} />}
+                              />
                               <Route path='/:parent/NotFoundPage' element={<NotFound />} />
                               <Route
                                  path="/News"

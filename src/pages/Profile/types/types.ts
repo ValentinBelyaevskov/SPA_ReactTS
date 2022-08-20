@@ -42,10 +42,10 @@ export type ProfilePageScroll = [
 export type Post = {
    objectId: string
    innerHTML: string
-   imagesAndVideos: ImagesAndVideosItem[],
-   files: FilesItem[],
-   audios: AudiosItem[],
-   likes: string[],
+   imagesAndVideos: ImagesAndVideosItem[]
+   files: FilesItem[]
+   audios: AudiosItem[]
+   likes: string[]
    comments: string[]
    created: number
 }

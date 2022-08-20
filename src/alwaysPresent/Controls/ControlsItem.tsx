@@ -2,7 +2,7 @@ import { useAppSelector } from 'hooks/redux';
 import { useHoverAndTouchClassNames } from 'hooks/useHoverAndTouchClassNames';
 import { getProfileInfo, getProfileInfoMode } from 'pages/Profile/redux/profileReducer';
 import { useEffect, useState } from 'react';
-import { NavLink, useMatch } from 'react-router-dom';
+import { NavLink, useMatch, useParams } from 'react-router-dom';
 import styles from './ControlsItem.module.scss';
 
 
@@ -21,16 +21,7 @@ const ControlsItem = (props: Props) => {
    const profileInfoMode = useAppSelector(getProfileInfoMode);
    const itemHoverAndTouchClassNames = useHoverAndTouchClassNames(styles.hover, styles.touch);
    const profile = useAppSelector(getProfileInfo);
-   const [path] = useState<string>(
-      props.buttonName === 'Profile'
-         ? profile.objectId
-         : `${props.buttonName}/NotFoundPage`
-   );
-   // const [path] = useState<string>(
-   //    props.buttonName === 'Profile'
-   //       ? props.buttonName
-   //       : `${props.buttonName}/NotFoundPage`
-   // );
+   const [path, setPath] = useState<string>("/");
    const match = useMatch(path);
 
    const [itemClassName, setItemClassName] = useState(`${styles.controlsListItem} ${itemHoverAndTouchClassNames.className} unselectable`);
@@ -39,6 +30,7 @@ const ControlsItem = (props: Props) => {
 
 
    const getItemClassName = ({ isActive }: IsActiveObj): string => isActive ? `${itemClassName} ${styles.activeItem}` : itemClassName;
+
 
    const getTo = (): string => {
       if (profileInfoMode === "addingContent") return path
@@ -51,6 +43,26 @@ const ControlsItem = (props: Props) => {
          )
          : props.buttonName
    }
+
+
+   const getIcon = (): string => {
+      return ""
+   }
+
+
+
+
+   useEffect(() => {
+      setPath(
+         props.buttonName === 'Profile'
+            ? (
+               profile.objectId ?
+                  `${profile.objectId}`
+                  : '/SignIn'
+                  )
+            : `${props.buttonName}/NotFoundPage`
+      )
+   }, [props.buttonName, profile.objectId])
 
 
 

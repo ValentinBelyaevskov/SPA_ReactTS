@@ -1,7 +1,7 @@
 import { separatePatnAndName } from './../../../functions/separatePathAndName';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { ProfileState, Profile, AccountParams, LoginParams, ProfileMode, SetErrors, UpdateParams, ProfileInfoMode, SignInMode, UpdatedProfile, UploadFileParams, PostData, PostPayloadAction, Post, ImagesAndVideosItem, AudiosItem, FilesItem, PostObject, GetPostsData, ProfilePageScroll, DeletePostData, LikeAPostData } from '../types/types';
+import { ProfileState, Profile, AccountParams, LoginParams, ProfileMode, SetErrors, UpdateParams, ProfileInfoMode, SignInMode, UpdatedProfile, UploadFileParams, PostData, Post, ImagesAndVideosItem, AudiosItem, FilesItem, PostObject, GetPostsData, ProfilePageScroll, DeletePostData, LikeAPostData } from '../types/types';
 import { UserProps, LoadInfo, BackendlessError } from '../../../types/types';
 import { createSelector } from 'reselect';
 import { RootState } from '../../../redux/store';
@@ -53,8 +53,9 @@ const initialState: ProfileState = {
       "loginAsGuest",
       "createAccount",
       "emailConfirmation",
-      "manyFailedLoginAttempts",
       "update",
+      "manyFailedLoginAttempts",
+      "signedInFromAnotherDevice",
       "uploadAvatar",
       "getProfileProps",
    ],
@@ -299,14 +300,24 @@ const profileSlice = createSlice({
                   state.loadInfo.errorType = "manyFailedLoginAttempts"
                } else if (action.payload === "User cannot login - email address must be confirmed first") {
                   state.loadInfo.errorType = "emailConfirmation"
+               } else if (
+                  action.payload
+                  && action.payload.includes("Not existing user token")
+                  && action.payload.includes("Relogin user to update your user token")
+               ) {
+                  console.log("signedInFromAnotherDevice");
+                  state.loadInfo.errorType = "signedInFromAnotherDevice"
                } else {
                   state.loadInfo.errorType = action.type.split("").slice(8, -9).join("")
                }
 
+               console.log(action.payload, action.type)
+
                if (
-                  action.type === "profile/getProfileProps/rejected"
-                  || action.type === "profile/login/rejected"
-                  || action.type === "profile/createAPost/rejected"
+                  // action.type === "profile/getProfileProps/rejected"
+                  // || action.type === "profile/login/rejected"
+                  // || action.type === "profile/createAPost/rejected"
+                  action.type === "profile/createAPost/rejected"
                   || action.type === "profile/getPosts/rejected"
                ) {
                   state.postsLoadInfo.error = "An error occurred while loading posts. Try reloading the app."
@@ -380,16 +391,16 @@ export const getProfileProps = createAsyncThunk(
    "profile/getProfileProps",
    async (_, { rejectWithValue }) => {
       try {
-         const objectId = await (await Backendless.UserService.getCurrentUser()).objectId;
+         const currentPofile = await (await Backendless.UserService.getCurrentUser());
 
          const role: string[] = await Backendless.UserService.getUserRoles();
 
 
-         if (role.includes("GuestUser", 0)) {
-            return { profile: { objectId }, guestMode: true }
+         if (role.includes("GuestUser", 0) && currentPofile && currentPofile.objectId) {
+            return { profile: { objectId: currentPofile.objectId }, guestMode: true }
 
-         } else if (objectId) {
-            const profile: Profile = await Backendless.Data.of('Users').findById(`${objectId}`)
+         } else if (currentPofile && currentPofile.objectId) {
+            const profile: Profile = await Backendless.Data.of('Users').findById(`${currentPofile.objectId}`)
             const avatar = await fetch(`${profile.avatar}`)
 
 
@@ -405,7 +416,7 @@ export const getProfileProps = createAsyncThunk(
             const postQuery = await Backendless.DataQueryBuilder.create()
                .setPageSize(pageSize)
                .setSortBy(["created DESC"])
-               .setWhereClause(`userId = '${objectId}'`);
+               .setWhereClause(`userId = '${currentPofile.objectId}'`);
 
             const posts: Post[] = await Backendless.Data.of("Posts").find(postQuery);
 

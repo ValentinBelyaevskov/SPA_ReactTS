@@ -7,7 +7,7 @@ import { getFilledArray } from "functions/getFiledArray";
 import { useAppDispatch, useAppSelector } from "hooks/redux";
 import { WindowSize } from "hooks/useScrollOrWindowSize";
 import { Post } from "pages/Profile/types/types";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useLayoutEffect, useState } from "react";
 import { AppCtxt } from "types/types";
 
 
@@ -39,7 +39,7 @@ export const useAudiosBlock = (appContext: AppCtxt, resize: WindowSize, panelAud
 
    const generalAudioPlayerContext = useAppSelector(getGeneralPlayerContext);
 
-   // activeTrackIdNumber должен иметь актуальное значение, что useEffects 1 и 2 выполнялись в разных рендерах
+   // activeTrackIdNumber должен иметь актуальное значение, что бы useEffects 1 и 2 выполнялись в разных рендерах
    // (см изменение зависимостей audioPlayerState.activeTrackId и activeTrackIdNumber).
    const audioIds = useAppSelector(getPlayerAudioFileIds("general"));
    const [activeTrackIdNumber, setActiveTrackIdNumber] = useState<number>(
@@ -140,19 +140,37 @@ export const useAudiosBlock = (appContext: AppCtxt, resize: WindowSize, panelAud
    }, [audioFiles.length])
 
 
+
+   // ?
+   useEffect(() => {
+      if (panelAudioPlayerContext === generalAudioPlayerContext) {
+         console.log(
+            "panelAudioPlayerContext: ", panelAudioPlayerContext,
+            "generalAudioPlayerContext: ", generalAudioPlayerContext,
+            "activeTrackIdNumber: ", activeTrackIdNumber,
+            "currentPlaylistActive: ", currentPlaylistActive,
+            "audioPlayerState.activeTrackId: ", audioPlayerState.activeTrackId,
+            "audioIds.length: ", audioIds.length,
+         )
+      }
+   }, [panelAudioPlayerContext, generalAudioPlayerContext, activeTrackIdNumber, audioPlayerState.activeTrackId, audioIds.length, currentPlaylistActive])
+   // ?
+
+
+
    // ! 1)
    useEffect(() => {
-      if (audios[audioPlayerState.activeTrackId]) {
+      if (audios[audioPlayerState.activeTrackId] && currentPlaylistActive && panelAudioPlayerContext === generalAudioPlayerContext) {
          setActiveTrackIdNumber(getActiveTrackIdNumber(audioPlayerState.activeTrackId));
       }
-   }, [audioPlayerState.activeTrackId, audioIds.length])
+   }, [audioPlayerState.activeTrackId, audioIds.length, audioIds[0], currentPlaylistActive, panelAudioPlayerContext, generalAudioPlayerContext])
+   // !
 
 
    useEffect(() => {
       if (resize.value[0] <= 950) {
          if (showAudioPlayer) appContext.setShowAudioPlayer!(true);
 
-         // } else {
       } else if (!showAudioPlayer && panelAudioPlayerContext === generalAudioPlayerContext) {
          appContext.setShowAudioPlayer!(false);
       }
@@ -167,12 +185,12 @@ export const useAudiosBlock = (appContext: AppCtxt, resize: WindowSize, panelAud
          setAudioLoadingStatuses(getFilledArray(false, audioFiles.length));
          setShowPlayerOnPlayBtnClick!(false);
       }
-   }, [audioFiles.length, panelAudioPlayerContext, generalAudioPlayerContext, mode])
+   }, [audioFiles.length, panelAudioPlayerContext, generalAudioPlayerContext, mode]);
 
 
    useEffect(() => {
       setNumberOfAudioLoadedStatuses(audioLoadingStatuses.filter(item => item === true).length);
-   }, [audioLoadingStatuses])
+   }, [audioLoadingStatuses]);
 
 
    useEffect(() => {
@@ -187,7 +205,7 @@ export const useAudiosBlock = (appContext: AppCtxt, resize: WindowSize, panelAud
          }
 
       }
-   }, [audioFiles.length, panelAudioPlayerContext, generalAudioPlayerContext, mode])
+   }, [audioFiles.length, panelAudioPlayerContext, generalAudioPlayerContext, mode]);
 
 
    useEffect(() => {
@@ -289,6 +307,8 @@ export const useAudiosBlock = (appContext: AppCtxt, resize: WindowSize, panelAud
                id: new Date().getTime() + index
             }))
          );
+
+         console.log("setAudioFiles", new Date().getTime())
       }
    }, [mode])
 
@@ -314,13 +334,13 @@ export const useAudiosBlock = (appContext: AppCtxt, resize: WindowSize, panelAud
    }, [panelAudioPlayerContext, generalAudioPlayerContext, audioFiles.length, showAudioPlayer, currentPostPlayerIsActive])
 
 
-   // !
    // ! 2)
    useEffect(() => {
-      if (audioIds[activeTrackIdNumber] && panelAudioPlayerContext === generalAudioPlayerContext) {
+      if (audioIds[activeTrackIdNumber] && currentPlaylistActive) {
          audioPlayerStateAPI.setActiveTrackId(audioIds[activeTrackIdNumber]);
       }
-   }, [activeTrackIdNumber, audioIds.length, audioIds[0], panelAudioPlayerContext, generalAudioPlayerContext])
+   }, [activeTrackIdNumber, audioIds.length, audioIds[0], currentPlaylistActive])
+   // !
 
 
    useEffect(() => {
@@ -334,7 +354,7 @@ export const useAudiosBlock = (appContext: AppCtxt, resize: WindowSize, panelAud
 
    useEffect(() => {
       if (!audioPlayerState.showAudioPlayer) {
-         audioPlayerStateAPI.setGeneralPlayerContext("")
+         audioPlayerStateAPI.setGeneralPlayerContext("");
          audioPlayerStateAPI.resetPlayer();
       }
    }, [audioPlayerState.showAudioPlayer])

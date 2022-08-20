@@ -5,8 +5,6 @@
    bottom: 25px;
    left: calc(50% + 310px);
 
-
-
    .scrollToTopButton {
       height: 40px;
       padding: 10px;
@@ -20,10 +18,13 @@
    }
 }
 
-
 @media (max-width: 950px) {
    .scrollToTopButtonContainer {
       left: 575px;
+
+      &.audioPlayerShown {
+         bottom: 50px;
+      }
    }
 }
 
